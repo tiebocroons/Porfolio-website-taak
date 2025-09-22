@@ -1932,5 +1932,34 @@ h6 {
 /* Grid Link Styling */
 .grid-link.d-flex.justify-content-center {
   padding-top: 20px;
-  margin-bottom: 20px;
+}
+
+/* Navbar Mobile Menu Styling */
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: auto;
+    width: 250px;
+    background: rgba(0, 0, 0, 0.95);
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .navbar-nav {
+    margin-left: 0 !important;
+  }
+  
+  .navbar-nav .nav-link {
+    color: white !important;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .navbar-nav .nav-link:hover {
+    color: #1bb1dc !important;
+  }
 }
