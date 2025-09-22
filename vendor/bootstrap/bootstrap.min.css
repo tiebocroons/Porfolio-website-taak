@@ -5200,6 +5200,9 @@ input[type="submit"].btn-block {
   white-space: nowrap;
   vertical-align: baseline;
   border-radius: 0.25rem;
+  border-color: hsl(312, 100%, 50%);
+  border-style: solid;
+  margin-bottom: 10px;
 }
 
 .badge:empty {
