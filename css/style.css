@@ -250,11 +250,6 @@ h6 {
 
 /* Desktop Navigation */
 
-.main-nav {
-  /* Drop Down */
-  /* Deep Drop Down */
-}
-
 .main-nav,
 .main-nav * {
   margin: 0;
@@ -746,6 +741,39 @@ h6 {
 
 #features .feature-item p {
   flex-grow: 1;
+}
+
+/* About Section Cards
+--------------------------------*/
+
+#who-we-are .card {
+  border: none;
+  border-radius: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#who-we-are .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+#who-we-are .card-body {
+  text-align: center;
+}
+
+#who-we-are .card-title {
+  font-weight: 600;
+  color: hsl(312, 100%, 50%);
+}
+
+#who-we-are .card-text {
+  color: #666;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+#who-we-are .card-body i {
+  color: #000;
 }
 
 /* Portfolio Section
