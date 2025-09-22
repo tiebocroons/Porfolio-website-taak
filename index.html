@@ -970,4 +970,18 @@ Momenteel volg ik een opleiding gericht op <b>Digital experience design</b>. Ik 
 
   <!-- Main JS -->
   <script src="js/app.min.js "></script>
+  
+  <!-- Auto-close navbar script -->
+  <script>
+    $(document).ready(function() {
+      // Auto-close navbar when clicking on navigation links
+      $('.navbar-nav .nav-link').on('click', function() {
+        // Check if navbar is expanded (mobile view)
+        if ($('.navbar-toggler').is(':visible')) {
+          // Collapse the navbar
+          $('.navbar-collapse').collapse('hide');
+        }
+      });
+    });
+  </script>
 </html>
