@@ -1780,3 +1780,131 @@ h6 {
     margin-bottom: 25px;
   }
 }
+
+/* Portfolio Quick Info
+--------------------------------*/
+
+.grid-item-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.portfolio-badges {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-design {
+  background: hsl(312, 100%, 50%);
+  color: white;
+}
+
+.badge-development {
+  background: #1bb1dc;
+  color: white;
+}
+
+.badge-tool {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  backdrop-filter: blur(10px);
+}
+
+.quick-info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.grid-item-wrapper:hover .quick-info {
+  opacity: 1;
+}
+
+.quick-info .info-content {
+  text-align: center;
+  color: white;
+  padding: 20px;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.grid-item-wrapper:hover .quick-info .info-content {
+  transform: translateY(0);
+}
+
+.quick-info .info-content h5 {
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.quick-info .info-content p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  margin-bottom: 15px;
+  line-height: 1.4;
+}
+
+.project-meta {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.project-meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.project-meta i {
+  font-size: 14px;
+}
+
+/* Portfolio Quick Info Responsive */
+@media (max-width: 768px) {
+  .portfolio-badges {
+    top: 10px;
+    left: 10px;
+  }
+  
+  .badge {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+  
+  .project-meta {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .quick-info .info-content {
+    padding: 15px;
+  }
+}
