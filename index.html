@@ -860,21 +860,25 @@ Momenteel volg ik een opleiding gericht op <b>Digital experience design</b>. Ik 
         <!-- Contact Form Holder -->
         
                             <div class="col-md-8 offset-md-2 contact-form-holder mt-4" data-aos="fade-up">
-                        <form method="post" name="contact-us" action="">
+                        <form method="post" name="contact-us" action="" class="contactForm">
+                            <div id="sendmessage" style="display:none;">Your message has been sent. Thank you!</div>
+                            <div id="errormessage" style="display:none;"></div>
                             <div class="row">
                                 <div class="col-md-12 form-group">
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" data-rule="required" data-msg="Please enter your name">
+                                    <div class="validation"></div>
                                 </div>
                                 <div class="col-md-6 form-group">
-                                    <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" data-rule="email" data-msg="Please enter a valid email">
+                                    <div class="validation"></div>
                                 </div>
                                 <div class="col-md-6 form-group">
-                                    <input type="number" class="form-control" id="phoneNumber" name="phoneNumber"
-                                        placeholder="Phone">
+                                    <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone">
+                                    <div class="validation"></div>
                                 </div>
                                 <div class="col-md-12 form-group">
-                                    <textarea class="form-control" id="message" name="message" rows="6"
-                                        placeholder="Your Message ..."></textarea>
+                                    <textarea class="form-control" id="message" name="message" rows="6" placeholder="Your Message ..." data-rule="required" data-msg="Please write something for us"></textarea>
+                                    <div class="validation"></div>
                                 </div>
                                 <div class="col-md-12 text-center">
                                     <button class="btn btn-primary btn-shadow btn-lg" type="submit" name="submit">Send
@@ -967,6 +971,9 @@ Momenteel volg ik een opleiding gericht op <b>Digital experience design</b>. Ik 
 
   <!-- Main JS -->
   <script src="js/app.min.js "></script>
+  
+  <!-- Contact Form JS -->
+  <script src="contactform/contactform.js"></script>
   
   <!-- Auto-close navbar script -->
   <script>
