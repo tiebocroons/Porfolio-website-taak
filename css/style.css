@@ -1963,3 +1963,39 @@ h6 {
     color: #1bb1dc !important;
   }
 }
+
+/* Contact Form Messages */
+#sendmessage {
+  color: #fff;
+  background: #28a745;
+  display: none;
+  text-align: center;
+  padding: 15px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+#errormessage {
+  color: #fff;
+  display: none;
+  background: #dc3545;
+  text-align: center;
+  padding: 15px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  border-radius: 5px;
+}
+
+#sendmessage.show,
+#errormessage.show {
+  display: block;
+}
+
+.contactForm .validation {
+  color: #dc3545;
+  display: none;
+  margin: 5px 0 15px;
+  font-weight: 400;
+  font-size: 13px;
+}
