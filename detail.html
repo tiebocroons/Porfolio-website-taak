@@ -43,6 +43,47 @@
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
     />
+    
+    <style>
+      .timeline-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      
+      .progress-timeline .timeline-item {
+        position: relative;
+      }
+      
+      .progress-timeline .timeline-item:not(:last-child):before {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 20px;
+        height: calc(100% + 10px);
+        width: 2px;
+        background-color: #e9ecef;
+      }
+      
+      .progress-timeline .timeline-item.completed:not(:last-child):before {
+        background-color: #28a745;
+      }
+      
+      .resource-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      
+      .resource-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+      
+      .badge-success,
+      .badge-primary {
+        border: none !important;
+      }
+    </style>
   </head>
 
   <body data-spy="scroll" data-target="#navbar" class="static-layout">
@@ -233,6 +274,109 @@
                     <li class="mb-2"><i class="lnr lnr-checkmark-circle text-success"></i> Mobile-first responsive design</li>
                     <li class="mb-2"><i class="lnr lnr-checkmark-circle text-success"></i> Admin panel voor content beheer</li>
                   </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Progress Section -->
+          <div class="row mt-5">
+            <div class="col-12" data-aos="fade-up">
+              <div class="card border-0 shadow">
+                <div class="card-body p-5">
+                  <div class="icon-box mb-4 text-center">
+                    <span class="lnr lnr-chart-bars text-primary" style="font-size: 3rem;"></span>
+                  </div>
+                  <h4 class="card-title text-center mb-4">Project Voortgang</h4>
+                  
+                  <div class="row">
+                    <div class="col-lg-8 col-md-12">
+                      <h6 class="text-primary mb-3">Ontwikkelingsfasen</h6>
+                      
+                      <!-- Progress Timeline -->
+                      <div class="progress-timeline">
+                        <div class="timeline-item completed mb-3">
+                          <div class="d-flex align-items-center">
+                            <span class="timeline-dot bg-success"></span>
+                            <div class="ml-3">
+                              <h6 class="mb-1">Design & Wireframes</h6>
+                              <p class="text-muted mb-0">Initiële concepten en gebruikersinterface ontwerp</p>
+                            </div>
+                            <span class="badge badge-success ml-auto">Voltooid</span>
+                          </div>
+                        </div>
+                        
+                        <div class="timeline-item completed mb-3">
+                          <div class="d-flex align-items-center">
+                            <span class="timeline-dot bg-success"></span>
+                            <div class="ml-3">
+                              <h6 class="mb-1">Frontend Development</h6>
+                              <p class="text-muted mb-0">HTML, CSS en JavaScript implementatie</p>
+                            </div>
+                            <span class="badge badge-success ml-auto">Voltooid</span>
+                          </div>
+                        </div>
+                        
+                        <div class="timeline-item completed mb-3">
+                          <div class="d-flex align-items-center">
+                            <span class="timeline-dot bg-success"></span>
+                            <div class="ml-3">
+                              <h6 class="mb-1">Backend Integration</h6>
+                              <p class="text-muted mb-0">PHP backend en database implementatie</p>
+                            </div>
+                            <span class="badge badge-success ml-auto">Voltooid</span>
+                          </div>
+                        </div>
+                        
+                        <div class="timeline-item in-progress mb-3">
+                          <div class="d-flex align-items-center">
+                            <span class="timeline-dot bg-primary"></span>
+                            <div class="ml-3">
+                              <h6 class="mb-1">Testing & Optimalisatie</h6>
+                              <p class="text-muted mb-0">Performance optimalisatie en cross-browser testing</p>
+                            </div>
+                            <span class="badge badge-primary ml-auto">In Progress</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Overall Progress Bar -->
+                      <div class="mt-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                          <span class="text-muted">Totale Voortgang</span>
+                          <span class="font-weight-bold text-primary">85%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                          <div class="progress-bar bg-primary" role="progressbar" style="width: 85%"></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="col-lg-4 col-md-12">
+                      <div class="text-center">
+                        <h6 class="text-primary mb-3">Design Resources</h6>
+                        <div class="design-resources">
+                          <div class="resource-card p-4 rounded mb-3 shadow">
+                            <i class="fab fa-figma text-primary mb-3" style="font-size: 2.5rem;"></i>
+                            <h6 class="mb-2">Figma Design</h6>
+                            <p class="text-muted mb-3 small">Bekijk het complete design systeem en prototypes</p>
+                            <a href="https://www.figma.com/design/example-portfolio-design" target="_blank" class="btn btn-primary btn-sm">
+                              <i class="lnr lnr-exit"></i> Open Figma
+                            </a>
+                          </div>
+                          
+                          <div class="resource-card p-4 rounded shadow">
+                            <i class="lnr lnr-code text-primary mb-3" style="font-size: 2.5rem;"></i>
+                            <h6 class="mb-2">Code Repository</h6>
+                            <p class="text-muted mb-3 small">GitHub repository met alle project bestanden</p>
+                            <a href="https://github.com/tiebocroons/portfolio-website" target="_blank" class="btn btn-primary btn-sm">
+                              <i class="fab fa-github"></i> GitHub
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
