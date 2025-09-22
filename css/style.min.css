@@ -1,0 +1,141 @@
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+  overflow: overlay;
+}
+
+body {
+  font-family: "Lato", sans-serif;
+  font-weight: 300;
+  overflow: overlay;
+}
+
+
+
+a {
+  color: hsl(312, 100%, 50%);
+  transition: all 0.3s ease-in-out;
+}
+
+a:focus,
+button:focus {
+  outline: none;
+}
+
+.btn:hover,
+a:hover {
+  text-decoration: none;
+  color: hsl(240, 50%, 40%);
+}
+
+img {
+  max-width: 100%;
+}
+
+.fs-40 {
+  font-size: 40px;
+}
+
+section {
+  position: relative;
+}
+
+.section-content {
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+.title-wrap,
+.section-title {
+  text-align: center;
+}
+
+
+
+/*=================================
+=            PORTFOLIO            =
+=================================*/
+.filter-button-group {
+  margin-bottom: 15px;
+}
+
+.filter-button-group a {
+  margin: 5px;
+  cursor: pointer;
+}
+
+.grid-link a {
+  margin: 5px;
+  font-size: 20px;
+  color: hsl(0, 0%, 0%);
+}
+
+.grid-portfolio {
+  overflow: hidden;
+}
+
+.gutter-sizer {
+  width: 2%;
+}
+
+.grid-sizer,
+.grid-item {
+  width: 32%;
+}
+
+.grid-item {
+  margin-bottom: 20px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.grid-item:hover .grid-info {
+  top: 50%;
+  opacity: 1;
+}
+
+.grid-item-wrapper:before {
+  content: "";
+  display: block;
+  background: hsla(0, 0%, 100%, 0.7);
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.grid-item-wrapper:hover:before {
+  opacity: 1;
+}
+
+.grid-info {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+
+.grid-title {
+  text-align: center;
+}
+
+/*=====  End of PORTFOLIO  ======*/
+
+/*==================================
+=            RESPONSIVE            =
+==================================*/
+
+@media (max-width: 767px) {
+
+  .grid-item {
+    width: 100%;
+  }
+}
+  /*=====  End of RESPONSIVE  ======*/
