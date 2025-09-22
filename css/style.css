@@ -1848,7 +1848,7 @@ h6 {
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  height: calc(100% - 80px);
   background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.6));
   display: flex;
   align-items: center;
@@ -1927,4 +1927,10 @@ h6 {
   .quick-info .info-content {
     padding: 15px;
   }
+}
+
+/* Grid Link Styling */
+.grid-link.d-flex.justify-content-center {
+  padding-top: 20px;
+  margin-bottom: 20px;
 }
