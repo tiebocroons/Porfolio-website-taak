@@ -11,7 +11,26 @@ body {
   overflow: overlay;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  font-family: "Work Sans", sans-serif;
+  margin-top: 0;
+}
 
+h1,
+.h1 {
+  color: hsl(0, 0%, 100%);
+}
 
 a {
   color: hsl(312, 100%, 50%);
@@ -33,6 +52,14 @@ img {
   max-width: 100%;
 }
 
+.bg-fixed {
+  background-size: cover;
+}
+
+.bg-grey {
+  background-color: hsl(210, 14%, 97%);
+}
+
 .fs-40 {
   font-size: 40px;
 }
@@ -50,9 +77,585 @@ section {
 .section-title {
   text-align: center;
 }
+#features .section-title {
+  color: black;
+}
+.section-title {
+  color: hsl(312, 100%, 50%);
+}
+#portfolio .section-title {
+  color: black;
+  padding-top: 30px;
+}
+.shadow {
+  box-shadow: 0 10px 30px 0 hsla(215, 19%, 32%, 0.239),
+    0 2px 4px 0 hsla(215, 19%, 32%, 0.1) !important;
+}
 
+#header-navbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 11;
+  transition: all 0.3s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
 
+.navbar-brand {
+  font-size: 40px;
+  color: hsl(0, 0%, 100%) 000;
+}
 
+.navbar-nav .nav-link {
+  color: hsl(0, 0%, 100%);
+  font-weight: bold;
+  font-size: small;
+  transition: 0.3s ease;
+}
+
+.navbar-nav:hover li a {
+  opacity: 1;
+}
+
+.navbar-nav:hover li a:hover {
+  opacity: 0.5;
+}
+
+.navbar-toggler {
+  font-size: 2rem;
+  color: hsl(0, 0%, 100%);
+}
+
+.jumbotron {
+  color: hsl(0, 0%, 100%) fff;
+  padding-top: 80px;
+  padding-bottom: 80px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 50%;
+  position: relative;
+  border-radius: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+@media (max-width: 767px) and (orientation: landscape) {
+  .jumbotron {
+    min-height: 500px;
+  }
+}
+
+.jumbotron .container {
+  position: relative;
+  z-index: 1;
+}
+
+.jumbotron:before {
+  position: absolute;
+  display: block;
+  content: "";
+  opacity: 0.8;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: hsl(312, 100%, 50%);
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    hsl(240, 50%, 40%),
+    hsl(312, 100%, 50%)
+  );
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    hsl(240, 50%, 40%),
+    hsl(312, 100%, 50%)
+  );
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.jumbotron h1 {
+  line-height: 0.9;
+  font-weight: bold;
+  display: inline-block;
+  border: 15px solid hsl(0, 0%, 100%);
+  padding: 30px;
+  font-size: 6rem;
+  opacity: 0;
+  animation: 1s fadeInFromTop cubic-bezier(0.785, 0.135, 0.15, 0.86) 1s forwards;
+  animation-delay: 0.8s;
+}
+
+.jumbotron-single h1 {
+  font-size: 3rem !important;
+}
+
+.overlay {
+  color: rgb(255, 255, 255);
+}
+
+.overlay:before {
+  position: absolute;
+  display: block;
+  content: "";
+  opacity: 0.9;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: hsl(312, 100%, 50%);
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(
+    to right,
+    hsl(240, 50%, 40%),
+    hsl(312, 100%, 50%)
+  );
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    hsl(240, 50%, 40%),
+    hsl(312, 100%, 50%)
+  );
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.overlay.bg-white {
+  color: hsl(0, 0%, 0%);
+}
+
+.overlay.bg-white:before {
+  background: hsl(0, 0%, 100%);
+  opacity: 0.7;
+}
+
+.text-white {
+  color: hsl(0, 0%, 100%);
+}
+
+/*==============================
+=            BUTTON            =
+==============================*/
+.btn {
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 30px;
+  padding: 9px 25px;
+  text-transform: capitalize;
+  transition: all 0.3s ease 0s;
+}
+
+.btn-primary {
+  display: inline-block;
+  background-color: hsl(312, 100%, 50%);
+  border-color: hsl(312, 100%, 50%);
+  color: hsl(0, 0%, 100%);
+}
+
+.btn-primary:hover {
+  background-color: hsl(240, 50%, 40%);
+  border-color: hsl(240, 50%, 40%);
+  color: hsl(0, 0%, 100%);
+}
+
+.btn-outline-primary {
+  color: hsl(0, 0%, 100%);
+  background-color: transparent;
+  background-image: none;
+  border-color: hsl(0, 0%, 100%) fff;
+}
+
+.btn-outline-primary:hover {
+  background-color: hsl(240, 50%, 40%);
+  border-color: hsl(240, 50%, 40%);
+  color: hsl(0, 0%, 100%);
+}
+
+.btn-shadow {
+  box-shadow: -5px 8px 20px 0px hsla(4, 98%, 45%, 0.15);
+}
+
+.btn-icon {
+  color: hsl(0, 0%, 0%) 000;
+}
+
+.btn-link {
+  color: hsl(312, 100%, 50%);
+}
+
+/*=====  End of BUTTON  ======*/
+/*==========================================
+=            FORM RECTANGLE ETC            =
+==========================================*/
+.rectangle-1 {
+  width: 2000px;
+  height: 400px;
+  background: hsl(272, 76%, 53%);
+  background: -webkit-linear-gradient(
+    to right,
+    hsl(260, 100%, 44%),
+    hsl(272, 76%, 53%)
+  );
+  background: linear-gradient(
+    to right,
+    hsl(260, 100%, 44%),
+    hsl(272, 76%, 53%)
+  );
+  transform-origin: 50% 150% 0;
+  position: absolute;
+  left: 0;
+  z-index: 0;
+  transform: scale(1) rotate(-10deg);
+}
+
+.rectangle-2 {
+  width: 2000px;
+  height: 400px;
+  background: hsl(272, 76%, 53%);
+  background: -webkit-linear-gradient(
+    to right,
+    hsl(260, 100%, 44%),
+    hsl(272, 76%, 53%)
+  );
+  background: linear-gradient(
+    to right,
+    hsl(260, 100%, 44%),
+    hsl(272, 76%, 53%)
+  );
+  transform-origin: 65% 100% 0;
+  position: absolute;
+  right: 0;
+  z-index: 0;
+  transform: scale(1) rotate(50deg);
+}
+
+@keyframes fade-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(-100vw) rotate(-15deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) rotate(-15deg);
+  }
+}
+
+@keyframes grow1 {
+  from {
+    opacity: 0;
+    transform: scale(2) rotate(-10deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(-10deg);
+  }
+}
+
+@keyframes grow2 {
+  from {
+    opacity: 0;
+    transform: scale(2) rotate(50deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(50deg);
+  }
+}
+
+@keyframes fadeInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rectangle-1 {
+  opacity: 0;
+  animation: grow1 ease 1s forwards;
+  box-shadow: 0px 20px 30px 0px hsla(224, 71%, 12%, 0.25) !important;
+}
+
+.rectangle-2 {
+  opacity: 0;
+  animation: grow2 ease 1s forwards;
+  box-shadow: 0px 20px 30px 0px hsla(224, 71%, 12%, 0.251) !important;
+}
+
+.rectangle-transparent-1 {
+  width: 500px;
+  height: 500px;
+  border: 15px solid hsla(0, 0%, 100%, 0.078);
+  position: absolute;
+  left: -5%;
+  bottom: -10%;
+  display: block;
+  animation: floating-slow ease-in-out 12s infinite;
+}
+
+.rectangle-transparent-2 {
+  width: 600px;
+  height: 600px;
+  border: 15px solid hsla(0, 0%, 100%, 0.08);
+  position: absolute;
+  right: -10%;
+  top: 5%;
+  display: block;
+  animation: floating-slow ease-in-out 12s infinite;
+}
+
+.circle-1 {
+  width: 50px;
+  height: 50px;
+  border: 2px solid hsl(0, 0%, 100%);
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  transform-origin: 50% 50%;
+  left: 5%;
+  top: 50%;
+  animation: fadeInFromTop 0.5s linear forwards, floating ease 4s infinite;
+}
+
+.circle-2 {
+  width: 70px;
+  height: 70px;
+  top: 20%;
+  left: 83%;
+  border: 2px solid hsl(0, 0%, 100%);
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  transform-origin: 50% 50%;
+  animation: fadeInFromTop 0.5s linear forwards,
+    floating ease-in-out 4s infinite;
+}
+
+.circle-3 {
+  top: 80%;
+  right: 25%;
+  width: 40px;
+  height: 40px;
+  border: 2px solid hsl(0, 0%, 100%);
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  animation: fadeInFromTop 0.5s linear forwards,
+    floating ease-in-out 4s infinite;
+}
+
+@keyframes floating {
+  0% {
+    transform: translate(0%, 0%) rotate(25deg);
+  }
+
+  25% {
+    transform: translate(5%, 20%) rotate(25deg);
+  }
+
+  50% {
+    transform: translate(10%, 5%) rotate(25deg);
+  }
+
+  75% {
+    transform: translate(0%, 20%) rotate(25deg);
+  }
+
+  100% {
+    transform: translate(0%, 0%) rotate(25deg);
+  }
+}
+
+@keyframes floating-slow {
+  0% {
+    transform: translate(0%, 0%) rotate(25deg);
+  }
+
+  25% {
+    transform: translate(1%, 6%) rotate(25deg);
+  }
+
+  50% {
+    transform: translate(2%, 1%) rotate(25deg);
+  }
+
+  75% {
+    transform: translate(0%, 6%) rotate(25deg);
+  }
+
+  100% {
+    transform: translate(0%, 0%) rotate(25deg);
+  }
+}
+
+.triangle {
+  position: absolute;
+}
+
+.triangle-1 {
+  right: 0;
+  animation: fadeInFromTop 0.5s linear forwards,
+    floating ease-in-out 6s infinite;
+}
+
+.triangle-1 img {
+  height: 50px;
+  width: 50px;
+  transform: rotate(30deg);
+}
+
+.triangle-2 {
+  top: 30%;
+  left: 20%;
+  animation: fadeInFromTop 0.5s linear forwards,
+    floating ease-in-out 8s infinite;
+}
+
+.triangle-2 img {
+  width: 75px;
+  height: 75px;
+  transform: rotate(15deg);
+}
+
+.triangle-3 {
+  top: 80%;
+  left: 15%;
+  animation: fadeInFromTop 0.5s linear forwards,
+    floating ease-in-out 10s infinite;
+}
+
+.triangle-3 img {
+  width: 45px;
+  height: 45px;
+  transform: rotate(40deg);
+}
+
+.triangle-4 {
+  top: 60%;
+  right: 15%;
+  animation: fadeInFromTop 0.5s linear forwards,
+    floating ease-in-out 5s infinite;
+}
+
+.triangle-4 img {
+  width: 45px;
+  height: 45px;
+  transform: rotate(-40deg);
+}
+
+/*=====  End of FORM RECTANGLE ETC  ======*/
+/*================================
+=            FEATURES            =
+================================*/
+.feature-item {
+  transition: all 0.2s ease-in-out 0s !important;
+}
+
+.feature-item:hover {
+  transform: translateY(-13px);
+}
+
+.progress-bar {
+  background-color: hsl(312, 100%, 50%);
+}
+
+/*=====  End of FEATURES  ======*/
+/*=============================
+=            TESTI            =
+=============================*/
+.testi-img img {
+  height: 60px;
+  width: 60px !important;
+  border-radius: 50%;
+  display: inline-block !important;
+}
+
+.testi-details {
+  text-align: left;
+}
+
+.testi-text {
+  font-weight: 300;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.testi-icon {
+  color: hsl(312, 100%, 50%);
+}
+
+.testi-content {
+  margin-top: 80px;
+  padding-bottom: 80px;
+}
+
+.testi-item {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.owl-dot {
+  position: relative;
+  display: inline-block;
+  margin: 0 5px;
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+}
+
+.owl-dot span {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border-radius: 50%;
+  background-color: hsla(312, 100%, 50%, 0.3);
+  text-indent: -999em;
+  cursor: pointer;
+  position: absolute;
+  box-shadow: 0 0 0 2px hsla(0, 0%, 100%, 0);
+  -webkit-transition: box-shadow 0.3s ease, background-color 0.3s ease;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.owl-dot.active > span {
+  background-color: transparent;
+  box-shadow: 0 0 0 2px hsl(312, 100%, 50%);
+}
+
+.owl-dots {
+  position: absolute;
+  bottom: 0;
+  display: block;
+  text-align: center;
+  left: 0;
+  right: 0;
+  clear: both;
+  padding: 0;
+  list-style: none;
+  cursor: default;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.heading-section {
+  position: relative;
+}
+
+/*=====  End of TESTI  ======*/
 /*=================================
 =            PORTFOLIO            =
 =================================*/
@@ -121,21 +724,312 @@ section {
   transition: all 0.3s ease;
 }
 
+.lightcase-icon-close:before {
+  content: "\e870";
+  font-family: "Linearicons-Free";
+}
 
 .grid-title {
   text-align: center;
 }
 
 /*=====  End of PORTFOLIO  ======*/
+/*===============================
+=            SideNav            =
+===============================*/
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1002;
+  top: 0;
+  left: 0;
+  background-color: hsl(0, 0%, 0%);
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+  color: hsl(0, 0%, 100%);
+}
+
+.sidenav-content {
+  padding: 8px 32px;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: transform 0.5s cubic-bezier(0.785, 0.135, 0.15, 0.86),
+    opacity 0.5s cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+
+.in .sidenav-content {
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.5s cubic-bezier(0.785, 0.135, 0.15, 0.86) 0.5s,
+    opacity 0.5s 0.5s;
+}
+
+.sidenav a {
+  text-decoration: none;
+  font-size: 25px;
+  color: hsl(0, 0%, 51%);
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: hsl(0, 0%, 95%);
+}
+
+.sidenav #side-nav-close,
+.sidenav #side-search-close {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-width: 500px) {
+  .sidenav {
+    padding-top: 15px;
+  }
+
+  .sidenav a {
+    font-size: 18px;
+  }
+}
+
+#side-search .form-control {
+  background-color: transparent;
+}
+
+#side-search .input-group-text {
+  background: transparent;
+  color: hsl(0, 0%, 100%);
+}
+
+/*==============================
+=            SKILLS            =
+==============================*/
+.skill-item {
+  width: 100%;
+  position: relative;
+  padding: 10px 0;
+}
+
+.skill-item p {
+  font-size: 16px;
+  text-transform: uppercase;
+  display: inline-block;
+  font-weight: 500;
+}
+
+.skill-item .text-muted {
+  color: hsl(0, 0%, 58%);
+}
+
+.progress-bar,
+.progress {
+  transition: all 4s;
+}
+
+/*=====  End of SKILLS  ======*/
+/*====================================
+=            FORM CONTROL            =
+====================================*/
+.form-control:focus {
+  border-color: hsl(312, 100%, 50%);
+  box-shadow: 0 0 0 0.2rem hsla(4, 98%, 67%, 0.25);
+}
+
+.form-control::-webkit-input-placeholder {
+  opacity: 0.5;
+}
+
+.form-control::-moz-placeholder {
+  opacity: 0.5;
+}
+
+.form-control:-ms-input-placeholder {
+  opacity: 0.5;
+}
+
+.form-control::-ms-input-placeholder {
+  opacity: 0.5;
+}
+
+.form-control::placeholder {
+  opacity: 0.5;
+}
+
+/*=====  End of FORM CONTROL  ======*/
+/*==============================
+=            CLIENT            =
+==============================*/
+.client-slider .owl-nav {
+  display: none;
+}
+
+.client-slider .client-item {
+  padding: 0 40px;
+}
+
+/*=====  End of CLIENT  ======*/
+/*=============================
+=           Scrollbar         =
+==============================*/
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(45deg, #00aeff, #a68eff);
+  border-radius: 10px;
+  -webkit-box-shadow: hsla(0, 0%, 0%, 0.122) 0 3px 13px 1px;
+  box-shadow: hsla(0, 0%, 0%, 0.122) 0 3px 13px 1px;
+}
+
+/*=====  End of SCROLLBAR  ======*/
+/*=====  Back to top BTN  ======*/
+.back-to-top {
+  position: fixed;
+  display: none;
+  background: linear-gradient(45deg, #00aeff, #a68eff);
+  color: #fff;
+  width: 44px;
+  height: 44px;
+  text-align: center;
+  line-height: 1;
+  font-size: 16px;
+  border-radius: 50%;
+  right: 15px;
+  bottom: 15px;
+  transition: background 0.5s;
+  z-index: 11;
+}
+
+.back-to-top i {
+  padding-top: 12px;
+  color: #fff;
+}
 
 /*==================================
 =            RESPONSIVE            =
 ==================================*/
+@media (max-width: 1280px) {
+  .not-on-top #header-navbar {
+    top: 0;
+    height: auto;
+    width: 100%;
+    background: hsl(312, 100%, 50%);
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(
+      to right,
+      hsl(240, 50%, 40%),
+      hsl(312, 100%, 50%)
+    );
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+      to right,
+      hsl(240, hsl(312, 100%, 50%)),
+      hsl(312, 100%, 50%)
+    );
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    z-index: 11;
+  }
+}
+
+#header-navbar {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+}
+
+.navbar-transparent .navbar-collapse {
+  background: hsla(312, 100%, 50%, 0);
+}
+
+@media (max-width: 1920px) {
+  .not-on-top #header-navbar {
+    top: 0;
+    height: auto;
+    width: 0;
+    background: hsl(312, 100%, 50%);
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, hsl(240, #ff00cc), #ff00cc);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+      to right,
+      hsl(240, 50%, 40%),
+      hsl(312, 100%, 50%)
+    );
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    z-index: 11;
+  }
+}
+
+#header-navbar {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+}
+
+.navbar-transparent .navbar-collapse {
+  background: #ff00cc00;
+}
+
+@media (max-width: 4096px) {
+  .not-on-top #header-navbar {
+    top: 0;
+    height: auto;
+    width: 100%;
+    background: hsl(312, 100%, 50%);
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(
+      to right,
+      hsl(240, 50%, 40%),
+      hsl(312, 100%, 50%)
+    );
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(
+      to right,
+      hsl(240, 50%, 40%),
+      hsl(312, 100%, 50%)
+    );
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    z-index: 11;
+  }
+}
+
+#header-navbar {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+}
+
+.navbar-transparent .navbar-collapse {
+  background: hsla(312, 100%, 50%, 0);
+}
 
 @media (max-width: 767px) {
+  .jumbotron h1 {
+    font-size: 6rem;
+  }
 
   .grid-item {
     width: 100%;
   }
+
+  .progress {
+    height: 30px;
+    font-size: 16px;
+  }
 }
-  /*=====  End of RESPONSIVE  ======*/
+
+@media (max-width: 768px) {
+  .back-to-top {
+    bottom: 15px;
+  }
+}
+/*=====  End of RESPONSIVE  ======*/

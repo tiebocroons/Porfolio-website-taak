@@ -1,434 +1,994 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+<html lang="be-nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Portofolio | Tiebo Croons</title>
-    <meta name="description" content="Taak">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" type="image" href="img/testi-1.png">
+    <meta name="description" content="Taak" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y6MVVR1W8Q"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Y6MVVR1W8Q');
+</script>
+    <link rel="icon" type="image" href="img/testi-1.png" />
 
     <!-- External CSS -->
-    <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="vendor/select2/select2.min.css">
-    <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css">
-    <link rel="stylesheet" href="vendor/lightcase/lightcase.css">
+    <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="vendor/select2/select2.min.css" />
+    <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" />
+    <link rel="stylesheet" href="vendor/lightcase/lightcase.css" />
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700"
+      rel="stylesheet"
+    />
 
     <!-- CSS -->
-    <link rel="stylesheet" href="css/style.min.css">
-    <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    />
+  </head>
 
-    <!-- Modernizr JS for IE8 support of HTML5 elements and media queries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
+  <body data-spy="scroll" data-target="#navbar" class="static-layout">
+    <nav id="header-navbar" class="navbar navbar-expand-lg py-4">
+      <div class="container">
+        <a
+          class="navbar-brand d-flex align-items-center text-white"
+          href="#home"
+        >
+          <h3 class="font-weight-bolder mb-0">TIEBO CROONS</h3>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbar-nav-header"
+          aria-controls="navbar-nav-header"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="lnr lnr-menu"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar-nav-header">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#About">Over mij</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact">Contacteer mij</a>
+            </li>
+            <!--
+                        <li class="nav-item">
+                        <a id="side-search-open" class="nav-link" href="#">
+                            <span class="lnr lnr-magnifier"></span>
+                        </a>
+                    </li>
+                    -->
+          </ul>
+        </div>
+      </div>
+    </nav>
 
-</head>
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="bg-white">
-        <div class="container">
-            <!-- Portfolio Holder -->
-            <div class="col-md-12 portfolio-holder mt-3">
-                <!-- Btn Filter -->
-                <div class="filter-button-group btn-filter d-flex justify-content-center">
-                    <a tabindex="0" class="is-checked" data-filter="*">Alles</a>
-                    <a tabindex="0" data-filter=".minimalism">Photoshop</a>
-                    <a tabindex="0" data-filter=".creative">Illustrator</a>
-                    <a tabindex="0" data-filter=".vintage">Vrije tijd</a>
-                </div>
-                <!-- End of Btn Filter -->
-                <!-- Portfolio Content -->
-                <div class="grid-portfolio">
-                    <div class="grid-sizer"></div>
-                    <div class="gutter-sizer"></div>
-                    <!-- Portfolio Item -->
-                    <div class="grid-item minimalism" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/photoshop/Woordvandeweek.png" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/photoshop/Woordvandeweek.png"
-                                        title="Photo-1">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="#" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Word of the week</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item minimalism" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/photoshop/Leo.png" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/photoshop/Leo.png"
-                                        title="Photo-1">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="#" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Horoscoop</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item minimalism" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/photoshop/Taurus.png" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/photoshop/tau" title="Photo-1">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="#" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Horoscoop</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item minimalism" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/photoshop/colors.png" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/photoshop/colors.png"
-                                        title="Photo-1">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="#" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Colors</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item minimalism" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/photoshop/lightning.png" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/photoshop/lightning.png"
-                                        title="Photo-1">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="#" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>lightning</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item minimalism" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/photoshop/Photographic.png" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/photoshop/Photographic.png"
-                                        title="Photo-1">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="#" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Photographic</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item minimalism" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/photoshop/Libra.png" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/photoshop/Libra.png"
-                                        title="Photo-1">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="#" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Logo</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item minimalism" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/photoshop/Banner-twitter.png" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/photoshop/Banner-twitter.png"
-                                        title="Photo-1">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="#" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Banner</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item creative" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/illustrator/Logo1.png" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/illustrator/Logo1.png"
-                                        title="Ship">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="#" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Logo</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item creative grid-item-height" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/illustrator/robot1.png" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/illustrator/robot1.png"
-                                        title="Tracy Portrait">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="#" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Robot</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item creative grid-item-height" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/illustrator/robot2.png" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/illustrator/robot2.png"
-                                        title="Tracy Portrait">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="#" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Robot</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item creative grid-item-height" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/illustrator/Logo2.png" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/illustrator/Logo2.png"
-                                        title="Tracy Portrait">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="#" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Logo</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item vintage" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/free/Foto1.jpg" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/free/Foto1.jpg" title="Guitar">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="#" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Vrije tijd</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item vintage" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/free/Foto2.jpg" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/free/Foto2.jpg" title="Bookself">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="https://unsplash.com/" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Vrije tijd</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item vintage" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/free/Foto3.jpg" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/free/Foto3.jpg" title="Bookself">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="https://unsplash.com/" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Vrije tijd</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                    <!-- Portfolio Item -->
-                    <div class="grid-item vintage" data-aos="fade-up">
-                        <div class="grid-item-wrapper">
-                            <img src="img/free/Foto4.jpg" alt="portfolio-img" class="portfolio-item">
-                            <div class="grid-info">
-                                <div class="grid-link d-flex justify-content-center">
-                                    <a class="img-pop" data-rel="lightcase" href="img/free/Foto4.jpg" title="Bookself">
-                                        <span class="lnr lnr-move"></span>
-                                    </a>
-                                    <a class="ext-link" href="https://unsplash.com/" target="_blank">
-                                        <span class="lnr lnr-link"></span>
-                                    </a>
-                                </div>
-                                <div class="grid-title">
-                                    <h4>Vrije tijd</h4>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- End of Portfolio Item -->
-                </div>
-                <!-- End of Portfolio Content -->
+    <div id="side-nav" class="sidenav">
+      <a href="javascript:void(0)" id="side-nav-close">&times;</a>
+    </div>
+    <div id="side-search" class="sidenav">
+      <a href="javascript:void(0)" id="side-search-close">&times;</a>
+      <div class="sidenav-content">
+        <form action="">
+          <div class="input-group md-form form-sm form-2 pl-0">
+            <input
+              class="form-control my-0 py-1 red-border"
+              type="text"
+              placeholder="Search"
+              aria-label="Search"
+            />
+            <div class="input-group-append">
+              <button class="input-group-text red lighten-3" id="basic-text1">
+                <span class="lnr lnr-magnifier"></span>
+              </button>
             </div>
-            <!-- End of Portfolio Holder -->
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="home" class="jumbotron d-flex align-items-center">
+      <div class="container text-center">
+        <h1 class="display-1 mb-4">TIEBO CROONS</h1>
+      </div>
+      <div class="rectangle-1"></div>
+      <div class="rectangle-2"></div>
+      <div class="rectangle-transparent-1"></div>
+      <div class="rectangle-transparent-2"></div>
+      <div class="circle-1"></div>
+      <div class="circle-2"></div>
+      <div class="circle-3"></div>
+      <div class="triangle triangle-1">
+        <img src="img/obj_triangle.png" alt="" />
+      </div>
+      <div class="triangle triangle-2">
+        <img src="img/obj_triangle.png" alt="" />
+      </div>
+      <div class="triangle triangle-3">
+        <img src="img/obj_triangle.png" alt="" />
+      </div>
+      <div class="triangle triangle-4">
+        <img src="img/obj_triangle.png" alt="" />
+      </div>
+    </div>
+    <!-- Features Section-->
+    <section id="features" class="bg-white">
+      <div class="container">
+        <div class="section-content">
+          <!-- Section Title -->
+          <div class="title-wrap mb-5" data-aos="fade-up">
+            <h2 class="section-title">
+              Vaardigheden van<a
+                href="https://www.instagram.com/tiebo.crs/"
+                target="_blank"
+              >
+                Tiebo</a
+              >
+            </h2>
+          </div>
+          <!-- End of Section Title -->
+          <div class="row">
+            <!-- Features Holder-->
+            <div class="col-md-10 offset-md-1 features-holder">
+              <div class="row">
+                <!-- Features Item -->
+                <div class="col-md-4 col-sm-12 text-center mt-4">
+                  <div
+                    class="shadow rounded feature-item p-4 mb-4"
+                    data-aos="fade-up"
+                  >
+                    <div class="my-4">
+                      <i class="lnr lnr-magic-wand fs-40"></i>
+                    </div>
+                    <h4>Creativiteit</h4>
+                    <p>
+                      Ik heb een creatieve geest en ben constant op zoek naar
+                      nieuwe manieren om ideeën visueel tot uiting te brengen.
+                      Ik ben in staat om originele concepten te bedenken en deze
+                      om te zetten in aantrekkelijke ontwerpen.
+                    </p>
+                  </div>
+                  <div
+                    class="shadow rounded feature-item p-4 mb-4"
+                    data-aos="fade-up"
+                  >
+                    <div class="my-4">
+                      <i class="lnr lnr-code fs-40"></i>
+                    </div>
+                    <h4>Technisch</h4>
+                    <p>
+                      Ik ben bedreven in het gebruik van grafische
+                      ontwerpsoftware en heb ervaring met het werken aan
+                      verschillende projecten, zowel digitaal als print. Ik ben
+                      bekend met de basisprincipes van typografie, kleurgebruik,
+                      compositie en beeldbewerking.
+                    </p>
+                  </div>
+                </div>
+                <!-- End of Feature Item -->
+                <!-- Features Item -->
+                <div class="col-md-4 col-sm-12 text-center">
+                  <div
+                    class="shadow rounded feature-item p-4 mb-4"
+                    data-aos="fade-up"
+                  >
+                    <div class="my-4">
+                      <i class="lnr lnr-warning fs-40"></i>
+                    </div>
+                    <h4>Probleemoplossend</h4>
+                    <p>
+                      Ik beschik over een sterk probleemoplossend vermogen en
+                      ben in staat om creatieve oplossingen te vinden voor
+                      complexe ontwerpuitdagingen. Ik kan snel schakelen,
+                      prioriteiten stellen en effectief werken onder druk.
+                    </p>
+                  </div>
+                  <div
+                    class="shadow rounded feature-item p-4 mb-4"
+                    data-aos="fade-up"
+                  >
+                    <div class="my-4">
+                      <i class="lnr lnr-clock fs-40"></i>
+                    </div>
+                    <h4>Tijdsbeheer</h4>
+                    <p>
+                      Ik begrijp het belang van efficiënt werken en het
+                      respecteren van deadlines. Ik kan goed plannen en
+                      organiseren om ervoor te zorgen dat projecten tijdig
+                      worden voltooid.
+                    </p>
+                  </div>
+                </div>
+                <!-- End of Feature Item -->
+                <!-- Features Item -->
+                <div class="col-md-4 col-sm-12 text-center mt-4">
+                  <div
+                    class="shadow rounded feature-item p-4 mb-4"
+                    data-aos="fade-up"
+                  >
+                    <div class="my-4">
+                      <i class="lnr lnr-spell-check fs-40"></i>
+                    </div>
+                    <h4>Oog voor detail</h4>
+                    <p>
+                      Ik hecht veel waarde aan de details in mijn ontwerpen en
+                      streef naar hoge kwaliteit en nauwkeurigheid in mijn werk.
+                      Ik ben in staat om kritisch naar mijn eigen werk te kijken
+                      en waar nodig aanpassingen te maken.
+                    </p>
+                  </div>
+                  <div
+                    class="shadow rounded feature-item p-4 mb-4"
+                    data-aos="fade-up"
+                  >
+                    <div class="my-4">
+                      <i class="lnr lnr-volume-high fs-40"></i>
+                    </div>
+                    <h4>Communicatieve vaardigheden</h4>
+                    <p>
+                      Ik ben in staat om efficiënt te communiceren met klanten,
+                      collega's en andere belanghebbenden. Ik kan luisteren naar
+                      de behoeften en wensen van klanten en deze vertalen naar
+                      creatieve ontwerpoplossingen.
+                    </p>
+                  </div>
+                </div>
+                <!-- End of Feature Item -->
+              </div>
+            </div>
+            <!-- End of Features Holder-->
+          </div>
         </div>
-        </div>
-        </div>
+      </div>
     </section>
-    <footer class="mastfoot my-3">
-        <a href="#home" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-        <div class="inner container">
-            <div class="row">
-                <div class="col-lg-4 col-md-12 d-flex align-items-center">
-
-                </div>
-                <div class="col-lg-4 col-md-12 d-flex align-items-center">
-                    <p class="mx-auto text-center mb-0">&copy; 2023 Tiebo. Design by <a
-                            href="https://www.instagram.com/tiebo.crs/" target="_blank">Tiebo</a>.</p>
-                </div>
-
-            </div>
+    <!-- End of Features Section-->
+    <div
+      id="About"
+      class="jumbotron jumbotron-single d-flex align-items-center"
+      style="background-image: url(img/bg.png)"
+    >
+      <div class="container text-center">
+        <h1 class="display-2 mb-4">Over mij</h1>
+      </div>
+    </div>
+    <section id="who-we-are" class="bg-white">
+      <div class="container">
+        <div class="section-content">
+          <div class="title-wrap" data-aos="fade-up">
+            <h2 class="section-title"><b>Over mij</b></h2>
+            <p class="section-sub-title">
+              Met een passie voor grafische media en een sterke drang om
+              creatieve visies tot leven te brengen, stel ik me graag voor als
+              een beginnende professional in de grafische mediawereld. Mijn doel
+              is om mijn vaardigheden en kennis verder te ontwikkelen, terwijl
+              ik mijzelf uitdaag om impactvolle ontwerpen te creëren en de
+              nieuwste trends binnen deze sector te volgen.
+            </p>
+            <h2 class="section-title"><b>Studies</b></h2>
+            <p class="section-sub-title">
+              Ik ben bijna afgestudeerd aan Technische Scholen Mechelen in de
+              richting Multimedia, waar ik een basis heb gelegd in de principes
+              van grafische media. Tijdens mijn opleiding heb ik me
+              gespecialiseerd in verschillende aspecten van dit vakgebied, zoals
+              grafisch ontwerp, typografie, beeldbewerking en lay-out. Ik heb
+              geleerd hoe ik verschillende ontwerpsoftware moet gebruiken en ben
+              bekend met programma's zoals Adobe Creative (inclusief Photoshop,
+              Illustrator en InDesign).
+            </p>
+          </div>
         </div>
-    </footer> <!-- External JS -->
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
-    <script src="vendor/bootstrap/popper.min.js"></script>
-    <script src="vendor/bootstrap/bootstrap.min.js"></script>
-    <script src="vendor/select2/select2.min.js "></script>
-    <script src="vendor/owlcarousel/owl.carousel.min.js"></script>
-    <script src="vendor/stellar/jquery.stellar.js" type="text/javascript" charset="utf-8"></script>
-    <script src="vendor/isotope/isotope.min.js"></script>
-    <script src="vendor/lightcase/lightcase.js"></script>
-    <script src="vendor/waypoints/waypoint.min.js"></script>
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+      </div>
+      <section
+        id="section-featurettes"
+        class="featurettes overlay bg-fixed"
+        style="background-image: url(img/bg.png)"
+      >
+        <div class="container">
+          <div class="section-content">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="row align-items-center text-white">
+                  <div
+                    class="col-md-4 offset-md-2 col-sm-6"
+                    data-aos="fade-right"
+                  >
+                    <h4 class="mb-4">Projecten</h4>
+                    <p>Hier zijn een paar voorbeelden van mijn projecten.</p>
+                    <button
+                      onclick="window.location.href='https://github.com/tiebocroons';"
+                      class="btn btn-outline-primary"
+                    >
+                      PROJECTEN
+                    </button>
+                  </div>
+                  <!--/ .col-md-4.col-md-offset-2.col-sm-6 -->
 
-    <!-- Main JS -->
-    <script src="js/app.min.js "></script>
-</body>
+                  <div
+                    class="col-md-4 offset-md-right-2 col-sm-6"
+                    data-aos="flip-right"
+                  >
+                    <img class="my-5" src="img/app-profile-mockup.png" alt="" />
+                  </div>
+                  <!--/ .col-md-4.col-md-offset-right-2.col-sm-6 -->
+                </div>
+                <!--/ .featurettes-item -->
+              </div>
+              <!--/ .col-md-12 -->
+            </div>
+            <!--/ .row -->
+          </div>
+        </div>
+        <!--/ .container -->
+      </section>
+      <!-- Portfolio Section -->
+      <section id="portfolio" class="bg-white">
+        <div class="title-wrap" data-aos="fade-up">
+          <h2 class="section-title"><b>Portfolio</b></h2>
+        </div>
+        <div class="container">
+          <!-- Portfolio Holder -->
+          <div class="col-md-12 portfolio-holder mt-3">
+            <!-- Btn Filter -->
+            <div
+              class="filter-button-group btn-filter d-flex justify-content-center"
+            >
+              <a tabindex="0" class="is-checked" data-filter="*">Alles</a>
+              <a tabindex="0" data-filter=".minimalism">Photoshop</a>
+              <a tabindex="0" data-filter=".creative">Illustrator</a>
+              <a tabindex="0" data-filter=".vintage">Vrije tijd</a>
+            </div>
+            <!-- End of Btn Filter -->
+            <!-- Portfolio Content -->
 
+            <div class="grid-portfolio">
+              <div class="grid-sizer"></div>
+              <div class="gutter-sizer"></div>
+              <!-- Portfolio Item -->
+              <div class="grid-item minimalism" data-aos="fade-up">
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/photoshop/Woordvandeweek.png"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/photoshop/Woordvandeweek.png"
+                        title="Photo-1"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a class="ext-link" href="#" target="_blank">
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Word of the week</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div class="grid-item minimalism" data-aos="fade-up">
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/photoshop/Leo.png"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/photoshop/Leo.png"
+                        title="Photo-1"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a class="ext-link" href="#" target="_blank">
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Horoscoop</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div class="grid-item minimalism" data-aos="fade-up">
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/photoshop/Taurus.png"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/photoshop/tau"
+                        title="Photo-1"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a class="ext-link" href="#" target="_blank">
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Horoscoop</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div class="grid-item minimalism" data-aos="fade-up">
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/photoshop/colors.png"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/photoshop/colors.png"
+                        title="Photo-1"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a class="ext-link" href="#" target="_blank">
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Colors</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div class="grid-item minimalism" data-aos="fade-up">
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/photoshop/lightning.png"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/photoshop/lightning.png"
+                        title="Photo-1"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a class="ext-link" href="#" target="_blank">
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>lightning</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div class="grid-item minimalism" data-aos="fade-up">
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/photoshop/Photographic.png"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/photoshop/Photographic.png"
+                        title="Photo-1"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a class="ext-link" href="#" target="_blank">
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Photographic</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div class="grid-item minimalism" data-aos="fade-up">
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/photoshop/Libra.png"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/photoshop/Libra.png"
+                        title="Photo-1"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a class="ext-link" href="#" target="_blank">
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Logo</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div class="grid-item minimalism" data-aos="fade-up">
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/photoshop/Banner-twitter.png"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/photoshop/Banner-twitter.png"
+                        title="Photo-1"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a class="ext-link" href="#" target="_blank">
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Banner</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div class="grid-item creative" data-aos="fade-up">
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/illustrator/Logo1.png"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/illustrator/Logo1.png"
+                        title="Ship"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a class="ext-link" href="#" target="_blank">
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Logo</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div
+                class="grid-item creative grid-item-height"
+                data-aos="fade-up"
+              >
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/illustrator/robot1.png"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/illustrator/robot1.png"
+                        title="Tracy Portrait"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a class="ext-link" href="#" target="_blank">
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Robot</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div
+                class="grid-item creative grid-item-height"
+                data-aos="fade-up"
+              >
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/illustrator/robot2.png"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/illustrator/robot2.png"
+                        title="Tracy Portrait"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a class="ext-link" href="#" target="_blank">
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Robot</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div
+                class="grid-item creative grid-item-height"
+                data-aos="fade-up"
+              >
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/illustrator/Logo2.png"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/illustrator/Logo2.png"
+                        title="Tracy Portrait"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a class="ext-link" href="#" target="_blank">
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Logo</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div class="grid-item vintage" data-aos="fade-up">
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/free/Foto1.jpg"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/free/Foto1.jpg"
+                        title="Guitar"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a class="ext-link" href="#" target="_blank">
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Vrije tijd</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div class="grid-item vintage" data-aos="fade-up">
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/free/Foto2.jpg"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/free/Foto2.jpg"
+                        title="Bookself"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a
+                        class="ext-link"
+                        href="https://unsplash.com/"
+                        target="_blank"
+                      >
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Vrije tijd</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div class="grid-item vintage" data-aos="fade-up">
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/free/Foto3.jpg"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/free/Foto3.jpg"
+                        title="Bookself"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a
+                        class="ext-link"
+                        href="https://unsplash.com/"
+                        target="_blank"
+                      >
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Vrije tijd</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+              <!-- Portfolio Item -->
+              <div class="grid-item vintage" data-aos="fade-up">
+                <div class="grid-item-wrapper">
+                  <img
+                    src="img/free/Foto4.jpg"
+                    alt="portfolio-img"
+                    class="portfolio-item"
+                  />
+                  <div class="grid-info">
+                    <div class="grid-link d-flex justify-content-center">
+                      <a
+                        class="img-pop"
+                        data-rel="lightcase"
+                        href="img/free/Foto4.jpg"
+                        title="Bookself"
+                      >
+                        <span class="lnr lnr-move"></span>
+                      </a>
+                      <a
+                        class="ext-link"
+                        href="https://unsplash.com/"
+                        target="_blank"
+                      >
+                        <span class="lnr lnr-link"></span>
+                      </a>
+                    </div>
+                    <div class="grid-title">
+                      <h4>Vrije tijd</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- End of Portfolio Item -->
+            </div>
+            <!-- End of Portfolio Content -->
+          </div>
+          <!-- End of Portfolio Holder -->
+        </div>
+      </section>
+      <!-- End of Portfolio Section -->
+      <div
+        id="contact"
+        class="jumbotron jumbotron-single d-flex align-items-center"
+        style="background-image: url(img/bg.png)"
+      >
+        <div class="container text-center">
+          <h1 class="display-2 mb-4">Contacteer mij</h1>
+        </div>
+      </div>
+      <!-- Contact Form Section -->
+      <!-- 
+         <section id="contact-form" class="bg-white">
+        <div class="container">
+            <div class="section-content">
+    -->
+
+      <!-- Section Title -->
+      <!--
+                    <div class="title-wrap" data-aos="fade-up">
+                    <h2 class="section-title">Contacteer me</h2>
+                    <p class="section-sub-title"> <span class="lnr lnr-warning fs-40"></span> Door technische problemen werkt deze formulier niet <span class="lnr lnr-warning fs-40"></span> </p>
+                </div>
+                -->
+      <!-- End of Section Title -->
+      <div class="row">
+        <!-- Contact Form Holder -->
+        <!--
+                            <div class="col-md-8 offset-md-2 contact-form-holder mt-4" data-aos="fade-up">
+                        <form method="post" name="contact-us" action="">
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <input type="number" class="form-control" id="phoneNumber" name="phoneNumber"
+                                        placeholder="Phone">
+                                </div>
+                                <div class="col-md-12 form-group">
+                                    <textarea class="form-control" id="message" name="message" rows="6"
+                                        placeholder="Your Message ..."></textarea>
+                                </div>
+                                <div class="col-md-12 text-center">
+                                    <button class="btn btn-primary btn-shadow btn-lg" type="submit" name="submit">Send
+                                        Message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                        -->
+        <!-- End of Contact Form Holder -->
+
+        <!--
+                                </div>
+            </div>
+            -->
+        <div class="section-content col-12 mt-4 pt-0">
+          <div class="title-wrap" data-aos="fade-up">
+            <h2 class="section-title">Waar kan je me vinden?</h2>
+          </div>
+          <div class="row text-center mt-4">
+            <div class="col-md-3" data-aos="fade-up">
+              <span class="lnr lnr-location fs-40 py-4 d-block"></span>
+              <h5>LOCATIE</h5>
+              <p>Mechelen</p>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
+              <span class="lnr lnr-clock fs-40 py-4 d-block"></span>
+              <h5>WERK TIJD</h5>
+              <p>Maandag - Vrijdag</p>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
+              <span class="lnr lnr-phone fs-40 py-4 d-block"></span>
+              <h5>BEL ME</h5>
+              <p>+32 473 57 00 08</p>
+            </div>
+            <div class="col-md-3" data-aos="fade-up" data-aos-delay="600">
+              <span class="lnr lnr-phone fs-40 py-4 d-block"></span>
+              <h5>EMAIL</h5>
+              <p>tiebo.croons@gmail.com</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End of Contact Form Section -->
+
+    <footer class="mastfoot my-3">
+      <a href="#home" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+      <div class="inner container">
+        <div class="row">
+          <div class="col-lg-4 col-md-12 d-flex align-items-center"></div>
+          <div class="col-lg-4 col-md-12 d-flex align-items-center">
+            <p class="mx-auto text-center mb-0">
+              &copy; 2022-23 Design by
+              <a href="https://www.instagram.com/tiebo.crs/" target="_blank"
+                >Tiebo Croons</a
+              >
+              <br />
+              Support e-mail: support.tiebocroons.be
+            </p>
+          </div>
+
+          <div class="col-lg-4 col-md-12">
+            <nav class="nav nav-mastfoot justify-content-center">
+              <a class="nav-link" href="https://www.instagram.com/tiebo.crs/">
+                <i class="fab fa-instagram"></i>
+              </a>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+  <!-- External JS -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+    integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <script src="vendor/bootstrap/popper.min.js"></script>
+  <script src="vendor/bootstrap/bootstrap.min.js"></script>
+  <script src="vendor/select2/select2.min.js "></script>
+  <script src="vendor/owlcarousel/owl.carousel.min.js"></script>
+  <script src="vendor/isotope/isotope.min.js"></script>
+  <script src="vendor/lightcase/lightcase.js"></script>
+  <script src="vendor/waypoints/waypoint.min.js"></script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script src="stellar/jquery.stellar.js"></script>
+
+  <!-- Main JS -->
+  <script src="js/app.min.js "></script>
 </html>
