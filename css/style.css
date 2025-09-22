@@ -743,6 +743,267 @@ h6 {
   flex-grow: 1;
 }
 
+/* Portfolio Category Cards
+--------------------------------*/
+
+.project-category-card {
+  min-height: 400px;
+}
+
+.category-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+  height: 400px;
+}
+
+.category-overlay {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(27, 177, 220, 0.9), rgba(312, 100%, 50%, 0.8));
+}
+
+.category-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  opacity: 0.3;
+}
+
+.category-info {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  padding: 30px;
+}
+
+.category-icon {
+  margin-bottom: 20px;
+}
+
+.category-icon i {
+  color: white;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.category-info h3 {
+  color: white;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.category-info p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.project-count {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 20px;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.category-wrapper:hover .category-overlay {
+  background: linear-gradient(135deg, rgba(27, 177, 220, 0.95), rgba(312, 100%, 50%, 0.85));
+}
+
+.category-wrapper:hover .category-bg {
+  opacity: 0.2;
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+/* Design Category Specific */
+.grid-item.design .category-overlay {
+  background: linear-gradient(135deg, hsl(312, 100%, 50%) 0%, hsl(312, 80%, 60%) 100%);
+}
+
+/* Development Category Specific */
+.grid-item.development .category-overlay {
+  background: linear-gradient(135deg, #1bb1dc 0%, #0a98c0 100%);
+}
+
+/* Projects Slideshow Section
+--------------------------------*/
+
+.projects-slideshow {
+  padding: 80px 0;
+  position: relative;
+}
+
+.project-slideshow-container {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.project-slides-wrapper {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.project-slide {
+  min-width: 100%;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.5s ease-in-out;
+}
+
+.project-slide.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.project-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  margin: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.project-image {
+  height: 300px;
+  overflow: hidden;
+  position: relative;
+}
+
+.project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.project-card:hover .project-image img {
+  transform: scale(1.05);
+}
+
+.project-content {
+  padding: 30px;
+  color: #333;
+}
+
+.project-tags {
+  margin-bottom: 15px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-right: 10px;
+}
+
+.tag.design {
+  background: hsl(312, 100%, 50%);
+  color: white;
+}
+
+.tag.development {
+  background: #1bb1dc;
+  color: white;
+}
+
+.project-content h3 {
+  color: hsl(312, 100%, 50%);
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.project-content p {
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* Slideshow Navigation */
+.slideshow-nav {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.nav-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.4);
+  margin: 0 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-dot.active,
+.nav-dot:hover {
+  background: hsl(312, 100%, 50%);
+}
+
+.slide-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.slide-arrow:hover {
+  background: hsl(312, 100%, 50%);
+  border-color: hsl(312, 100%, 50%);
+}
+
+.slide-arrow-prev {
+  left: -25px;
+}
+
+.slide-arrow-next {
+  right: -25px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .project-card {
+    margin: 10px;
+  }
+  
+  .project-content {
+    padding: 20px;
+  }
+  
+  .slide-arrow {
+    display: none;
+  }
+}
+
 /* About Section Cards
 --------------------------------*/
 
