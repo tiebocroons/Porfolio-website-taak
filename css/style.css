@@ -732,6 +732,22 @@ h6 {
   font-size: 24px;
 }
 
+#features .feature-item {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#features .features-holder .col-md-4 {
+  display: flex;
+  flex-direction: column;
+}
+
+#features .feature-item p {
+  flex-grow: 1;
+}
+
 /* Portfolio Section
 --------------------------------*/
 
