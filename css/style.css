@@ -1787,6 +1787,27 @@ h6 {
 .grid-item-wrapper {
   position: relative;
   overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.grid-item-wrapper:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.grid-item-wrapper .portfolio-item {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  display: block;
+}
+
+.grid-item {
+  padding: 10px;
 }
 
 .portfolio-badges {
