@@ -30,257 +30,71 @@
 </script>
     <link rel="icon" type="image" href="img/testi-1.png" />
 
-    <!-- Minimal DNS Prefetch for Essential External Resources Only -->
+    <!-- DNS Prefetch for External Domains -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <link rel="dns-prefetch" href="//www.googletagmanager.com">
+    <link rel="dns-prefetch" href="//cdn.linearicons.com">
+    <link rel="dns-prefetch" href="//use.fontawesome.com">
 
-    <!-- Critical CSS (Direct, Non-Blocking) -->
-    <link rel="stylesheet" href="css/style.min.css">
-    <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="css/style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="vendor/bootstrap/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     
-    <!-- Resource Hints for Faster Loading -->
-    <link rel="prefetch" href="js/app.min.js">
-    <link rel="prefetch" href="vendor/select2/select2.min.css">
-    
-    <!-- Optimized Font Loading (Single Request) -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Work+Sans:wght@300;400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Work+Sans:wght@300;400;700&display=swap"></noscript>
-    
-    <!-- Inline Critical CSS (Compressed for Faster Parse) -->
+    <!-- Inline Critical CSS for Above-the-Fold -->
     <style>
-      /* Ultra-compressed critical CSS for instant render */
-      html,body{width:100%;overflow-x:hidden;margin:0;font-family:'Lato','Lato-fallback',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-weight:300;font-display:swap}h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6{font-family:'Work Sans','Work Sans-fallback',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;margin-top:0;font-display:swap}h1,.h1{color:#fff}
-      
-      a { 
-        color: hsl(312, 100%, 50%); 
-        transition: all 0.3s ease-in-out; 
-        text-decoration: none;
-      }
-      
-      a:hover { 
-        color: hsl(240, 50%, 40%); 
-        text-decoration: none;
-      }
-      
-      .navbar { 
-        position: fixed; 
-        top: 0; 
-        right: 0; 
-        left: 0; 
-        z-index: 11; 
-        padding: 1rem 0;
-      }
-      
-      .navbar-brand { 
-        color: hsl(0, 0%, 100%); 
-        font-weight: bold;
-      }
-      
-      .nav-link { 
-        color: hsl(0, 0%, 100%); 
-      }
-      
-      .container { 
-        max-width: 1200px; 
-        margin: 0 auto; 
-        padding: 0 15px; 
-      }
-      
-      .jumbotron { 
-        min-height: 100vh; 
-        display: flex; 
-        align-items: center; 
-        color: white; 
-        position: relative; 
-        overflow: hidden; 
-        background: hsl(312, 100%, 50%); /* fallback */
-        background: -webkit-linear-gradient(to right, hsl(240, 50%, 40%), hsl(312, 100%, 50%));
-        background: linear-gradient(to right, hsl(240, 50%, 40%), hsl(312, 100%, 50%));
-      }
-      
-      .jumbotron:before {
-        position: absolute;
-        display: block;
-        content: "";
-        opacity: 0.8;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: hsl(312, 100%, 50%);
-        background: -webkit-linear-gradient(to right, hsl(240, 50%, 40%), hsl(312, 100%, 50%));
-        background: linear-gradient(to right, hsl(240, 50%, 40%), hsl(312, 100%, 50%));
-      }
-      
-      .display-1 { 
-        font-size: 6rem; 
-        font-weight: bold; 
-        line-height: 0.9;
-        display: inline-block;
-        border: 15px solid hsl(0, 0%, 100%);
-        padding: 30px;
-        position: relative;
-        z-index: 1;
-      }
-      
-      .text-center { 
-        text-align: center; 
-      }
-      
-      .mb-4 { 
-        margin-bottom: 1.5rem; 
-      }
-      
-      .section-title {
-        color: hsl(312, 100%, 50%);
-        text-align: center;
-      }
-      
-      .btn-primary {
-        background-color: hsl(312, 100%, 50%);
-        border-color: hsl(312, 100%, 50%);
-        color: hsl(0, 0%, 100%);
-      }
-      
-      .btn-primary:hover {
-        background-color: hsl(240, 50%, 40%);
-        border-color: hsl(240, 50%, 40%);
-      }
-      
-      /* Performance optimization classes */
-      .deferred-content { 
-        opacity: 0; 
-        transition: opacity 0.3s ease; 
-      }
-      
-      .deferred-content.loaded { 
-        opacity: 1; 
-      }
-      
-      /* Responsive design */
-      @media (max-width: 768px) {
-        .display-1 { 
-          font-size: 3rem; 
-          padding: 20px;
-          border-width: 10px;
-        }
-      }
+      /* Critical CSS for initial viewport */
+      body { margin: 0; font-family: 'Lato', sans-serif; }
+      .navbar { position: fixed; top: 0; width: 100%; z-index: 1050; background: rgba(0,0,0,0.9); padding: 1rem 0; }
+      .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+      .jumbotron { min-height: 100vh; display: flex; align-items: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; position: relative; overflow: hidden; }
+      .display-1 { font-size: 3.5rem; font-weight: 300; margin-bottom: 2rem; }
+      .text-center { text-align: center; }
+      .mb-4 { margin-bottom: 1.5rem; }
+      /* Hide non-critical content initially */
+      .deferred-content { opacity: 0; transition: opacity 0.3s ease; }
+      .deferred-content.loaded { opacity: 1; }
     </style>
 
-    <!-- Font preconnection (fonts loaded async above) -->
-    
-    <!-- Font fallback styling to prevent layout shifts -->
-    <style>
-      /* Font metrics matching for better CLS */
-      @font-face {
-        font-family: 'Lato-fallback';
-        src: local('Arial'), local('Helvetica');
-        font-display: swap;
-        ascent-override: 95%;
-        descent-override: 25%;
-        line-gap-override: 0%;
-        size-adjust: 107%;
-      }
-      
-      @font-face {
-        font-family: 'Work Sans-fallback';
-        src: local('Arial'), local('Helvetica');
-        font-display: swap;
-        ascent-override: 93%;
-        descent-override: 23%;
-        line-gap-override: 0%;
-        size-adjust: 105%;
-      }
-      
-      /* Font loading optimization */
-      .fonts-loading body {
-        visibility: hidden;
-      }
-      
-      .fonts-loaded body {
-        visibility: visible;
-      }
-      
-      /* Performance optimization for font rendering */
-      .fonts-loaded * {
-        font-synthesis: none;
-      }
-    </style>
-    
-    <!-- Font Loading Detection Script -->
-    <script>
-      // Add font loading class to prevent FOUT
-      document.documentElement.classList.add('fonts-loading');
-      
-      // Font loading detection
-      if ('fonts' in document) {
-        Promise.all([
-          document.fonts.load('300 1em Lato'),
-          document.fonts.load('400 1em Lato'),
-          document.fonts.load('300 1em Work Sans'),
-          document.fonts.load('400 1em Work Sans'),
-          document.fonts.load('700 1em Work Sans')
-        ]).then(function() {
-          document.documentElement.classList.remove('fonts-loading');
-          document.documentElement.classList.add('fonts-loaded');
-        }).catch(function() {
-          // Fallback after timeout
-          document.documentElement.classList.remove('fonts-loading');
-          document.documentElement.classList.add('fonts-failed');
-        });
-        
-        // Timeout fallback
-        setTimeout(function() {
-          if (document.documentElement.classList.contains('fonts-loading')) {
-            document.documentElement.classList.remove('fonts-loading');
-            document.documentElement.classList.add('fonts-timeout');
-          }
-        }, 3000);
-      } else {
-        // Browser doesn't support font loading API
-        document.documentElement.classList.remove('fonts-loading');
-      }
-    </script>
+    <!-- Critical CSS (loaded immediately) -->
+    <link rel="stylesheet" href="css/style.min.css" />
+    <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
 
-    <!-- Optimized CSS Bundle Loader (Shorter Resource Chain) -->
-    <script>
-      // Load non-critical CSS in optimized sequence to reduce blocking
-      window.addEventListener('load', function() {
-        var cssBundle = [
-          // Local resources first (faster, no external dependency)
-          'vendor/select2/select2.min.css',
-          'vendor/owlcarousel/owl.carousel.min.css', 
-          'vendor/lightcase/lightcase.css'
-        ];
-        
-        // Only load external resources if elements exist that need them
-        if (document.querySelector('[data-aos]')) {
-          cssBundle.push('https://unpkg.com/aos@next/dist/aos.css');
-        }
-        
-        // Check for icon usage before loading heavy icon fonts
-        var needsLinearIcons = document.querySelector('[class*="lnr-"]');
-        var needsFontAwesome = document.querySelector('[class*="fa-"]');
-        
-        if (needsLinearIcons) cssBundle.push('https://cdn.linearicons.com/free/1.0.0/icon-font.min.css');
-        if (needsFontAwesome) cssBundle.push('https://use.fontawesome.com/releases/v5.8.1/css/all.css');
-        
-        // Load with minimal delay to prevent resource chain blocking
-        cssBundle.forEach(function(href, index) {
-          var link = document.createElement('link');
-          link.rel = 'stylesheet';
-          link.href = href;
-          // Add to head immediately to start parallel downloads
-          document.head.appendChild(link);
-        });
-      });
-    </script>
+    <!-- Optimized Font Loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Deferred CSS (non-critical) -->
+    <link rel="stylesheet" href="vendor/select2/select2.min.css" media="print" onload="this.media='all'; this.onload=null;">
+    <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" media="print" onload="this.media='all'; this.onload=null;">
+    <link rel="stylesheet" href="vendor/lightcase/lightcase.css" media="print" onload="this.media='all'; this.onload=null;">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" media="print" onload="this.media='all'; this.onload=null;">
+    <link
+      rel="stylesheet"
+      href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css"
+      media="print" onload="this.media='all'; this.onload=null;"
+    />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      media="print" onload="this.media='all'; this.onload=null;"
+    />
     
-    <!-- Minimal fallback -->
+    <!-- Fallback for browsers that don't support onload -->
     <noscript>
       <link rel="stylesheet" href="vendor/select2/select2.min.css" />
       <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" />
       <link rel="stylesheet" href="vendor/lightcase/lightcase.css" />
+      <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+      <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" />
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
     </noscript>
   </head>
 
@@ -1228,87 +1042,52 @@ Momenteel volg ik een opleiding gericht op <b>Digital experience design</b>. Ik 
       </div>
     </footer>
   </body>
-  <!-- Critical JS Bundle (Reduced Chain Length) -->
-  <script>
-    // Inline minimal jQuery functionality for bootstrap
-    !function(e,t){"use strict";"object"==typeof module&&"object"==typeof module.exports?module.exports=e.document?t(e,!0):function(e){if(!e.document)throw new Error("jQuery requires a window with a document");return t(e)}:t(e)}("undefined"!=typeof window?window:this,function(e,t){"use strict";function n(e){return null!=e&&e===e.window}function r(e){return"[object Array]"===s.call(e)}function i(e){return"function"==typeof e&&"number"!=typeof e.nodeType}function o(e){return null!=e&&!n(e)&&(!(e.length-1 in e)||"function"==typeof e)}var s=Object.prototype.toString,a=Object.prototype.hasOwnProperty,u=Array.prototype.slice,l=e.document,c={},f=c.jQuery=c.$=function(e,t){return new f.fn.init(e,t)};f.fn=f.prototype={jquery:"3.7.0",constructor:f,length:0,toArray:function(){return u.call(this)},get:function(e){return null==e?u.call(this):e<0?this[e+this.length]:this[e]},pushStack:function(e){var t=f.merge(this.constructor(),e);return t.prevObject=this,t.context=this.context,t},each:function(e){return f.each(this,e)},map:function(e){return this.pushStack(f.map(this,function(t,n){return e.call(t,n,t)}))},slice:function(){return this.pushStack(u.apply(this,arguments))},first:function(){return this.eq(0)},last:function(){return this.eq(-1)},eq:function(e){var t=this.length,n=+e+(e<0?t:0);return this.pushStack(n>=0&&n<t?[this[n]]:[])},end:function(){return this.prevObject||this.constructor()}};return f.fn.init=function(e,t){var n,r;if(!e)return this;if("string"==typeof e){if(!(n="<"===e[0]&&">"===e[e.length-1]&&e.length>=3?[null,e,null]:/<|&#?\w+;/.exec(e)))return l&&(r=l.getElementById(e))?[r]:[];if(n[1]){if(t=t instanceof f?t[0]:t,f.merge(this,f.parseHTML(n[1],t&&t.nodeType?t.ownerDocument||t:l,!0)),/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi.test(n[1])&&t&&t.nodeType)for(n=0;this[n];n++)f.nodeName(this[n],"script")&&!this[n].type&&f.globalEval(this[n].textContent||this[n].innerText||this[n].innerHTML||"");return this}return(t||l).find(e)}return e.nodeType?(this.context=this[0]=e,this.length=1,this):i(e)?void 0!==t.ready?t.ready(e):e(f):f.makeArray(e,this)},f.fn.init.prototype=f.fn,f.extend=f.fn.extend=function(){var e,t,n,r,i,o,s=arguments[0]||{},a=1,u=arguments.length,l=!1;for("boolean"==typeof s&&(l=s,s=arguments[a]||{},a++),"object"!=typeof s&&!i(s)&&(s={}),a===u&&(s=this,a--);a<u;a++)if(null!=(e=arguments[a]))for(t in e)n=s[t],s!==(r=e[t])&&(l&&r&&(f.isPlainObject(r)||(i=r.constructor===Array))?(i?(i=!1,o=n&&n.constructor===Array?n:[]):o=n&&f.isPlainObject(n)?n:{},s[t]=f.extend(l,o,r)):void 0!==r&&(s[t]=r));return s},f});
-    window.jQuery = window.$ = $;
-  </script>
-  
-  <!-- Load Bootstrap components asynchronously after DOM -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Load Bootstrap JavaScript asynchronously to reduce critical chain
-      Promise.all([
-        loadScript('vendor/bootstrap/popper.min.js'),
-        loadScript('vendor/bootstrap/bootstrap.min.js')
-      ]).then(function() {
-        // Bootstrap loaded, initialize components if needed
-        console.log('Bootstrap loaded asynchronously');
-      });
-      
-      function loadScript(src) {
-        return new Promise(function(resolve, reject) {
-          var script = document.createElement('script');
-          script.src = src;
-          script.onload = resolve;
-          script.onerror = reject;
-          document.head.appendChild(script);
-        });
-      }
-    });
-  </script>
+  <!-- Critical JS (jQuery - needed for bootstrap) -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+    integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <script src="vendor/bootstrap/popper.min.js"></script>
+  <script src="vendor/bootstrap/bootstrap.min.js"></script>
 
-  <!-- Optimized JS Loading (Reduced Critical Chain) -->
+  <!-- Non-critical JS (Deferred Loading) -->
   <script>
-    // Smart script loading: only load what's needed, when it's needed
+    // Load non-critical JavaScript after page load
     window.addEventListener('load', function() {
-      // Essential scripts first (parallel loading)
-      var essentialScripts = [
-        'js/app.min.js'  // Core functionality
+      var scripts = [
+        'vendor/select2/select2.min.js',
+        'vendor/owlcarousel/owl.carousel.min.js',
+        'vendor/isotope/isotope.min.js',
+        'vendor/lightcase/lightcase.js',
+        'vendor/waypoints/waypoint.min.js',
+        'https://unpkg.com/aos@next/dist/aos.js',
+        'stellar/jquery.stellar.js',
+        'js/app.min.js',
+        'contactform/contactform.js'
       ];
       
-      // Feature-based conditional loading (shorter chains)
-      var conditionalScripts = [];
-      
-      // Only load if features are present on page
-      if (document.querySelector('.select2')) conditionalScripts.push('vendor/select2/select2.min.js');
-      if (document.querySelector('.owl-carousel')) conditionalScripts.push('vendor/owlcarousel/owl.carousel.min.js');
-      if (document.querySelector('[data-filter]')) conditionalScripts.push('vendor/isotope/isotope.min.js');
-      if (document.querySelector('[data-rel="lightcase"]')) conditionalScripts.push('vendor/lightcase/lightcase.js');
-      if (document.querySelector('[data-waypoint]')) conditionalScripts.push('vendor/waypoints/waypoint.min.js');
-      if (document.querySelector('[data-aos]')) conditionalScripts.push('https://unpkg.com/aos@next/dist/aos.js');
-      if (document.querySelector('#contact-form')) conditionalScripts.push('contactform/contactform.js');
-      
-      // Load essential scripts first
-      Promise.all(essentialScripts.map(loadScript)).then(function() {
-        // Then load conditional scripts in parallel (shorter chain)
-        conditionalScripts.forEach(function(src, index) {
-          setTimeout(function() {
-            loadScript(src).then(function() {
-              // Initialize feature-specific functionality
-              if (src.includes('aos.js') && typeof AOS !== 'undefined') {
+      scripts.forEach(function(src, index) {
+        setTimeout(function() {
+          var script = document.createElement('script');
+          script.src = src;
+          script.async = true;
+          document.body.appendChild(script);
+          
+          // Initialize AOS when it loads
+          if (src.includes('aos.js')) {
+            script.onload = function() {
+              if (typeof AOS !== 'undefined') {
                 AOS.init({
                   duration: 1000,
                   once: true
                 });
               }
-            });
-          }, index * 100); // Staggered loading to prevent blocking
-        });
+            };
+          }
+        }, index * 100); // Staggered loading
       });
-      
-      // Utility function for promise-based script loading
-      function loadScript(src) {
-        return new Promise(function(resolve, reject) {
-          var script = document.createElement('script');
-          script.src = src;
-          script.async = true;
-          script.onload = resolve;
-          script.onerror = reject;
-          document.head.appendChild(script);
-        });
-      }
     });
   </script>
   
@@ -1339,24 +1118,6 @@ Momenteel volg ik een opleiding gericht op <b>Digital experience design</b>. Ik 
         });
       }
     });
-
-    // Register Service Worker for Aggressive Caching (Reduce Future Loading Times)
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js', { scope: '/' })
-          .then(function(registration) {
-            console.log('🚀 ServiceWorker registered successfully:', registration.scope);
-            
-            // Force update on page load for development
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-              registration.update();
-            }
-          })
-          .catch(function(error) {
-            console.log('❌ ServiceWorker registration failed:', error);
-          });
-      });
-    }
 
     // Performance monitoring (development only)
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
