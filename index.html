@@ -46,17 +46,139 @@
     
     <!-- Inline Critical CSS for Above-the-Fold -->
     <style>
-      /* Critical CSS for initial viewport */
-      body { margin: 0; font-family: 'Lato', sans-serif; }
-      .navbar { position: fixed; top: 0; width: 100%; z-index: 1050; background: rgba(0,0,0,0.9); padding: 1rem 0; }
-      .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
-      .jumbotron { min-height: 100vh; display: flex; align-items: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; position: relative; overflow: hidden; }
-      .display-1 { font-size: 3.5rem; font-weight: 300; margin-bottom: 2rem; }
-      .text-center { text-align: center; }
-      .mb-4 { margin-bottom: 1.5rem; }
-      /* Hide non-critical content initially */
-      .deferred-content { opacity: 0; transition: opacity 0.3s ease; }
-      .deferred-content.loaded { opacity: 1; }
+      /* Critical CSS matching your original theme */
+      html, body { 
+        width: 100%; 
+        overflow-x: hidden; 
+        margin: 0; 
+        font-family: 'Lato', sans-serif; 
+        font-weight: 300; 
+      }
+      
+      h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { 
+        font-family: 'Work Sans', sans-serif; 
+        margin-top: 0; 
+      }
+      
+      h1, .h1 { 
+        color: hsl(0, 0%, 100%); 
+      }
+      
+      a { 
+        color: hsl(312, 100%, 50%); 
+        transition: all 0.3s ease-in-out; 
+        text-decoration: none;
+      }
+      
+      a:hover { 
+        color: hsl(240, 50%, 40%); 
+        text-decoration: none;
+      }
+      
+      .navbar { 
+        position: fixed; 
+        top: 0; 
+        right: 0; 
+        left: 0; 
+        z-index: 11; 
+        padding: 1rem 0; 
+        background: rgba(0,0,0,0.9); 
+      }
+      
+      .navbar-brand { 
+        color: hsl(0, 0%, 100%); 
+        font-weight: bold;
+      }
+      
+      .nav-link { 
+        color: hsl(0, 0%, 100%); 
+      }
+      
+      .container { 
+        max-width: 1200px; 
+        margin: 0 auto; 
+        padding: 0 15px; 
+      }
+      
+      .jumbotron { 
+        min-height: 100vh; 
+        display: flex; 
+        align-items: center; 
+        color: white; 
+        position: relative; 
+        overflow: hidden; 
+        background: hsl(312, 100%, 50%); /* fallback */
+        background: -webkit-linear-gradient(to right, hsl(240, 50%, 40%), hsl(312, 100%, 50%));
+        background: linear-gradient(to right, hsl(240, 50%, 40%), hsl(312, 100%, 50%));
+      }
+      
+      .jumbotron:before {
+        position: absolute;
+        display: block;
+        content: "";
+        opacity: 0.8;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: hsl(312, 100%, 50%);
+        background: -webkit-linear-gradient(to right, hsl(240, 50%, 40%), hsl(312, 100%, 50%));
+        background: linear-gradient(to right, hsl(240, 50%, 40%), hsl(312, 100%, 50%));
+      }
+      
+      .display-1 { 
+        font-size: 6rem; 
+        font-weight: bold; 
+        line-height: 0.9;
+        display: inline-block;
+        border: 15px solid hsl(0, 0%, 100%);
+        padding: 30px;
+        position: relative;
+        z-index: 1;
+      }
+      
+      .text-center { 
+        text-align: center; 
+      }
+      
+      .mb-4 { 
+        margin-bottom: 1.5rem; 
+      }
+      
+      .section-title {
+        color: hsl(312, 100%, 50%);
+        text-align: center;
+      }
+      
+      .btn-primary {
+        background-color: hsl(312, 100%, 50%);
+        border-color: hsl(312, 100%, 50%);
+        color: hsl(0, 0%, 100%);
+      }
+      
+      .btn-primary:hover {
+        background-color: hsl(240, 50%, 40%);
+        border-color: hsl(240, 50%, 40%);
+      }
+      
+      /* Performance optimization classes */
+      .deferred-content { 
+        opacity: 0; 
+        transition: opacity 0.3s ease; 
+      }
+      
+      .deferred-content.loaded { 
+        opacity: 1; 
+      }
+      
+      /* Responsive design */
+      @media (max-width: 768px) {
+        .display-1 { 
+          font-size: 3rem; 
+          padding: 20px;
+          border-width: 10px;
+        }
+      }
     </style>
 
     <!-- Critical CSS (loaded immediately) -->
