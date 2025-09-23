@@ -30,11 +30,35 @@
 </script>
     <link rel="icon" type="image" href="img/testi-1.png" />
 
+    <!-- DNS Prefetch for External Domains -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <link rel="dns-prefetch" href="//www.googletagmanager.com">
+    <link rel="dns-prefetch" href="//cdn.linearicons.com">
+    <link rel="dns-prefetch" href="//use.fontawesome.com">
+
     <!-- Preload Critical Resources -->
     <link rel="preload" href="css/style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="vendor/bootstrap/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     
+    <!-- Inline Critical CSS for Above-the-Fold -->
+    <style>
+      /* Critical CSS for initial viewport */
+      body { margin: 0; font-family: 'Lato', sans-serif; }
+      .navbar { position: fixed; top: 0; width: 100%; z-index: 1050; background: rgba(0,0,0,0.9); padding: 1rem 0; }
+      .container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+      .jumbotron { min-height: 100vh; display: flex; align-items: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; position: relative; overflow: hidden; }
+      .display-1 { font-size: 3.5rem; font-weight: 300; margin-bottom: 2rem; }
+      .text-center { text-align: center; }
+      .mb-4 { margin-bottom: 1.5rem; }
+      /* Hide non-critical content initially */
+      .deferred-content { opacity: 0; transition: opacity 0.3s ease; }
+      .deferred-content.loaded { opacity: 1; }
+    </style>
+
     <!-- Critical CSS (loaded immediately) -->
     <link rel="stylesheet" href="css/style.min.css" />
     <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
@@ -1018,7 +1042,7 @@ Momenteel volg ik een opleiding gericht op <b>Digital experience design</b>. Ik 
       </div>
     </footer>
   </body>
-  <!-- External JS -->
+  <!-- Critical JS (jQuery - needed for bootstrap) -->
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
     integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
@@ -1027,31 +1051,87 @@ Momenteel volg ik een opleiding gericht op <b>Digital experience design</b>. Ik 
   ></script>
   <script src="vendor/bootstrap/popper.min.js"></script>
   <script src="vendor/bootstrap/bootstrap.min.js"></script>
-  <script src="vendor/select2/select2.min.js "></script>
-  <script src="vendor/owlcarousel/owl.carousel.min.js"></script>
-  <script src="vendor/isotope/isotope.min.js"></script>
-  <script src="vendor/lightcase/lightcase.js"></script>
-  <script src="vendor/waypoints/waypoint.min.js"></script>
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-  <script src="stellar/jquery.stellar.js"></script>
 
-  <!-- Main JS -->
-  <script src="js/app.min.js "></script>
-  
-  <!-- Contact Form JS -->
-  <script src="contactform/contactform.js"></script>
-  
-  <!-- Auto-close navbar script -->
+  <!-- Non-critical JS (Deferred Loading) -->
   <script>
-    $(document).ready(function() {
-      // Auto-close navbar when clicking on navigation links
-      $('.navbar-nav .nav-link').on('click', function() {
-        // Check if navbar is expanded (mobile view)
-        if ($('.navbar-toggler').is(':visible')) {
-          // Collapse the navbar
-          $('.navbar-collapse').collapse('hide');
-        }
+    // Load non-critical JavaScript after page load
+    window.addEventListener('load', function() {
+      var scripts = [
+        'vendor/select2/select2.min.js',
+        'vendor/owlcarousel/owl.carousel.min.js',
+        'vendor/isotope/isotope.min.js',
+        'vendor/lightcase/lightcase.js',
+        'vendor/waypoints/waypoint.min.js',
+        'https://unpkg.com/aos@next/dist/aos.js',
+        'stellar/jquery.stellar.js',
+        'js/app.min.js',
+        'contactform/contactform.js'
+      ];
+      
+      scripts.forEach(function(src, index) {
+        setTimeout(function() {
+          var script = document.createElement('script');
+          script.src = src;
+          script.async = true;
+          document.body.appendChild(script);
+          
+          // Initialize AOS when it loads
+          if (src.includes('aos.js')) {
+            script.onload = function() {
+              if (typeof AOS !== 'undefined') {
+                AOS.init({
+                  duration: 1000,
+                  once: true
+                });
+              }
+            };
+          }
+        }, index * 100); // Staggered loading
       });
     });
+  </script>
+  
+  <!-- Optimized Auto-close navbar script -->
+  <script>
+    // Use more efficient event delegation and defer until interaction
+    document.addEventListener('DOMContentLoaded', function() {
+      // Show deferred content after DOM is loaded
+      setTimeout(function() {
+        var deferredElements = document.querySelectorAll('.deferred-content');
+        deferredElements.forEach(function(el) {
+          el.classList.add('loaded');
+        });
+      }, 100);
+
+      // Auto-close navbar (only add listener when needed)
+      var navbarToggler = document.querySelector('.navbar-toggler');
+      if (navbarToggler) {
+        document.addEventListener('click', function(e) {
+          if (e.target.matches('.navbar-nav .nav-link') && !navbarToggler.offsetParent === null) {
+            var navbarCollapse = document.querySelector('.navbar-collapse');
+            if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+              // Use native Bootstrap collapse
+              var collapse = new bootstrap.Collapse(navbarCollapse);
+              collapse.hide();
+            }
+          }
+        });
+      }
+    });
+
+    // Performance monitoring (development only)
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          if ('performance' in window) {
+            var perfData = performance.getEntriesByType('navigation')[0];
+            console.log('🚀 Performance Metrics:');
+            console.log('📊 LCP (approx):', Math.round(perfData.loadEventEnd - perfData.fetchStart), 'ms');
+            console.log('⚡ DOMContentLoaded:', Math.round(perfData.domContentLoadedEventEnd - perfData.fetchStart), 'ms');
+            console.log('✅ Page Load:', Math.round(perfData.loadEventEnd - perfData.fetchStart), 'ms');
+          }
+        }, 1000);
+      });
+    }
   </script>
 </html>
