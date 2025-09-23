@@ -46,18 +46,20 @@
     
     <!-- Inline Critical CSS for Above-the-Fold -->
     <style>
-      /* Critical CSS matching your original theme */
+      /* Critical CSS with optimized font loading */
       html, body { 
         width: 100%; 
         overflow-x: hidden; 
         margin: 0; 
-        font-family: 'Lato', sans-serif; 
+        font-family: 'Lato', 'Lato-fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
         font-weight: 300; 
+        font-display: swap;
       }
       
       h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { 
-        font-family: 'Work Sans', sans-serif; 
+        font-family: 'Work Sans', 'Work Sans-fallback', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
         margin-top: 0; 
+        font-display: swap;
       }
       
       h1, .h1 { 
@@ -185,13 +187,86 @@
     <link rel="stylesheet" href="css/style.min.css" />
     <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
 
-    <!-- Optimized Font Loading -->
+    <!-- Optimized Font Loading with font-display swap -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-      href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Work+Sans:wght@300;400;700&display=swap"
       rel="stylesheet"
     />
+    
+    <!-- Font fallback styling to prevent layout shifts -->
+    <style>
+      /* Font metrics matching for better CLS */
+      @font-face {
+        font-family: 'Lato-fallback';
+        src: local('Arial'), local('Helvetica');
+        font-display: swap;
+        ascent-override: 95%;
+        descent-override: 25%;
+        line-gap-override: 0%;
+        size-adjust: 107%;
+      }
+      
+      @font-face {
+        font-family: 'Work Sans-fallback';
+        src: local('Arial'), local('Helvetica');
+        font-display: swap;
+        ascent-override: 93%;
+        descent-override: 23%;
+        line-gap-override: 0%;
+        size-adjust: 105%;
+      }
+      
+      /* Font loading optimization */
+      .fonts-loading body {
+        visibility: hidden;
+      }
+      
+      .fonts-loaded body {
+        visibility: visible;
+      }
+      
+      /* Performance optimization for font rendering */
+      .fonts-loaded * {
+        font-synthesis: none;
+      }
+    </style>
+    
+    <!-- Font Loading Detection Script -->
+    <script>
+      // Add font loading class to prevent FOUT
+      document.documentElement.classList.add('fonts-loading');
+      
+      // Font loading detection
+      if ('fonts' in document) {
+        Promise.all([
+          document.fonts.load('300 1em Lato'),
+          document.fonts.load('400 1em Lato'),
+          document.fonts.load('300 1em Work Sans'),
+          document.fonts.load('400 1em Work Sans'),
+          document.fonts.load('700 1em Work Sans')
+        ]).then(function() {
+          document.documentElement.classList.remove('fonts-loading');
+          document.documentElement.classList.add('fonts-loaded');
+        }).catch(function() {
+          // Fallback after timeout
+          document.documentElement.classList.remove('fonts-loading');
+          document.documentElement.classList.add('fonts-failed');
+        });
+        
+        // Timeout fallback
+        setTimeout(function() {
+          if (document.documentElement.classList.contains('fonts-loading')) {
+            document.documentElement.classList.remove('fonts-loading');
+            document.documentElement.classList.add('fonts-timeout');
+          }
+        }, 3000);
+      } else {
+        // Browser doesn't support font loading API
+        document.documentElement.classList.remove('fonts-loading');
+      }
+    </script>
 
     <!-- Deferred CSS (non-critical) -->
     <link rel="stylesheet" href="vendor/select2/select2.min.css" media="print" onload="this.media='all'; this.onload=null;">
