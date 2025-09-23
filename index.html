@@ -3,46 +3,75 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Portofolio | Tiebo Croons</title>
-    <meta name="description" content="Taak" />
+    <title>Portfolio</title>
+    <meta name="description" content="Tiebo Croons — grafisch ontwerper, webdesigner & backend developer. Bekijk mijn portfolio: branding, visuele identiteit, webontwikkeling en media-productie." />
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y6MVVR1W8Q"></script>
+<!-- Optimized Google Analytics (Deferred Loading) -->
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-Y6MVVR1W8Q');
+  // Defer Google Analytics to improve LCP
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      var script = document.createElement('script');
+      script.src = 'https://www.googletagmanager.com/gtag/js?id=G-Y6MVVR1W8Q';
+      script.async = true;
+      document.head.appendChild(script);
+      
+      script.onload = function() {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Y6MVVR1W8Q');
+      };
+    }, 1000); // Load after 1 second
+  });
 </script>
     <link rel="icon" type="image" href="img/testi-1.png" />
 
-    <!-- External CSS -->
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="css/style.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="vendor/bootstrap/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+    <!-- Critical CSS (loaded immediately) -->
+    <link rel="stylesheet" href="css/style.min.css" />
     <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
-    <link rel="stylesheet" href="vendor/select2/select2.min.css" />
-    <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" />
-    <link rel="stylesheet" href="vendor/lightcase/lightcase.css" />
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
-    <!-- Fonts -->
+    <!-- Optimized Font Loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-      href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700"
+      href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap"
       rel="stylesheet"
     />
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/style.min.css" />
+    <!-- Deferred CSS (non-critical) -->
+    <link rel="stylesheet" href="vendor/select2/select2.min.css" media="print" onload="this.media='all'; this.onload=null;">
+    <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" media="print" onload="this.media='all'; this.onload=null;">
+    <link rel="stylesheet" href="vendor/lightcase/lightcase.css" media="print" onload="this.media='all'; this.onload=null;">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" media="print" onload="this.media='all'; this.onload=null;">
     <link
       rel="stylesheet"
       href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css"
+      media="print" onload="this.media='all'; this.onload=null;"
     />
     <link
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+      media="print" onload="this.media='all'; this.onload=null;"
     />
+    
+    <!-- Fallback for browsers that don't support onload -->
+    <noscript>
+      <link rel="stylesheet" href="vendor/select2/select2.min.css" />
+      <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" />
+      <link rel="stylesheet" href="vendor/lightcase/lightcase.css" />
+      <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+      <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" />
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
+    </noscript>
   </head>
 
   <body data-spy="scroll" data-target="#navbar" class="static-layout">
