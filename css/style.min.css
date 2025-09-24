@@ -552,22 +552,6 @@ section {
 }
 
 /*=====  End of FORM RECTANGLE ETC  ======*/
-/*================================
-=            FEATURES            =
-================================*/
-.feature-item {
-  transition: all 0.2s ease-in-out 0s !important;
-}
-
-.feature-item:hover {
-  transform: translateY(-13px);
-}
-
-.progress-bar {
-  background-color: hsl(312, 100%, 50%);
-}
-
-/*=====  End of FEATURES  ======*/
 /*=============================
 =            TESTI            =
 =============================*/
@@ -1165,5 +1149,864 @@ section {
   
   .social-hero p {
     font-size: 14px;
+  }
+}
+
+/* ===== VISUAL ABOUT SECTION STYLES ===== */
+
+/* Personal Avatar Styling */
+.personal-avatar .avatar-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.personal-avatar .avatar-circle {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.personal-avatar .avatar-ring {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 120px;
+  height: 120px;
+  border: 3px solid rgba(102, 126, 234, 0.3);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.specialty-badges .badge {
+  font-size: 11px;
+  padding: 6px 12px;
+  margin: 2px;
+  border-radius: 15px;
+}
+
+/* Enhanced Card Styling */
+.visual-card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.visual-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.card-header-visual {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 25px;
+  text-align: center;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.card-header-visual .icon-wrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  font-size: 24px;
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-success {
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+}
+
+/* Visual Stats */
+.stats-row {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.stat-item {
+  padding: 10px;
+}
+
+.stat-number {
+  font-size: 28px;
+  font-weight: bold;
+  color: #667eea;
+  display: block;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Traits List */
+.traits-list {
+  margin-top: 20px;
+}
+
+.trait-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.trait-item:last-child {
+  border-bottom: none;
+}
+
+.trait-item i {
+  margin-right: 12px;
+  font-size: 18px;
+  width: 20px;
+}
+
+/* Education Timeline */
+.education-timeline {
+  position: relative;
+  padding: 20px 0;
+}
+
+.education-timeline::before {
+  content: '';
+  position: absolute;
+  left: 30px;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(to bottom, #667eea, #764ba2);
+  border-radius: 3px;
+}
+
+.timeline-item {
+  position: relative;
+  padding: 20px 0 20px 70px;
+  margin-bottom: 20px;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: 20px;
+  top: 25px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  z-index: 2;
+}
+
+.current-marker {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  animation: glow 2s infinite;
+}
+
+.completed-marker {
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(102, 126, 234, 0.5); }
+  50% { box-shadow: 0 0 25px rgba(102, 126, 234, 0.8); }
+}
+
+.timeline-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.timeline-date {
+  font-size: 12px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.timeline-desc {
+  color: #6c757d;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+/* Skills Pillars */
+.skills-pillars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.pillar-item {
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.pillar-item:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.pillar-item i {
+  margin-right: 6px;
+  font-size: 14px;
+}
+
+/* Foundation Skills Tags */
+.foundation-skills {
+  margin-top: 10px;
+}
+
+.skill-tag {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  margin: 2px 5px 2px 0;
+  display: inline-block;
+  border: 1px solid #bbdefb;
+}
+
+/* Future Goals */
+.future-goals h6 {
+  color: #667eea;
+  font-weight: bold;
+}
+
+.goal-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.goal-item {
+  background: linear-gradient(135deg, #667eea15, #764ba215);
+  color: #667eea;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #667eea30;
+}
+
+/* Skills Progress Section */
+.skills-progress-section {
+  background: #f8f9fa;
+  padding: 40px;
+  border-radius: 15px;
+  margin-top: 40px;
+}
+
+.skill-category {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.skill-category-title {
+  margin-bottom: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.skill-category-title i {
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+/* Skill Bars */
+.skill-item {
+  margin-bottom: 20px;
+}
+
+.skill-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.skill-info span:first-child {
+  font-weight: 500;
+  color: #333;
+}
+
+.skill-percentage {
+  font-size: 14px;
+  color: #667eea;
+  font-weight: bold;
+}
+
+.skill-bar {
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.skill-progress {
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  width: 0%;
+  transition: width 2s ease-in-out;
+  position: relative;
+}
+
+.skill-progress::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Section Subtitle */
+.section-subtitle {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* Core Competencies Section */
+.core-competencies-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  padding: 40px;
+  border-radius: 20px;
+  margin-top: 40px;
+}
+
+.competency-card {
+  background: white;
+  padding: 30px 25px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  height: 100%;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.competency-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.competency-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  border-color: rgba(102, 126, 234, 0.2);
+}
+
+.competency-card:hover::before {
+  opacity: 1;
+}
+
+.competency-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.competency-icon i {
+  font-size: 28px;
+  color: white;
+}
+
+.competency-card:hover .competency-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.competency-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.competency-desc {
+  font-size: 14px;
+  color: #6c757d;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.competency-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.comp-tag {
+  background: linear-gradient(135deg, #667eea15, #764ba215);
+  color: #667eea;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  transition: all 0.3s ease;
+}
+
+.comp-tag:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Competency Card Specific Colors */
+.competency-card:nth-child(3n+1) .competency-icon {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.competency-card:nth-child(3n+2) .competency-icon {
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+}
+
+.competency-card:nth-child(3n+3) .competency-icon {
+  background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+}
+
+.competency-card:nth-child(3n+1)::before {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.competency-card:nth-child(3n+2)::before {
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+}
+
+.competency-card:nth-child(3n+3)::before {
+  background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+}
+
+.competency-card:nth-child(3n+1) .comp-tag {
+  color: #667eea;
+  background: linear-gradient(135deg, #667eea15, #764ba215);
+  border-color: rgba(102, 126, 234, 0.2);
+}
+
+.competency-card:nth-child(3n+2) .comp-tag {
+  color: #56ab2f;
+  background: linear-gradient(135deg, #56ab2f15, #a8e6cf15);
+  border-color: rgba(86, 171, 47, 0.2);
+}
+
+.competency-card:nth-child(3n+3) .comp-tag {
+  color: #ff6b6b;
+  background: linear-gradient(135deg, #ff6b6b15, #feca5715);
+  border-color: rgba(255, 107, 107, 0.2);
+}
+
+/* Responsive Design for Visual About Section */
+@media (max-width: 768px) {
+  .skills-pillars {
+    justify-content: center;
+  }
+  
+  .goal-items {
+    justify-content: center;
+  }
+  
+  .stats-row {
+    margin: 15px 0;
+  }
+  
+  .stat-number {
+    font-size: 24px;
+  }
+  
+  .education-timeline::before {
+    left: 20px;
+  }
+  
+  .timeline-item {
+    padding-left: 60px;
+  }
+  
+  .timeline-marker {
+    left: 10px;
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
+  
+  .skills-progress-section {
+    padding: 20px;
+  }
+  
+  .personal-avatar .avatar-circle {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .personal-avatar .avatar-ring {
+    width: 100px;
+    height: 100px;
+    top: -10px;
+    left: -10px;
+  }
+  
+  /* Core Competencies Responsive */
+  .core-competencies-section {
+    padding: 20px;
+    margin-top: 30px;
+  }
+  
+  .competency-card {
+    padding: 25px 20px;
+    margin-bottom: 20px;
+  }
+  
+  .competency-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .competency-icon i {
+    font-size: 24px;
+  }
+  
+  .competency-title {
+    font-size: 16px;
+  }
+  
+  .competency-desc {
+    font-size: 13px;
+  }
+  
+  .comp-tag {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+}
+
+/* ===== GITHUB INTEGRATION STYLES ===== */
+
+/* GitHub Repository Preview */
+.github-repo-preview {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  padding: 12px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.grid-item:hover .github-repo-preview {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.repo-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.repo-header i {
+  margin-right: 8px;
+  color: #333;
+}
+
+.repo-name {
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+.repo-stats {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.repo-stats .stat {
+  display: flex;
+  align-items: center;
+  color: #666;
+}
+
+.repo-stats .stat i {
+  margin-right: 4px;
+  font-size: 11px;
+}
+
+.lang-stat {
+  background: #f1f3f4;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Loading States */
+.loading-item {
+  pointer-events: none;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* GitHub Button Styling */
+.btn .fab.fa-github {
+  margin-right: 5px;
+}
+
+.btn .fas.fa-external-link-alt {
+  margin-right: 5px;
+}
+
+/* Additional Badge Colors */
+.badge-purple {
+  background-color: #6f42c1;
+  color: white;
+}
+
+.badge-development {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+}
+
+/* Enhanced Grid Item for GitHub Projects */
+.grid-item.development .grid-item-wrapper {
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.grid-item.development:hover .grid-item-wrapper {
+  border-color: rgba(40, 167, 69, 0.3);
+  box-shadow: 0 10px 30px rgba(40, 167, 69, 0.2);
+}
+
+/* Multiple Button Layout */
+.grid-link {
+  gap: 8px;
+}
+
+.grid-link .btn {
+  flex: 1;
+  max-width: 120px;
+}
+
+/* Responsive adjustments for GitHub integration */
+@media (max-width: 768px) {
+  .github-repo-preview {
+    position: relative;
+    opacity: 1;
+    transform: none;
+    margin-bottom: 10px;
+  }
+  
+  .repo-stats {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .grid-link .btn {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+  
+  .loading-content {
+    padding: 30px 15px;
+  }
+  
+  .loading-spinner {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* ===== GITHUB SKILLS INTEGRATION ===== */
+
+/* GitHub Skills Styling */
+.github-skill .skill-info span:first-child {
+  font-weight: 500 !important;
+  display: flex;
+  align-items: center;
+}
+
+.github-skill .skill-info span:first-child i {
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.github-skill:hover .skill-info span:first-child i {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.github-skills-separator {
+  position: relative;
+  text-align: center;
+}
+
+.github-skills-separator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #ddd 20%, #ddd 80%, transparent);
+  z-index: 1;
+}
+
+.github-skills-separator small {
+  background: white;
+  padding: 0 15px;
+  position: relative;
+  z-index: 2;
+}
+
+.github-progress {
+  position: relative;
+  overflow: hidden;
+}
+
+.github-progress::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.github-skill .skill-bar {
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.github-skill .skill-progress {
+  border-radius: 6px;
+  position: relative;
+}
+
+/* Hover effects for GitHub skills */
+.github-skill:hover {
+  transform: translateX(3px);
+  transition: all 0.3s ease;
+}
+
+.github-skill:hover .skill-progress {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Animation classes */
+.github-skill {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: slideInUp 0.6s ease forwards;
+}
+
+.github-skill:nth-child(1) { animation-delay: 0.1s; }
+.github-skill:nth-child(2) { animation-delay: 0.2s; }
+.github-skill:nth-child(3) { animation-delay: 0.3s; }
+.github-skill:nth-child(4) { animation-delay: 0.4s; }
+.github-skill:nth-child(5) { animation-delay: 0.5s; }
+.github-skill:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes slideInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
