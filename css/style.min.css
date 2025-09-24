@@ -1033,3 +1033,137 @@ section {
   }
 }
 /*=====  End of RESPONSIVE  ======*/
+
+/* Custom Social Media & Portfolio Styles */
+/* Social Media Button Styles */
+.social-hero {
+  position: relative;
+  z-index: 10;
+}
+
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 20px;
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.social-btn:hover {
+  transform: translateY(-5px);
+  color: white;
+  text-decoration: none;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.github-btn:hover {
+  background: #24292e;
+  border-color: #24292e;
+}
+
+.linkedin-btn:hover {
+  background: #0077b5;
+  border-color: #0077b5;
+}
+
+.instagram-btn:hover {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  border-color: #e6683c;
+}
+
+/* Navigation dropdown styling */
+.dropdown-menu {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-item {
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: rgba(102, 51, 153, 0.1);
+  color: #663399;
+}
+
+/* Footer social links styling */
+.nav-mastfoot .nav-link {
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  opacity: 0.8;
+}
+
+.nav-mastfoot .nav-link:hover {
+  opacity: 1;
+  transform: translateY(-3px);
+}
+
+/* Portfolio Button Styling - Make buttons look exactly like links */
+.grid-link .btn {
+  text-decoration: none !important;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  display: inline-block;
+  background-color: hsl(312, 100%, 50%);
+  color: white !important;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+}
+
+.grid-link .btn:focus,
+.grid-link .btn:active,
+.grid-link .btn:focus-visible {
+  box-shadow: none !important;
+  outline: none !important;
+  background-color: hsl(312, 100%, 50%) !important;
+  color: white !important;
+}
+
+.grid-link .btn:hover {
+  background-color: hsl(312, 100%, 40%) !important;
+  color: white !important;
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px hsl(312, 100%, 50%);
+}
+
+/* Consistent portfolio item hover effects */
+.grid-item-wrapper {
+  transition: all 0.3s ease;
+}
+
+.grid-item-wrapper:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments for social elements */
+@media (max-width: 768px) {
+  .social-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .social-hero p {
+    font-size: 14px;
+  }
+}
