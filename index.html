@@ -47,16 +47,25 @@
   </head>
 
   <body data-spy="scroll" data-target="#navbar" class="static-layout">
-    <nav id="header-navbar" class="navbar navbar-expand-lg py-4">
+    <!-- Modern Navbar -->
+    <nav id="header-navbar" class="navbar navbar-expand-lg navbar-transparent modern-navbar">
       <div class="container">
-        <a
-          class="navbar-brand d-flex align-items-center text-white"
-          href="#home"
-        >
-          <h3 class="font-weight-bolder mb-0">TIEBO CROONS</h3>
+        <!-- Brand Logo -->
+        <a class="navbar-brand modern-brand" href="#home">
+          <div class="brand-container">
+            <div class="brand-icon">
+              <img src="img/testi-1.png" alt="Tiebo Croons" class="brand-image">
+            </div>
+            <div class="brand-text">
+              <h4 class="brand-name mb-0">Tiebo Croons</h4>
+              <small class="brand-subtitle">Digital Designer</small>
+            </div>
+          </div>
         </a>
+
+        <!-- Mobile Toggle Button -->
         <button
-          class="navbar-toggler"
+          class="navbar-toggler modern-toggler"
           type="button"
           data-toggle="collapse"
           data-target="#navbar-nav-header"
@@ -64,43 +73,46 @@
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span class="lnr lnr-menu"></span>
+          <span class="toggler-icon"></span>
+          <span class="toggler-icon"></span>
+          <span class="toggler-icon"></span>
         </button>
+
+        <!-- Navigation Menu -->
         <div class="collapse navbar-collapse" id="navbar-nav-header">
-          <ul class="navbar-nav ml-auto">
+          <ul class="navbar-nav ms-auto modern-nav">
             <li class="nav-item">
-              <a class="nav-link" href="#About">Over mij</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#portfolio">Portfolio</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#contact">Contacteer mij</a>
-            </li>
-            <!-- Social Media Links -->
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="socialDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-share-alt"></i> Social
+              <a class="nav-link modern-link" href="#home">
+                <i class="lnr lnr-home nav-icon"></i>
+                <span class="nav-text">Home</span>
               </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="socialDropdown">
-                <a class="dropdown-item" href="https://github.com/tiebocroons" target="_blank">
-                  <i class="fab fa-github me-2"></i> GitHub
-                </a>
-                <a class="dropdown-item" href="https://www.linkedin.com/in/tiebo-croons-82b0172a1" target="_blank">
-                  <i class="fab fa-linkedin me-2"></i> LinkedIn
-                </a>
-                <a class="dropdown-item" href="https://www.instagram.com/tiebo.crs/" target="_blank">
-                  <i class="fab fa-instagram me-2"></i> Instagram
-                </a>
-              </div>
             </li>
-            <!--
-                        <li class="nav-item">
-                        <a id="side-search-open" class="nav-link" href="#">
-                            <span class="lnr lnr-magnifier"></span>
-                        </a>
-                    </li>
-                    -->
+            <li class="nav-item">
+              <a class="nav-link modern-link" href="#who-we-are">
+                <i class="lnr lnr-user nav-icon"></i>
+                <span class="nav-text">Over Mij</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link modern-link" href="#portfolio">
+                <i class="lnr lnr-briefcase nav-icon"></i>
+                <span class="nav-text">Portfolio</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link modern-link" href="#contact">
+                <i class="lnr lnr-envelope nav-icon"></i>
+                <span class="nav-text">Contact</span>
+              </a>
+            </li>
+            
+            <!-- CTA Button -->
+            <li class="nav-item cta-item">
+              <a class="nav-link cta-button" href="#contact">
+                <i class="lnr lnr-rocket me-2"></i>
+                Start Project
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -176,10 +188,6 @@
     <section id="who-we-are" class="bg-white">
       <div class="container">
         <div class="section-content">
-          <div class="title-wrap text-center mb-5" data-aos="fade-up">
-            <h2 class="section-title"><b>Over mij</b></h2>
-            <p class="section-sub-title">Passie voor digitale creativiteit & innovatie</p>
-          </div>
           
           <!-- Personal Intro with Visual Elements -->
           <div class="row mb-5">
@@ -187,7 +195,7 @@
               <div class="personal-avatar mb-4">
                 <div class="avatar-wrapper">
                   <div class="avatar-circle">
-                    <i class="lnr lnr-user display-4 text-white"></i>
+                    <img src="img/testi-1.png" alt="Tiebo Croons" class="avatar-image">
                   </div>
                   <div class="avatar-ring"></div>
                 </div>
@@ -584,17 +592,6 @@
 
         </div>
       </div>
-       <!-- Portfolio Hero Section -->
-       <div
-         id="About"
-         class="jumbotron jumbotron-single d-flex align-items-center"
-         style="background-image: url(img/bg.png)"
-       >
-         <div class="container text-center">
-           <h1 class="display-2 mb-4">Portfolio & Projects</h1>
-           <p class="lead text-white-50">Een overzicht van mijn creatieve ontwikkeling en technische vaardigheden</p>
-         </div>
-       </div>
 
       <!-- Portfolio Section - Redesigned to Match About Me Theme -->
       <section id="portfolio" class="bg-light py-5">
@@ -1688,198 +1685,292 @@
                   </div>
                 </div>
               </div>
+          </div>
+        </div>
+      </section>
+      <!-- Modern Contact Section -->
+      <section id="contact" class="contact-section bg-light py-5">
+        <div class="container">
+          
+          <!-- Contact Header -->
+          <div class="row mb-5" data-aos="fade-up">
+            <div class="col-12 text-center">
+              <h2 class="section-title mb-3">
+                <span class="text-primary">Laten we</span> <b>Samenwerken</b>
+              </h2>
+              <p class="text-muted lead mb-4">Klaar om jouw volgende project tot leven te brengen? Laten we contact opnemen!</p>
+            </div>
+          </div>
 
-            <!-- Portfolio Summary & Call to Action -->
-            <div class="portfolio-summary" data-aos="fade-up" data-aos-delay="1500">
+          <!-- Contact Cards -->
+          <div class="row mb-5">
+            <!-- Contact Info Cards -->
+            <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
               <div class="row">
-                <div class="col-lg-8 mx-auto text-center">
-                  <div class="summary-card visual-card p-5">
-                    <div class="summary-icon mb-4">
-                      <i class="lnr lnr-rocket text-primary display-4"></i>
+                <!-- Email Card -->
+                <div class="col-md-6 mb-4">
+                  <div class="contact-card visual-card h-100 p-4">
+                    <div class="contact-icon mb-3">
+                      <i class="lnr lnr-envelope text-primary"></i>
                     </div>
-                    
-                    <h3 class="summary-title mb-3">Klaar voor de Volgende Uitdaging</h3>
-                    <p class="summary-description text-muted mb-4 lead">
-                      Dit portfolio toont mijn evolutie van grafisch ontwerp naar webontwikkeling. 
-                      Elke project heeft bijgedragen aan mijn groei als Digital Experience Designer.
-                    </p>
-                    
-                    <div class="summary-stats row mb-4">
-                      <div class="col-md-3 col-6 mb-3">
-                        <div class="summary-stat">
-                          <div class="stat-number text-primary">18+</div>
-                          <div class="stat-label">Voltooide Projecten</div>
-                        </div>
-                      </div>
-                      <div class="col-md-3 col-6 mb-3">
-                        <div class="summary-stat">
-                          <div class="stat-number text-success">10+</div>
-                          <div class="stat-label">Tools & Technieken</div>
-                        </div>
-                      </div>
-                      <div class="col-md-3 col-6 mb-3">
-                        <div class="summary-stat">
-                          <div class="stat-number text-info">4</div>
-                          <div class="stat-label">Categorieën</div>
-                        </div>
-                      </div>
-                      <div class="col-md-3 col-6 mb-3">
-                        <div class="summary-stat">
-                          <div class="stat-number text-warning">3+</div>
-                          <div class="stat-label">Jaar Evolutie</div>
-                        </div>
+                    <h5 class="contact-title mb-2">Email Me</h5>
+                    <p class="contact-info text-muted mb-3">Voor projectvragen en samenwerking</p>
+                    <a href="mailto:tiebo.croons@gmail.com" class="contact-link">
+                      tiebo.croons@gmail.com
+                      <i class="lnr lnr-arrow-right ms-2"></i>
+                    </a>
+                  </div>
+                </div>
+                
+                <!-- Phone Card -->
+                <div class="col-md-6 mb-4">
+                  <div class="contact-card visual-card h-100 p-4">
+                    <div class="contact-icon mb-3">
+                      <i class="lnr lnr-phone text-success"></i>
+                    </div>
+                    <h5 class="contact-title mb-2">Bel Me</h5>
+                    <p class="contact-info text-muted mb-3">Beschikbaar ma-vr 9:00-17:00</p>
+                    <a href="tel:+32473570008" class="contact-link">
+                      +32 473 57 00 08
+                      <i class="lnr lnr-arrow-right ms-2"></i>
+                    </a>
+                  </div>
+                </div>
+                
+                <!-- Location Card -->
+                <div class="col-md-6 mb-4">
+                  <div class="contact-card visual-card h-100 p-4">
+                    <div class="contact-icon mb-3">
+                      <i class="lnr lnr-map text-info"></i>
+                    </div>
+                    <h5 class="contact-title mb-2">Locatie</h5>
+                    <p class="contact-info text-muted mb-3">Gevestigd in het hart van België</p>
+                    <span class="contact-link">
+                      Mechelen, België
+                      <i class="lnr lnr-location ms-2"></i>
+                    </span>
+                  </div>
+                </div>
+                
+                <!-- Response Time Card -->
+                <div class="col-md-6 mb-4">
+                  <div class="contact-card visual-card h-100 p-4">
+                    <div class="contact-icon mb-3">
+                      <i class="lnr lnr-clock text-warning"></i>
+                    </div>
+                    <h5 class="contact-title mb-2">Response Tijd</h5>
+                    <p class="contact-info text-muted mb-3">Snelle reactie gegarandeerd</p>
+                    <span class="contact-link">
+                      Binnen 24 uur
+                      <i class="lnr lnr-checkmark-circle ms-2"></i>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Contact CTA -->
+            <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+              <div class="contact-cta visual-card h-100 p-4 text-center">
+                <div class="cta-icon mb-4">
+                  <i class="lnr lnr-rocket text-primary display-4"></i>
+                </div>
+                <h4 class="cta-title mb-3">Start Jouw Project</h4>
+                <p class="cta-description text-muted mb-4">
+                  Van concept tot realisatie - samen maken we jouw digitale visie werkelijkheid.
+                </p>
+                
+                <div class="cta-stats mb-4">
+                  <div class="row text-center">
+                    <div class="col-6">
+                      <div class="stat-number text-primary">24h</div>
+                      <div class="stat-label">Response</div>
+                    </div>
+                    <div class="col-6">
+                      <div class="stat-number text-success">100%</div>
+                      <div class="stat-label">Commitment</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="cta-actions">
+                  <a href="mailto:tiebo.croons@gmail.com?subject=Project Samenwerking&body=Hallo Tiebo,%0D%0A%0D%0AIk ben geïnteresseerd in een samenwerking voor:%0D%0A%0D%0A[Beschrijf je project hier]%0D%0A%0D%0AMet vriendelijke groet," 
+                     class="btn btn-primary btn-lg mb-3 w-100">
+                    <i class="lnr lnr-envelope me-2"></i>
+                    Start Conversatie
+                  </a>
+                  <a href="tel:+32473570008" class="btn btn-outline-primary btn-lg w-100">
+                    <i class="lnr lnr-phone me-2"></i>
+                    Direct Bellen
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Social Links Section -->
+          <div class="row" data-aos="fade-up" data-aos-delay="300">
+            <div class="col-12">
+              <div class="social-connect visual-card p-5 text-center">
+                <h4 class="social-title mb-3">
+                  <i class="lnr lnr-users text-primary me-2"></i>
+                  Volg Mijn Journey
+                </h4>
+                <p class="social-description text-muted mb-4">
+                  Blijf op de hoogte van mijn nieuwste projecten en ontdekkingen
+                </p>
+                
+                <div class="social-links d-flex justify-content-center flex-wrap gap-3">
+                  <a href="https://www.linkedin.com/in/tiebo-croons" target="_blank" 
+                     class="social-link linkedin" title="LinkedIn - Professioneel netwerk">
+                    <i class="fab fa-linkedin"></i>
+                    <span>LinkedIn</span>
+                  </a>
+                  <a href="https://github.com/tiebocroons" target="_blank" 
+                     class="social-link github" title="GitHub - Code repositories">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                  </a>
+                  <a href="https://www.instagram.com/tiebo.crs/" target="_blank" 
+                     class="social-link instagram" title="Instagram - Creatieve content">
+                    <i class="fab fa-instagram"></i>
+                    <span>Instagram</span>
+                  </a>
+                </div>
+                
+                <div class="connect-stats mt-4">
+                  <div class="row text-center">
+                    <div class="col-md-4">
+                      <div class="connect-stat">
+                        <i class="fab fa-linkedin text-linkedin"></i>
+                        <div class="stat-label">Professioneel Netwerk</div>
                       </div>
                     </div>
-                    
-                    <div class="summary-skills mb-4">
-                      <h5 class="mb-3">Kernvaardigheden</h5>
-                      <div class="skills-cloud d-flex flex-wrap justify-content-center">
-                        <span class="skill-badge badge-photoshop">Photoshop</span>
-                        <span class="skill-badge badge-illustrator">Illustrator</span>
-                        <span class="skill-badge badge-html">HTML5</span>
-                        <span class="skill-badge badge-css">CSS3</span>
-                        <span class="skill-badge badge-javascript">JavaScript</span>
-                        <span class="skill-badge badge-php">PHP</span>
-                        <span class="skill-badge badge-figma">Figma</span>
-                        <span class="skill-badge badge-development">Web Development</span>
+                    <div class="col-md-4">
+                      <div class="connect-stat">
+                        <i class="fab fa-github text-dark"></i>
+                        <div class="stat-label">Open Source Projects</div>
                       </div>
                     </div>
-                    
-                    <div class="summary-actions">
-                      <a href="#contact" class="btn btn-primary btn-lg me-3">
-                        <i class="lnr lnr-envelope"></i> Start een Project
-                      </a>
-                      <a href="#about" class="btn btn-outline-primary btn-lg">
-                        <i class="lnr lnr-user"></i> Meer over Mij
-                      </a>
+                    <div class="col-md-4">
+                      <div class="connect-stat">
+                        <i class="fab fa-instagram text-instagram"></i>
+                        <div class="stat-label">Behind the Scenes</div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          
         </div>
       </section>
-      <!-- End of Portfolio Section -->
-      <div
-        id="contact"
-        class="jumbotron jumbotron-single d-flex align-items-center"
-        style="background-image: url(img/bg.png)"
-      >
-        <div class="container text-center">
-          <h1 class="display-2 mb-4">Contacteer mij</h1>
-        </div>
-      </div>
-      <!-- Contact Form Section -->
-       
-         <section id="contact-form" class="bg-white">
-        <div class="container">
-            <div class="section-content">
-
-      <!-- Section Title -->
-                    <div class="title-wrap" data-aos="fade-up">
-                    <h2 class="section-title">Contacteer me</h2>
-                    <p class="section-sub-title"> </span> Door technische problemen werkt deze formulier niet</span> </p>
-                </div>
-      <!-- End of Section Title -->
-      <div class="row">
-        <!-- Contact Form Holder -->
-        
-                            <div class="col-md-8 offset-md-2 contact-form-holder mt-4" data-aos="fade-up">
-                        <form method="post" name="contact-us" action="" class="contactForm">
-                            <div id="sendmessage" style="display:none;">Your message has been sent. Thank you!</div>
-                            <div id="errormessage" style="display:none;"></div>
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Name" data-rule="required" data-msg="Please enter your name">
-                                    <div class="validation"></div>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" data-rule="email" data-msg="Please enter a valid email">
-                                    <div class="validation"></div>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone">
-                                    <div class="validation"></div>
-                                </div>
-                                <div class="col-md-12 form-group">
-                                    <textarea class="form-control" id="message" name="message" rows="6" placeholder="Your Message ..." data-rule="required" data-msg="Please write something for us"></textarea>
-                                    <div class="validation"></div>
-                                </div>
-                                <div class="col-md-12 text-center">
-                                    <button class="btn btn-primary btn-shadow btn-lg" type="submit" name="submit">Send
-                                        Message</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                      
-        <!-- End of Contact Form Holder -->
-
-        
-                                </div>
-            </div>
+    <!-- Modern Footer -->
+    <footer class="modern-footer">
+      <!-- Back to top button -->
+      <a href="#home" class="back-to-top" aria-label="Terug naar boven">
+        <i class="lnr lnr-chevron-up"></i>
+      </a>
       
-        <div class="section-content col-12 mt-4 pt-0">
-          <div class="title-wrap" data-aos="fade-up">
-            <h2 class="section-title">Waar kan je me vinden?</h2>
-          </div>
-          <div class="row text-center mt-4">
-            <div class="col-md-3" data-aos="fade-up">
-              <span class="lnr lnr-location fs-40 py-4 d-block"></span>
-              <h5>LOCATIE</h5>
-              <p>Mechelen</p>
-            </div>
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
-              <span class="lnr lnr-clock fs-40 py-4 d-block"></span>
-              <h5>WERK TIJD</h5>
-              <p>Maandag - Vrijdag</p>
-            </div>
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
-              <span class="lnr lnr-phone fs-40 py-4 d-block"></span>
-              <h5>BEL ME</h5>
-              <p>+32 473 57 00 08</p>
-            </div>
-            <div class="col-md-3" data-aos="fade-up" data-aos-delay="600">
-              <span class="lnr lnr-envelope fs-40 py-4 d-block"></span>
-              <h5>EMAIL</h5>
-              <p>tiebo.croons@gmail.com</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- End of Contact Form Section -->
+      <div class="footer-content">
+        <div class="container">
+          
+          <!-- Footer Main -->
+          <div class="footer-main py-5">
+            <div class="row">
+              
+              <!-- Brand Section -->
+              <div class="col-lg-4 col-md-6 mb-4">
+                <div class="footer-brand">
+                  <h4 class="brand-title mb-3">
+                    <span class="text-primary">Tiebo</span> Croons
+                  </h4>
+                  <p class="brand-description mb-4">
+                    Digital Experience Designer gepassioneerd door het creëren van 
+                    moderne weboplossingen en visueel design die impact maken.
+                  </p>
+                  <div class="brand-stats">
+                    <div class="row text-center">
+                      <div class="col-4">
+                        <div class="stat-item">
+                          <div class="stat-number">18+</div>
+                          <div class="stat-label">Projecten</div>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <div class="stat-item">
+                          <div class="stat-number">3+</div>
+                          <div class="stat-label">Jaar Ervaring</div>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <div class="stat-item">
+                          <div class="stat-number">100%</div>
+                          <div class="stat-label">Passie</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Quick Links -->
+              <div class="col-lg-2 col-md-6 mb-4">
+                <div class="footer-links text-center">
+                  <h5 class="links-title mb-3">Navigatie</h5>
+                  <ul class="links-list">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#who-we-are">Over Mij</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                  </ul>
+                </div>
+              </div>
+              
+              <!-- Services -->
+              <div class="col-lg-6 col-md-6 mb-4">
+                <div class="footer-links text-center">
+                  <h5 class="links-title mb-3">Diensten</h5>
+                  <ul class="links-list">
+                    <li><a href="#portfolio">Web Development</a></li>
+                    <li><a href="#portfolio">Grafisch Design</a></li>
+                    <li><a href="#portfolio">UI/UX Design</a></li>
+                    <li><a href="#portfolio">Branding</a></li>
+                    <li><a href="#contact">Consultatie</a></li>
+                  </ul>
+                </div>
+              </div>
+              
 
-    <footer class="mastfoot my-3">
-      <a href="#home" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-      <div class="inner container">
-        <div class="row">
-          <div class="col-lg-4 col-md-12 d-flex align-items-center"></div>
-          <div class="col-lg-4 col-md-12 d-flex align-items-center">
-            <p class="mx-auto text-center mb-0">
-              Design by
-              <a href="https://www.instagram.com/tiebo.crs/" target="_blank"
-                >Tiebo Croons</a
-              >
-              <br />
-              Support e-mail: support.tiebocroons.be
-            </p>
+              
+            </div>
           </div>
-
-          <div class="col-lg-4 col-md-12">
-            <nav class="nav nav-mastfoot justify-content-center">
-              <a class="nav-link" href="https://www.instagram.com/tiebo.crs/" target="_blank" aria-label="Instagram" title="Volg me op Instagram">
-                <i class="fab fa-instagram"></i>
-              </a>
-              <a class="nav-link" href="https://github.com/tiebocroons" target="_blank" aria-label="GitHub" title="Bekijk mijn GitHub projecten">
-                <i class="fab fa-github"></i>
-              </a>
-              <a class="nav-link" href="https://www.linkedin.com/in/tiebo-croons" target="_blank" aria-label="LinkedIn" title="Verbind met me op LinkedIn">
-                <i class="fab fa-linkedin"></i>
-              </a>
-            </nav>
+          
+          <!-- Footer Bottom -->
+          <div class="py-4">
+            <div class="row align-items-center">
+              <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+                <p class="copyright mb-0">
+                  © 2025 <strong>Tiebo Croons</strong>. Alle rechten voorbehouden.
+                </p>
+              </div>
+              <div class="col-md-6 text-center text-md-end">
+                <div class="footer-meta">
+                  <span class="meta-item">
+                    <i class="lnr lnr-heart text-danger me-1"></i>
+                    Gemaakt met passie
+                  </span>
+                  <span class="meta-separator">•</span>
+                  <span class="meta-item">
+                    <i class="lnr lnr-code text-primary me-1"></i>
+                    Handcrafted Code
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
+          
         </div>
       </div>
     </footer>
