@@ -2760,7 +2760,11 @@ section {
 }
 
 .filter-btn:hover,
-.filter-btn.is-checked {
+.filter-btn.is-checked,
+.filter-btn.active,
+.btn-filter a:hover,
+.btn-filter a.is-checked,
+.btn-filter a.active {
   background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
   color: white;
   border-color: #007bff;
@@ -2769,7 +2773,11 @@ section {
 }
 
 .filter-btn:hover .filter-count,
-.filter-btn.is-checked .filter-count {
+.filter-btn.is-checked .filter-count,
+.filter-btn.active .filter-count,
+.btn-filter a:hover .filter-count,
+.btn-filter a.is-checked .filter-count,
+.btn-filter a.active .filter-count {
   background: rgba(255, 255, 255, 0.2);
   color: white;
 }
@@ -3475,5 +3483,368 @@ section {
     right: 20px;
     width: 45px;
     height: 45px;
+  }
+}
+
+/* Modern Design Components for Detail Page */
+
+/* Icon Circle Design */
+.icon-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.icon-circle {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.icon-circle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+/* Resource Card Styling */
+.resource-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.resource-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+  border-color: #007bff;
+}
+
+.resource-card .icon-wrapper {
+  margin-bottom: 1rem;
+}
+
+.resource-card .icon-circle {
+  width: 50px;
+  height: 50px;
+  font-size: 1.2rem;
+}
+
+/* Enhanced Visual Card for Detail Pages */
+.portfolio-card.visual-card {
+  background: white;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.portfolio-card.visual-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.portfolio-card.visual-card:hover::before {
+  opacity: 1;
+}
+
+.portfolio-card.visual-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(0, 123, 255, 0.15);
+  border-color: rgba(0, 123, 255, 0.2);
+}
+
+.portfolio-card.visual-card .card-title {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.portfolio-card.visual-card .card-text {
+  color: #6c757d;
+  line-height: 1.6;
+}
+
+/* Timeline Enhancements */
+.progress-timeline .timeline-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.progress-timeline .timeline-item {
+  position: relative;
+}
+
+.progress-timeline .timeline-item:not(:last-child):before {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 20px;
+  height: calc(100% + 10px);
+  width: 2px;
+  background-color: #e9ecef;
+  z-index: 1;
+}
+
+.progress-timeline .timeline-item.completed:not(:last-child):before {
+  background-color: #28a745;
+}
+
+/* Button Enhancements */
+.btn-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 10px rgba(0, 123, 255, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+  background: linear-gradient(135deg, #0056b3 0%, #004494 100%);
+}
+
+.btn-primary:focus,
+.btn-primary:active {
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+/* Badge Improvements */
+.badge-success,
+.badge-primary {
+  border: none !important;
+  font-weight: 500;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+}
+
+.badge-success {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.badge-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .icon-circle {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+  
+  .portfolio-card.visual-card:hover {
+    transform: translateY(-4px);
+  }
+  
+  .resource-card:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 576px) {
+  .portfolio-card.visual-card .card-body {
+    padding: 1.5rem;
+  }
+  
+  .icon-wrapper {
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* Related Projects Section - Gerelateerde Projecten */
+#portfolio .portfolio-card.visual-card {
+  margin-bottom: 2rem;
+  height: auto;
+}
+
+#portfolio .portfolio-card.visual-card .card-image {
+  position: relative;
+  overflow: hidden;
+  height: 250px;
+  border-radius: 12px 12px 0 0;
+}
+
+#portfolio .portfolio-card.visual-card .card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#portfolio .portfolio-card.visual-card:hover .card-image img {
+  transform: scale(1.08);
+}
+
+#portfolio .portfolio-card.visual-card .image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.9), rgba(0, 86, 179, 0.95));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#portfolio .portfolio-card.visual-card:hover .image-overlay {
+  opacity: 1;
+}
+
+#portfolio .portfolio-card.visual-card .overlay-content {
+  text-align: center;
+  color: white;
+  transform: translateY(20px);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#portfolio .portfolio-card.visual-card:hover .overlay-content {
+  transform: translateY(0);
+}
+
+#portfolio .portfolio-card.visual-card .overlay-content h5 {
+  color: white;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+#portfolio .portfolio-card.visual-card .overlay-content p {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+#portfolio .portfolio-card.visual-card .card-content {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 0 0 12px 12px;
+}
+
+#portfolio .portfolio-card.visual-card .card-badges {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+#portfolio .portfolio-card.visual-card .skill-tag {
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+#portfolio .portfolio-card.visual-card .skill-tag.design {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  color: white;
+}
+
+#portfolio .portfolio-card.visual-card .skill-tag.photoshop {
+  background: linear-gradient(135deg, #001e36, #31a8ff);
+  color: white;
+}
+
+#portfolio .portfolio-card.visual-card .skill-tag.illustrator {
+  background: linear-gradient(135deg, #330000, #ff9a00);
+  color: white;
+}
+
+#portfolio .portfolio-card.visual-card .year-badge {
+  background: linear-gradient(135deg, hsl(312, 100%, 50%), hsl(272, 100%, 50%));
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+#portfolio .portfolio-card.visual-card .card-info {
+  margin-top: 0.5rem;
+}
+
+#portfolio .portfolio-card.visual-card .project-title {
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+#portfolio .portfolio-card.visual-card .project-description {
+  color: #6c757d;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+/* Responsive adjustments for related projects */
+@media (max-width: 768px) {
+  #portfolio .portfolio-card.visual-card .card-content {
+    padding: 1.25rem;
+  }
+  
+  #portfolio .portfolio-card.visual-card .card-image {
+    height: 220px;
+  }
+  
+  #portfolio .portfolio-card.visual-card .project-title {
+    font-size: 1rem;
+  }
+  
+  #portfolio .portfolio-card.visual-card .project-description {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 576px) {
+  #portfolio .portfolio-card.visual-card .card-content {
+    padding: 1rem;
+  }
+  
+  #portfolio .portfolio-card.visual-card .card-image {
+    height: 200px;
+  }
+  
+  #portfolio .portfolio-card.visual-card .card-badges {
+    gap: 0.25rem;
+  }
+  
+  #portfolio .portfolio-card.visual-card .skill-tag,
+  #portfolio .portfolio-card.visual-card .year-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
   }
 }
