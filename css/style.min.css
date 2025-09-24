@@ -675,6 +675,44 @@ section {
   margin-bottom: 20px;
   border-radius: 5px;
   overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Isotope filtering transitions */
+.isotope .grid-item {
+  transition-duration: 0.8s;
+}
+
+.isotope.isotope--no-transition,
+.isotope.isotope--no-transition .grid-item,
+.isotope .grid-item.isotope-hidden {
+  transition-duration: 0s;
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 991px) {
+  .grid-sizer,
+  .grid-item {
+    width: 48%;
+  }
+  .gutter-sizer {
+    width: 4%;
+  }
+}
+
+@media (max-width: 767px) {
+  .grid-sizer,
+  .grid-item {
+    width: 100%;
+  }
+  .gutter-sizer {
+    width: 0;
+  }
+}
+
+/* Portfolio grid container */
+.portfolio-grid-container.grid-portfolio {
+  position: relative;
 }
 
 .grid-item:hover .grid-info {
@@ -1845,15 +1883,785 @@ section {
   margin-right: 5px;
 }
 
-/* Additional Badge Colors */
+/* ===== MODERN 2024 BADGE SYSTEM ===== */
+
+/* Base Badge Styling - 2024 Modern Design */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), 
+              0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.8s ease;
+}
+
+.badge:hover::before {
+  left: 100%;
+}
+
+.badge:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 
+              0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Category Badges */
+.badge-development {
+  background: linear-gradient(135deg, #00d4aa 0%, #00a085 50%, #007a63 100%);
+  color: white;
+  border-color: rgba(0, 212, 170, 0.3);
+}
+
+.badge-design {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #5a3d7a 100%);
+  color: white;
+  border-color: rgba(102, 126, 234, 0.3);
+}
+
+.badge-photography {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 50%, #d63031 100%);
+  color: white;
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+.badge-minimalism {
+  background: linear-gradient(135deg, #2d3436 0%, #636e72 50%, #74b9ff 100%);
+  color: white;
+  border-color: rgba(45, 52, 54, 0.3);
+}
+
+.badge-branding {
+  background: linear-gradient(135deg, #fd79a8 0%, #e84393 50%, #c44569 100%);
+  color: white;
+  border-color: rgba(253, 121, 168, 0.3);
+}
+
+.badge-web {
+  background: linear-gradient(135deg, #0984e3 0%, #74b9ff 50%, #a29bfe 100%);
+  color: white;
+  border-color: rgba(9, 132, 227, 0.3);
+}
+
+/* Tool/Technology Badges */
+.badge-tool {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 50%, #d35400 100%);
+  color: white;
+  border-color: rgba(243, 156, 18, 0.3);
+  font-size: 11px;
+  padding: 6px 12px;
+}
+
+.badge-html {
+  background: linear-gradient(135deg, #e34c26 0%, #f06529 50%, #e34c26 100%);
+  color: white;
+  border-color: rgba(227, 76, 38, 0.3);
+}
+
+.badge-css {
+  background: linear-gradient(135deg, #1572b6 0%, #33a9dc 50%, #1572b6 100%);
+  color: white;
+  border-color: rgba(21, 114, 182, 0.3);
+}
+
+.badge-javascript {
+  background: linear-gradient(135deg, #f1e05a 0%, #f7df1e 50%, #f1e05a 100%);
+  color: #333;
+  border-color: rgba(241, 224, 90, 0.3);
+}
+
+.badge-php {
+  background: linear-gradient(135deg, #4f5d95 0%, #8892bf 50%, #4f5d95 100%);
+  color: white;
+  border-color: rgba(79, 93, 149, 0.3);
+}
+
+.badge-photoshop {
+  background: linear-gradient(135deg, #31a8ff 0%, #0078d4 50%, #004578 100%);
+  color: white;
+  border-color: rgba(49, 168, 255, 0.3);
+}
+
+.badge-illustrator {
+  background: linear-gradient(135deg, #ff9a00 0%, #ff7b00 50%, #ff5722 100%);
+  color: white;
+  border-color: rgba(255, 154, 0, 0.3);
+}
+
+.badge-figma {
+  background: linear-gradient(135deg, #f24e1e 0%, #a259ff 50%, #0acf83 100%);
+  color: white;
+  border-color: rgba(242, 78, 30, 0.3);
+}
+
+/* Status/Date Badges - Enhanced Readability */
+.badge-date {
+  background: linear-gradient(135deg, #2d3436 0%, #636e72 50%, #2d3436 100%);
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 14px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.8px;
+  min-width: 50px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(45, 52, 54, 0.3),
+              0 2px 4px rgba(0, 0, 0, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Year-specific badge colors for better distinction */
+.badge-date[data-year="2024"], 
+.badge-date:contains("2024") {
+  background: linear-gradient(135deg, #00b894 0%, #00a085 50%, #00b894 100%);
+  border-color: rgba(0, 184, 148, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 184, 148, 0.3),
+              0 2px 4px rgba(0, 0, 0, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.badge-date[data-year="2023"],
+.badge-date:contains("2023") {
+  background: linear-gradient(135deg, #0984e3 0%, #74b9ff 50%, #0984e3 100%);
+  border-color: rgba(9, 132, 227, 0.4);
+  box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3),
+              0 2px 4px rgba(0, 0, 0, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.badge-date[data-year="2022"],
+.badge-date:contains("2022") {
+  background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 50%, #6c5ce7 100%);
+  border-color: rgba(108, 92, 231, 0.4);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3),
+              0 2px 4px rgba(0, 0, 0, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Enhanced hover effects for date badges */
+.badge-date:hover {
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 8px 20px rgba(45, 52, 54, 0.4),
+              0 4px 8px rgba(0, 0, 0, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.badge-new {
+  background: linear-gradient(135deg, #00b894 0%, #00cec9 50%, #55efc4 100%);
+  color: white;
+  border-color: rgba(0, 184, 148, 0.3);
+  animation: pulse-new 2s infinite;
+}
+
+.badge-featured {
+  background: linear-gradient(135deg, #fdcb6e 0%, #e17055 50%, #d63031 100%);
+  color: white;
+  border-color: rgba(253, 203, 110, 0.3);
+  position: relative;
+}
+
+.badge-featured::after {
+  content: '⭐';
+  margin-left: 4px;
+  font-size: 10px;
+}
+
+/* Traditional Color Badges - Enhanced */
+.badge-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 50%, #004085 100%);
+  color: white;
+  border-color: rgba(0, 123, 255, 0.3);
+}
+
+.badge-secondary {
+  background: linear-gradient(135deg, #6c757d 0%, #5a6268 50%, #495057 100%);
+  color: white;
+  border-color: rgba(108, 117, 125, 0.3);
+}
+
+.badge-success {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 50%, #17a2b8 100%);
+  color: white;
+  border-color: rgba(40, 167, 69, 0.3);
+}
+
+.badge-danger {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 50%, #bd2130 100%);
+  color: white;
+  border-color: rgba(220, 53, 69, 0.3);
+}
+
+.badge-warning {
+  background: linear-gradient(135deg, #ffc107 0%, #e0a800 50%, #d39e00 100%);
+  color: #212529;
+  border-color: rgba(255, 193, 7, 0.3);
+}
+
+.badge-info {
+  background: linear-gradient(135deg, #17a2b8 0%, #138496 50%, #117a8b 100%);
+  color: white;
+  border-color: rgba(23, 162, 184, 0.3);
+}
+
+.badge-light {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
+  color: #495057;
+  border-color: rgba(248, 249, 250, 0.3);
+}
+
+.badge-dark {
+  background: linear-gradient(135deg, #343a40 0%, #23272b 50%, #1d2124 100%);
+  color: white;
+  border-color: rgba(52, 58, 64, 0.3);
+}
+
 .badge-purple {
-  background-color: #6f42c1;
+  background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 50%, #4c2a85 100%);
+  color: white;
+  border-color: rgba(111, 66, 193, 0.3);
+}
+
+/* Special Effects */
+.badge-gradient-rainbow {
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #fd79a8);
+  background-size: 300% 300%;
+  animation: rainbow-gradient 3s ease infinite;
   color: white;
 }
 
-.badge-development {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+@keyframes rainbow-gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulse-new {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Badge Size Variants */
+.badge-sm {
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 15px;
+}
+
+.badge-lg {
+  font-size: 14px;
+  padding: 10px 20px;
+  border-radius: 25px;
+}
+
+.badge-xl {
+  font-size: 16px;
+  padding: 12px 24px;
+  border-radius: 30px;
+}
+
+/* Badge Groups */
+.badge-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.badge-group .badge {
+  margin: 0;
+}
+
+/* Portfolio Badge Container */
+.portfolio-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+
+.portfolio-badges .badge {
+  font-size: 11px;
+  padding: 6px 12px;
+  margin: 0;
+}
+
+/* Specialty Badges Override */
+.specialty-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.specialty-badges .badge {
+  font-size: 12px;
+  padding: 8px 16px;
+  margin: 0;
+  border-radius: 20px;
+}
+
+/* Timeline Badge Styling - Enhanced Readability */
+.timeline-date.badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 18px;
+  display: inline-block;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.5px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
+              0 2px 4px rgba(0, 0, 0, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.timeline-date.badge.badge-primary {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 50%, #004085 100%);
+  border-color: rgba(0, 123, 255, 0.4);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3),
+              0 2px 4px rgba(0, 0, 0, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.timeline-date.badge.badge-success {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 50%, #17a2b8 100%);
+  border-color: rgba(40, 167, 69, 0.4);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3),
+              0 2px 4px rgba(0, 0, 0, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Interactive Badge Effects */
+.badge-interactive {
+  cursor: pointer;
+  user-select: none;
+}
+
+.badge-interactive:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Badge with Icons */
+.badge-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge-with-icon i {
+  font-size: 10px;
+}
+
+/* ===== ENHANCED PORTFOLIO STYLING ===== */
+
+/* Portfolio Filter Enhancement */
+.portfolio-filter-wrap {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.filter-title {
+  color: #333;
+  font-weight: 600;
+}
+
+.enhanced-filter {
+  gap: 15px;
+}
+
+.filter-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 25px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(0, 123, 255, 0.1);
+  border-radius: 15px;
+  text-decoration: none;
+  color: #6c757d;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  backdrop-filter: blur(10px);
+  min-width: 120px;
+}
+
+.filter-btn i {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.filter-btn span {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.filter-count {
+  font-size: 12px;
+  background: rgba(0, 123, 255, 0.1);
+  color: #007bff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.filter-btn:hover,
+.filter-btn.is-checked {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
   color: white;
+  border-color: #007bff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+}
+
+.filter-btn:hover .filter-count,
+.filter-btn.is-checked .filter-count {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+/* Portfolio Category Cards */
+.portfolio-category-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  height: 100%;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.portfolio-category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+.category-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.1) 0%, rgba(0, 123, 255, 0.2) 100%);
+}
+
+.category-icon i {
+  font-size: 30px;
+}
+
+.category-title {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.category-desc {
+  color: #6c757d;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.category-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-badge {
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-weight: 500;
+}
+
+/* Enhanced Portfolio Cards */
+.portfolio-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.portfolio-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+}
+
+.portfolio-image-container {
+  position: relative;
+  overflow: hidden;
+  height: 250px;
+}
+
+.portfolio-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.portfolio-card:hover .portfolio-image {
+  transform: scale(1.05);
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 123, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.portfolio-card:hover .image-overlay {
+  opacity: 1;
+}
+
+.overlay-content .btn {
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.portfolio-card:hover .overlay-content .btn {
+  transform: translateY(0);
+}
+
+.portfolio-content {
+  position: relative;
+}
+
+.portfolio-title {
+  color: #333;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.portfolio-description {
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.project-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #6c757d;
+}
+
+.detail-item i {
+  font-size: 14px;
+  width: 16px;
+}
+
+.portfolio-actions {
+  margin-top: auto;
+}
+
+.completion-status {
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.completion-status.completed {
+  color: #28a745;
+}
+
+.completion-status.in-progress {
+  color: #ffc107;
+}
+
+/* Portfolio Summary Section */
+.portfolio-summary {
+  margin-top: 60px;
+}
+
+.summary-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.summary-icon {
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.1) 0%, rgba(0, 123, 255, 0.2) 100%);
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.summary-title {
+  color: #333;
+  font-weight: 600;
+}
+
+.summary-description {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.summary-stats {
+  margin: 0 -15px;
+}
+
+.summary-stat {
+  text-align: center;
+}
+
+.summary-stat .stat-number {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.summary-stat .stat-label {
+  font-size: 13px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.skills-cloud {
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.skills-cloud .skill-badge {
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 500;
+  margin: 5px;
+}
+
+.summary-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Section Headers */
+.section-header {
+  border-bottom: 1px solid rgba(0, 123, 255, 0.1);
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.section-subtitle {
+  color: #333;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.section-subtitle i {
+  font-size: 28px;
+  margin-right: 10px;
+}
+
+/* Responsive Badge Adjustments */
+@media (max-width: 768px) {
+  .badge {
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+  
+  .badge-lg {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
+  
+  .badge-xl {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+  
+  .portfolio-badges {
+    gap: 4px;
+  }
+  
+  .badge-group {
+    gap: 6px;
+  }
+  
+  .enhanced-filter {
+    gap: 10px;
+  }
+  
+  .filter-btn {
+    min-width: 100px;
+    padding: 15px 20px;
+  }
+  
+  .filter-btn i {
+    font-size: 20px;
+  }
+  
+  .filter-btn span {
+    font-size: 12px;
+  }
+  
+  .portfolio-image-container {
+    height: 200px;
+  }
+  
+  .summary-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .summary-actions .btn {
+    width: 100%;
+    max-width: 300px;
+  }
 }
 
 /* Enhanced Grid Item for GitHub Projects */
