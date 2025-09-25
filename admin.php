@@ -8,7 +8,10 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 }
 
 // Include database configuration
-require_once 'config/database.php';
+require_once 'database.php';
+
+// Initialize database connection
+$pdo = getDatabaseConnection();
 
 // Get projects count and stats
 try {
@@ -168,7 +171,7 @@ function importGitHubProject($pdo, $repoData) {
         $stmt->execute([$repoInfo['full_name']]);
         $existingProject = $stmt->fetch();
         
-        $tools = [$repoInfo['language'] ?? 'Unknown'];
+        $tools = [isset($repoInfo['language']) ? $repoInfo['language'] : 'Unknown'];
         $features = [
             "GitHub Repository: " . $repoInfo['name'],
             "Stars: " . $repoInfo['stargazers_count'],
@@ -212,8 +215,8 @@ function importGitHubProject($pdo, $repoData) {
 
 function detectProjectCategory($repoInfo) {
     $name = strtolower($repoInfo['name']);
-    $description = strtolower($repoInfo['description'] ?? '');
-    $language = strtolower($repoInfo['language'] ?? '');
+    $description = strtolower(isset($repoInfo['description']) ? $repoInfo['description'] : '');
+    $language = strtolower(isset($repoInfo['language']) ? $repoInfo['language'] : '');
     
     // Development keywords
     if (in_array($language, ['javascript', 'html', 'css', 'php', 'python', 'java']) ||
