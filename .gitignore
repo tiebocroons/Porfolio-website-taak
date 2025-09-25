@@ -53,6 +53,13 @@ error_log
 php_errors.log
 
 # Sensitive documentation
+
 SECURITY_NOTES.md
 PASSWORDS.txt
 CREDENTIALS.txt
+config/database.php
+js/github-api.js
+database_setup.php
+README_PHP_VERSION.md
+database.php
+database_schema.sql
