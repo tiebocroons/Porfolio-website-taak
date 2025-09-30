@@ -1399,9 +1399,6 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
   <!-- Main JS -->
   <script src="js/app.min.js "></script>
   
-  <!-- Contact Form JS -->
-  <script src="contactform/contactform.js"></script>
-  
   <!-- Auto-close navbar script -->
   <script>
     $(document).ready(function() {
