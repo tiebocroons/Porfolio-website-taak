@@ -450,19 +450,6 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
         object-position: center;
       }
       
-      .avatar-ring {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 140px;
-        height: 140px;
-        border: 2px solid rgba(27, 177, 220, 0.3);
-        border-radius: 50%;
-        animation: pulse-ring 3s ease-in-out infinite;
-        z-index: 1;
-      }
-      
       @keyframes pulse-ring {
         0%, 100% {
           transform: translate(-50%, -50%) scale(1);
@@ -681,7 +668,6 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                 <div class="project-avatar mb-4">
                   <div class="avatar-wrapper">
                     <img src="<?php echo htmlspecialchars($project['image_url'] ?: 'img/app-profile-mockup.png'); ?>" alt="<?php echo htmlspecialchars($project['title']); ?>" class="project-main-image">
-                    <div class="avatar-ring"></div>
                   </div>
                   <h2 class="mt-3 mb-2"><?php echo htmlspecialchars($project['title']); ?></h2>
                   <p class="text-muted"><?php echo ucfirst(htmlspecialchars($project['category'])); ?> Project</p>
