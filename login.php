@@ -573,19 +573,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Je gegevens worden veilig versleuteld en beschermd
           </div>
           
-          <!-- Debug info (remove in production) -->
-          <div class="text-center mt-3">
-            <small style="color: #999;">
-              Standaard: admin / admin123
-            </small>
-          </div>
-          
         </form>
       </div>
       
       <!-- Login Footer -->
       <div class="login-footer">
-        <a href="index.html" class="back-to-portfolio">
+        <a href="index.php" class="back-to-portfolio">
           <i class="lnr lnr-arrow-left"></i>
           Terug naar Portfolio
         </a>
