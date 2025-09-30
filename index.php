@@ -153,6 +153,14 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
     <meta name="geo.position" content="52.3676;4.9041" />
     <meta name="ICBM" content="52.3676, 4.9041" />
     
+    <!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-KBKMP25R');</script>
+<!-- End Google Tag Manager -->
+
     <!-- Mobile Optimization -->
     <meta name="format-detection" content="telephone=no" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -335,6 +343,10 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
   </head>
 
   <body data-spy="scroll" data-target="#navbar" class="static-layout">
+    <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KBKMP25R"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
     <!-- Modern Navbar -->
     <nav id="header-navbar" class="navbar navbar-expand-lg navbar-transparent modern-navbar">
       <div class="container">
