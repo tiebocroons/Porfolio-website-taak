@@ -563,15 +563,15 @@ section {
   background: hsl(272, 76%, 53%);
   background: -webkit-linear-gradient(
     to right,
-    hsl(260, 100%, 44%),
-    hsl(272, 76%, 53%)
+    hsl(272, 76%, 53%),
+    hsl(260, 100%, 44%)
   );
   background: linear-gradient(
     to right,
-    hsl(260, 100%, 44%),
-    hsl(272, 76%, 53%)
+    hsl(272, 76%, 53%),
+    hsl(260, 100%, 44%)
   );
-  transform-origin: 50% 150% 0;
+  transform-origin: 20% 150% 0;
   position: absolute;
   left: 0;
   z-index: 0;
