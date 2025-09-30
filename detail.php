@@ -710,7 +710,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
           <div class="row d-flex align-items-stretch mb-5">
             
             <!-- Project Description Card -->
-            <div class="col-lg-8 mb-4" data-aos="fade-right" data-aos-delay="100">
+            <div class="col-lg-8 mb-4" data-aos="fade-right" data-aos-delay="300">
               <div class="card visual-card h-100">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-primary">
@@ -784,7 +784,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
             
             <?php if ($project['category'] == 'development' || $project['category'] == 'web' || $project['category'] == 'mobile'): ?>
             <!-- Technical Info Card -->
-            <div class="col-lg-4 mb-4" data-aos="fade-left" data-aos-delay="200">
+            <div class="col-lg-4 mb-4" data-aos="fade-left" data-aos-delay="300">
               <div class="card visual-card h-100">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-success">
@@ -818,7 +818,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                     <?php endif; ?>
                     
                     <?php if (!empty($project['github_url'])): ?>
-                    <div class="tech-item" data-aos="fade-up" data-aos-delay="400">
+                    <div class="tech-item" data-aos="fade-up" data-aos-delay="300">
                       <div class="tech-marker">
                         <?php if (!empty($timelinePhases)): ?>
                         <div class="timeline-marker completed">
@@ -856,7 +856,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                     <?php endif; ?>
                     
                     <?php if (!empty($project['challenges'])): ?>
-                    <div class="tech-item" data-aos="fade-up" data-aos-delay="500">
+                    <div class="tech-item" data-aos="fade-up" data-aos-delay="300">
                       <div class="tech-marker">
                         <?php if (!empty($timelinePhases)): ?>
                         <div class="timeline-marker completed">
@@ -889,7 +889,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                       </div>
                     </div>
                     
-                    <div class="tech-item" data-aos="fade-up" data-aos-delay="400">
+                    <div class="tech-item" data-aos="fade-up" data-aos-delay="300">
                       <div class="tech-marker">
                         <?php if (!empty($timelinePhases)): ?>
                         <div class="timeline-marker completed">
@@ -907,7 +907,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                   </div>
                   
                   <!-- Project Actions -->
-                  <div class="project-actions mt-4" data-aos="fade-up" data-aos-delay="600">
+                  <div class="project-actions mt-4" data-aos="fade-up" data-aos-delay="300">
                     <?php if (!empty($project['live_url'])): ?>
                     <a href="<?php echo htmlspecialchars($project['live_url']); ?>" target="_blank" class="btn btn-primary btn-block mb-2">
                       <i class="lnr lnr-eye me-2"></i>
@@ -933,7 +933,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
             </div>
             <?php else: ?>
             <!-- Design Project: Creative Highlights -->
-            <div class="col-lg-4 mb-4" data-aos="fade-left" data-aos-delay="200">
+            <div class="col-lg-4 mb-4" data-aos="fade-left" data-aos-delay="300">
               <div class="card visual-card h-100">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-success">
@@ -961,7 +961,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                     <?php endif; ?>
                     
                     <?php if (!empty($project['color_palette'])): ?>
-                    <div class="highlight-item mb-3" data-aos="fade-up" data-aos-delay="400">
+                    <div class="highlight-item mb-3" data-aos="fade-up" data-aos-delay="300">
                       <div class="highlight-icon">
                         <?php if (!empty($timelinePhases)): ?>
                         <i class="lnr lnr-drop text-success"></i>
@@ -988,7 +988,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                     <?php endif; ?>
                     
                     <?php if (!empty($project['typography'])): ?>
-                    <div class="highlight-item mb-3" data-aos="fade-up" data-aos-delay="500">
+                    <div class="highlight-item mb-3" data-aos="fade-up" data-aos-delay="300">
                       <div class="highlight-icon">
                         <?php if (!empty($timelinePhases)): ?>
                         <i class="lnr lnr-text-format text-warning"></i>
@@ -1002,7 +1002,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                     <?php endif; ?>
                     
                     <?php if (!empty($project['design_style'])): ?>
-                    <div class="highlight-item" data-aos="fade-up" data-aos-delay="600">
+                    <div class="highlight-item" data-aos="fade-up" data-aos-delay="300">
                       <div class="highlight-icon">
                         <?php if (!empty($timelinePhases)): ?>
                         <i class="lnr lnr-star text-info"></i>
@@ -1049,7 +1049,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
             
             <!-- Design Project: Gallery Images -->
             <?php if (($project['category'] == 'design' || $project['category'] == 'vintage') && !empty($project['gallery_images'])): ?>
-            <div class="col-lg-4 mb-4" data-aos="fade-left" data-aos-delay="400">
+            <div class="col-lg-4 mb-4" data-aos="fade-left" data-aos-delay="300">
               <div class="card visual-card h-100">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-warning">
@@ -1086,7 +1086,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                     ?>
                     
                     <?php if ($imageCount > 6): ?>
-                    <div class="gallery-more" data-aos="zoom-in" data-aos-delay="900">
+                    <div class="gallery-more" data-aos="zoom-in" data-aos-delay="300">
                       <div class="gallery-more-content">
                         <i class="lnr lnr-plus-circle text-primary"></i>
                         <span>+<?php echo $imageCount - 6; ?> meer</span>
@@ -1149,7 +1149,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
           <div class="row d-flex align-items-stretch mb-5 justify-content-center">
             
             <!-- Technical Stack Card -->
-            <div class="<?php echo $cardClass; ?> mb-4" data-aos="fade-right" data-aos-delay="100">
+            <div class="<?php echo $cardClass; ?> mb-4" data-aos="fade-right" data-aos-delay="300">
               <div class="card visual-card h-100">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-primary">
@@ -1235,7 +1235,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
             
             <?php if ($project['category'] == 'development' || $project['category'] == 'web' || $project['category'] == 'mobile'): ?>
             <!-- Features & Functionality Card -->
-            <div class="col-lg-6 mb-4" data-aos="fade-left" data-aos-delay="200">
+            <div class="col-lg-6 mb-4" data-aos="fade-left" data-aos-delay="300">
               <div class="card visual-card h-100">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-success">
@@ -1257,7 +1257,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                       </div>
                     </div>
                     
-                    <div class="feature-item mb-3" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-item mb-3" data-aos="fade-up" data-aos-delay="300">
                       <div class="feature-icon">
                         <i class="lnr lnr-layers text-success"></i>
                       </div>
@@ -1267,7 +1267,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                       </div>
                     </div>
                     
-                    <div class="feature-item mb-3" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-item mb-3" data-aos="fade-up" data-aos-delay="300">
                       <div class="feature-icon">
                         <i class="lnr lnr-envelope text-info"></i>
                       </div>
@@ -1277,7 +1277,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                       </div>
                     </div>
                     
-                    <div class="feature-item mb-3" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-item mb-3" data-aos="fade-up" data-aos-delay="300">
                       <div class="feature-icon">
                         <i class="lnr lnr-rocket text-warning"></i>
                       </div>
@@ -1287,7 +1287,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                       </div>
                     </div>
                     
-                    <div class="feature-item" data-aos="fade-up" data-aos-delay="700">
+                    <div class="feature-item" data-aos="fade-up" data-aos-delay="300">
                       <div class="feature-icon">
                         <i class="lnr lnr-cog text-purple"></i>
                       </div>
@@ -1481,7 +1481,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                                                  ($project['lines_of_code'] > 1000 || !empty($project['challenges']))));
                         ?>
                         <?php if ($hasDevelopmentContent): ?>
-                        <div class="timeline-item completed mb-4 expandable-timeline" data-aos="fade-up" data-aos-delay="500" data-phase="development">
+                        <div class="timeline-item completed mb-4 expandable-timeline" data-aos="fade-up" data-aos-delay="300" data-phase="development">
                           <div class="timeline-marker completed">
                             <i class="lnr lnr-laptop text-white"></i>
                           </div>
@@ -1723,7 +1723,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                     </div>
                     
                     <!-- Progress Statistics -->
-                    <div class="col-lg-4" data-aos="fade-left" data-aos-delay="800">
+                    <div class="col-lg-4" data-aos="fade-left" data-aos-delay="300">
                       <div class="progress-stats">
                         <h6 class="text-muted mb-4">Project Statistieken</h6>
                         
@@ -1842,9 +1842,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
                     <img src="<?php echo htmlspecialchars($relatedProject['image_url'] ?: 'img/app-profile-mockup.png'); ?>" alt="<?php echo htmlspecialchars($relatedProject['title']); ?>" class="portfolio-image">
                     <div class="image-overlay">
                       <div class="overlay-content">
-                        <h5><?php echo htmlspecialchars($relatedProject['title']); ?></h5>
-                        <p><?php echo htmlspecialchars($relatedProject['short_description'] ?: substr($relatedProject['description'], 0, 50) . '...'); ?></p>
-                        <a href="detail.php?id=<?php echo $relatedProject['id']; ?>" class="btn btn-outline-light btn-sm">
+                        <a href="detail.php?id=<?php echo $relatedProject['id']; ?>" class="btn btn-light btn-sm">
                           <i class="lnr lnr-eye"></i> Bekijk Project
                         </a>
                       </div>
@@ -1895,7 +1893,7 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
           </div>
 
           <!-- Back to Portfolio Button -->
-          <div class="text-center mt-4" data-aos="fade-up" data-aos-delay="400">
+          <div class="text-center mt-4" data-aos="fade-up" data-aos-delay="300">
             <a href="index.php#portfolio" class="btn btn-primary btn-lg">
               <i class="lnr lnr-arrow-left me-2"></i> Bekijk Alle Projecten
             </a>
@@ -2626,6 +2624,60 @@ $brandSubtitle = 'Digital Designer'; // You can add this to settings table if ne
     .timeline-date.badge-primary {
       background-color: #007bff;
       color: white;
+    }
+
+    /* Overlay Content Styles - Matching index.php */
+    .overlay-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 10;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .image-overlay:hover .overlay-content,
+    .gallery-overlay:hover .overlay-content {
+      opacity: 1;
+    }
+
+    .gallery-overlay,
+    .image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(0, 123, 255, 0.9), rgba(0, 86, 179, 0.95));;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .portfolio-image-container:hover .image-overlay,
+    .gallery-image-wrapper:hover .gallery-overlay {
+      opacity: 1;
+    }
+
+    .gallery-image-wrapper,
+    .portfolio-image-container {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gallery-zoom {
+      color: white;
+      font-size: 24px;
+      text-decoration: none;
+    }
+
+    .gallery-zoom:hover {
+      color: #fff;
+      text-decoration: none;
     }
   </style>
 </body>
