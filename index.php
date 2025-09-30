@@ -18,7 +18,7 @@ $isLoggedIn = isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'
 
 // You can add more PHP variables here for dynamic content
 $siteTitle = "Portfolio | Tiebo Croons";
-$metaDescription = "Portfolio website van Tiebo Croons - Web Developer en Designer";
+$metaDescription = "Ontdek het portfolio van Tiebo Croons, ervaren web developer en designer uit België. Gespecialiseerd in moderne webtechnologieën zoals PHP, JavaScript, React, en Vue.js. Bekijk projecten in web development, frontend/backend development, UI/UX design en meer. Van concept tot deployment - professionele weboplossingen die werken.";
 
 // Function to get portfolio statistics
 function getPortfolioStats() {
@@ -144,6 +144,70 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title><?php echo htmlspecialchars($siteTitle); ?></title>
     <meta name="description" content="<?php echo htmlspecialchars($metaDescription); ?>" />
+    <meta name="keywords" content="web developer, designer, portfolio, PHP, JavaScript, HTML, CSS, React, Vue.js, frontend, backend, Tiebo Croons" />
+    <meta name="author" content="Tiebo Croons" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="Dutch" />
+    <meta name="geo.region" content="BE" />
+    <meta name="geo.placename" content="België" />
+    <meta name="geo.position" content="52.3676;4.9041" />
+    <meta name="ICBM" content="52.3676, 4.9041" />
+    
+    <!-- Mobile Optimization -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Tiebo Croons Portfolio" />
+    
+    <!-- Theme Colors -->
+    <meta name="theme-color" content="#667eea" />
+    <meta name="msapplication-navbutton-color" content="#667eea" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#667eea" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="<?php echo htmlspecialchars($siteTitle); ?>" />
+    <meta property="og:description" content="<?php echo htmlspecialchars($metaDescription); ?>" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>" />
+    <meta property="og:image" content="<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST']; ?>/img/testi-1.png" />
+    <meta property="og:image:alt" content="Tiebo Croons - Web Developer & Designer Portfolio" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="" />
+    <meta property="og:site_name" content="Tiebo Croons Portfolio" />
+    <meta property="og:locale" content="nl_BE" />
+    <meta property="og:locale:alternate" content="nl_NL" />
+    <meta property="og:locale:alternate" content="en_US" />
+    
+    <!-- Additional Open Graph for Professional Profile -->
+    <meta property="profile:first_name" content="Tiebo" />
+    <meta property="profile:last_name" content="Croons" />
+    <meta property="profile:username" content="tiebocroons" />
+    
+    <!-- Article/Website specific OG tags -->
+    <meta property="article:author" content="Tiebo Croons" />
+    <meta property="article:publisher" content="Tiebo Croons" />
+    <meta property="og:updated_time" content="<?php echo date('c'); ?>" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="<?php echo htmlspecialchars($siteTitle); ?>" />
+    <meta name="twitter:description" content="<?php echo htmlspecialchars($metaDescription); ?>" />
+    <meta name="twitter:image" content="<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST']; ?>/img/testi-1.png" />
+    <meta name="twitter:image:alt" content="Tiebo Croons - Web Developer & Designer Portfolio" />
+    <meta name="twitter:site" content="@tiebocroons" />
+    <meta name="twitter:creator" content="@tiebocroons" />
+    <meta name="twitter:domain" content="<?php echo $_SERVER['HTTP_HOST']; ?>" />
+    
+    <!-- Additional Social Media Meta Tags -->
+    <meta property="fb:app_id" content="" />
+    <meta name="pinterest-rich-pin" content="true" />
+    <meta name="linkedin:owner" content="tiebocroons" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>" />
+    
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
@@ -178,6 +242,92 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
       rel="stylesheet"
       href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css"
     />
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Tiebo Croons",
+      "jobTitle": "Web Developer & Designer",
+      "description": "Ervaren web developer en designer gespecialiseerd in moderne webtechnologieën en creatieve oplossingen",
+      "url": "<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']; ?>",
+      "image": "<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST']; ?>/img/testi-1.png",
+      "sameAs": [
+        "https://github.com/tiebocroons",
+        "https://linkedin.com/in/tiebocroons"
+      ],
+      "knowsAbout": [
+        "Web Development",
+        "Frontend Development", 
+        "Backend Development",
+        "UI/UX Design",
+        "JavaScript",
+        "PHP",
+        "HTML",
+        "CSS",
+        "React",
+        "Vue.js",
+        "Node.js",
+        "MySQL",
+        "Git",
+        "Adobe Creative Suite"
+      ],
+      "hasOccupation": {
+        "@type": "Occupation",
+        "name": "Web Developer",
+        "occupationLocation": {
+          "@type": "Country",
+          "name": "Nederland"
+        }
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Tiebo Croons Portfolio",
+      "description": "Portfolio website van Tiebo Croons - Web Developer en Designer showcasing web development and design projects",
+      "url": "<?php echo (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST']; ?>",
+      "author": {
+        "@type": "Person",
+        "name": "Tiebo Croons"
+      },
+      "inLanguage": "nl-BE",
+      "copyrightYear": "<?php echo $currentYear; ?>",
+      "copyrightHolder": {
+        "@type": "Person", 
+        "name": "Tiebo Croons"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "Tiebo Croons Web Development Services",
+      "description": "Professionele web development en design services",
+      "provider": {
+        "@type": "Person",
+        "name": "Tiebo Croons"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Nederland"
+      },
+      "serviceType": [
+        "Web Development",
+        "Frontend Development",
+        "Backend Development", 
+        "UI/UX Design",
+        "Website Design",
+        "Web Application Development"
+      ]
+    }
+    </script>
     <link
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
@@ -370,7 +520,7 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
           <div class="row d-flex align-items-stretch mb-5">
             
             <!-- Card 1: About Me - Enhanced -->
-            <div class="col-lg-6 mb-4" data-aos="fade-right" data-aos-delay="100">
+            <div class="col-lg-6 mb-4" data-aos="fade-right" data-aos-delay="300">
               <div class="card visual-card h-100">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-primary">
@@ -426,7 +576,7 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
             </div>
             
             <!-- Card 2: Studies Timeline - Enhanced -->
-            <div class="col-lg-6 mb-4" data-aos="fade-left" data-aos-delay="200">
+            <div class="col-lg-6 mb-4" data-aos="fade-left" data-aos-delay="300">
               <div class="card visual-card h-100">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-success">
@@ -469,7 +619,7 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
                     </div>
                     
                     <!-- Previous Education -->
-                    <div class="timeline-item completed" data-aos="fade-up" data-aos-delay="400">
+                    <div class="timeline-item completed" data-aos="fade-up" data-aos-delay="300">
                       <div class="timeline-marker completed-marker">
                         <i class="lnr lnr-checkmark-circle"></i>
                       </div>
@@ -488,7 +638,7 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
                   </div>
                   
                   <!-- Future Goals -->
-                  <div class="future-goals mt-4" data-aos="fade-up" data-aos-delay="500">
+                  <div class="future-goals mt-4" data-aos="fade-up" data-aos-delay="300">
                     <h6 class="text-muted mb-3">
                       <i class="lnr lnr-rocket"></i> Toekomstvisie
                     </h6>
@@ -518,7 +668,7 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
             
             <div class="row">
               <!-- Design Skills -->
-              <div class="col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="400">
+              <div class="col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="300">
                 <div class="skill-category">
                   <h5 class="skill-category-title">
                     <i class="lnr lnr-magic-wand text-primary"></i>
@@ -557,7 +707,7 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
               </div>
               
               <!-- Development Skills -->
-              <div class="col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="500">
+              <div class="col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="300">
                 <div class="skill-category">
                   <h5 class="skill-category-title">
                     <i class="lnr lnr-code text-success"></i>
@@ -620,7 +770,7 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
           <!-- End Skills Progress Section -->
 
           <!-- Core Competencies Section -->
-          <div class="core-competencies-section mt-5" data-aos="fade-up" data-aos-delay="600">
+          <div class="core-competencies-section mt-5" data-aos="fade-up" data-aos-delay="300">
             <div class="row">
               <div class="col-12 text-center mb-4">
                 <h3 class="section-subtitle">Kernvaardigheden</h3>
@@ -630,7 +780,7 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
             
             <div class="row">
               <!-- Creativity -->
-              <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="700">
+              <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
                 <div class="competency-card">
                   <div class="competency-icon">
                     <i class="lnr lnr-magic-wand"></i>
@@ -649,7 +799,7 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
               </div>
 
               <!-- Technical Skills -->
-              <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="800">
+              <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
                 <div class="competency-card">
                   <div class="competency-icon">
                     <i class="lnr lnr-code"></i>
@@ -1048,7 +1198,7 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
             </div>
             
             <!-- Contact CTA -->
-            <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
               <div class="contact-cta visual-card h-100 p-4 text-center">
                 <div class="cta-icon mb-4">
                   <i class="lnr lnr-rocket text-primary display-4"></i>
@@ -1114,29 +1264,6 @@ $portfolioStats['featured_projects'] = count($featuredProjects);
                     <i class="fab fa-instagram"></i>
                     <span>Instagram</span>
                   </a>
-                </div>
-                
-                <div class="connect-stats mt-4">
-                  <div class="row text-center">
-                    <div class="col-md-4">
-                      <div class="connect-stat">
-                        <i class="fab fa-linkedin text-linkedin"></i>
-                        <div class="stat-label">Professioneel Netwerk</div>
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="connect-stat">
-                        <i class="fab fa-github text-dark"></i>
-                        <div class="stat-label">Open Source Projects</div>
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="connect-stat">
-                        <i class="fab fa-instagram text-instagram"></i>
-                        <div class="stat-label">Behind the Scenes</div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
