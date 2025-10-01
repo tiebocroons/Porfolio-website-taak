@@ -558,7 +558,7 @@ section {
 =            FORM RECTANGLE ETC            =
 ==========================================*/
 .rectangle-1 {
-  width: 2000px;
+  width: 3000px;
   height: 400px;
   background: hsl(272, 76%, 53%);
   background: -webkit-linear-gradient(
