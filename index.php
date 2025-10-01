@@ -3,6 +3,11 @@
 // Start session for potential login functionality
 session_start();
 
+// Prevent caching to ensure fresh data
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
+
 // Include database configuration
 require_once 'database.php';
 
@@ -25,27 +30,7 @@ function getPortfolioStats() {
     try {
         $pdo = getDatabaseConnection();
         
-        // Get statistics settings from database
-        $stmt = $pdo->query("
-            SELECT setting_key, setting_value 
-            FROM settings 
-            WHERE setting_key IN (
-                'stats_years_experience', 
-                'stats_total_projects', 
-                'stats_tools_count',
-                'filter_all_count',
-                'filter_development_count',
-                'filter_design_count',
-                'filter_photography_count',
-                'filter_all_count_auto',
-                'filter_development_count_auto',
-                'filter_design_count_auto',
-                'filter_photography_count_auto'
-            )
-        ");
-        $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
-        
-        // Get actual projects count from database if setting override is empty/null
+        // Get actual projects count from database
         $stmt = $pdo->query("SELECT COUNT(*) as total FROM projects WHERE is_deleted = 0");
         $actualProjectCount = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
         
@@ -60,6 +45,32 @@ function getPortfolioStats() {
         ");
         $categoryCounts = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         
+        // Try to get statistics settings from database (fallback to calculated values)
+        $settings = [];
+        try {
+            $stmt = $pdo->query("
+                SELECT setting_key, setting_value 
+                FROM settings 
+                WHERE setting_key IN (
+                    'stats_years_experience', 
+                    'stats_total_projects', 
+                    'stats_tools_count',
+                    'filter_all_count',
+                    'filter_development_count',
+                    'filter_design_count',
+                    'filter_photography_count',
+                    'filter_all_count_auto',
+                    'filter_development_count_auto',
+                    'filter_design_count_auto',
+                    'filter_photography_count_auto'
+                )
+            ");
+            $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+        } catch (Exception $e) {
+            // Settings table doesn't exist or has issues, use calculated values
+            error_log("Settings table issue: " . $e->getMessage());
+        }
+        
         return [
             'total_projects' => !empty($settings['stats_total_projects']) 
                 ? (int)$settings['stats_total_projects'] 
@@ -68,39 +79,24 @@ function getPortfolioStats() {
             'tools' => (int)(isset($settings['stats_tools_count']) ? $settings['stats_tools_count'] : 5),
             'passion' => 100, // Always 100% passion!
             
-            // Filter counts with auto-calculation logic
-            'all_count' => (int)(
-                (isset($settings['filter_all_count_auto']) && $settings['filter_all_count_auto'] == '1') 
-                    ? $actualProjectCount 
-                    : (isset($settings['filter_all_count']) ? $settings['filter_all_count'] : $actualProjectCount)
-            ),
-            'development_count' => (int)(
-                (isset($settings['filter_development_count_auto']) && $settings['filter_development_count_auto'] == '1') 
-                    ? (isset($categoryCounts['development']) ? $categoryCounts['development'] : 0)
-                    : (isset($settings['filter_development_count']) ? $settings['filter_development_count'] : (isset($categoryCounts['development']) ? $categoryCounts['development'] : 2))
-            ),
-            'design_count' => (int)(
-                (isset($settings['filter_design_count_auto']) && $settings['filter_design_count_auto'] == '1') 
-                    ? (isset($categoryCounts['design']) ? $categoryCounts['design'] : 0)
-                    : (isset($settings['filter_design_count']) ? $settings['filter_design_count'] : (isset($categoryCounts['design']) ? $categoryCounts['design'] : 12))
-            ),
-            'photography_count' => (int)(
-                (isset($settings['filter_photography_count_auto']) && $settings['filter_photography_count_auto'] == '1') 
-                    ? (isset($categoryCounts['vintage']) ? $categoryCounts['vintage'] : 0)
-                    : (isset($settings['filter_photography_count']) ? $settings['filter_photography_count'] : (isset($categoryCounts['vintage']) ? $categoryCounts['vintage'] : 4))
-            )
+            // Use auto-calculated counts (real database counts)
+            'all_count' => $actualProjectCount,
+            'development_count' => (int)(isset($categoryCounts['development']) ? $categoryCounts['development'] : 0) + 
+                                   (int)(isset($categoryCounts['web']) ? $categoryCounts['web'] : 0),
+            'design_count' => (int)(isset($categoryCounts['design']) ? $categoryCounts['design'] : 0),
+            'photography_count' => (int)(isset($categoryCounts['vintage']) ? $categoryCounts['vintage'] : 0)
         ];
     } catch (Exception $e) {
         error_log("Error fetching portfolio stats: " . $e->getMessage());
         return [
-            'total_projects' => 15,
+            'total_projects' => 0,
             'years_experience' => 3,
             'tools' => 5,
             'passion' => 100,
-            'all_count' => 7,
-            'development_count' => 2,
-            'design_count' => 12,
-            'photography_count' => 4
+            'all_count' => 0,
+            'development_count' => 0,
+            'design_count' => 0,
+            'photography_count' => 0
         ];
     }
 }
@@ -229,6 +225,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
   gtag('config', 'G-Y6MVVR1W8Q');
 </script>
+<script>
+    (function (c, s, q, u, a, r, e) {
+        c.hj=c.hj||function(){(c.hj.q=c.hj.q||[]).push(arguments)};
+        c._hjSettings = { hjid: a };
+        r = s.getElementsByTagName('head')[0];
+        e = s.createElement('script');
+        e.async = true;
+        e.src = q + c._hjSettings.hjid + u;
+        r.appendChild(e);
+    })(window, document, 'https://static.hj.contentsquare.net/c/csq-', '.js', 6534877);
+</script>
     <link rel="icon" type="image" href="img/testi-1.png" />
 
     <!-- External CSS -->
@@ -324,7 +331,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       },
       "areaServed": {
         "@type": "Country",
-        "name": "Nederland"
+        "name": "België"
       },
       "serviceType": [
         "Web Development",
@@ -358,7 +365,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
             <div class="brand-text">
               <h4 class="brand-name mb-0">Tiebo Croons</h4>
-              <small class="brand-subtitle">Digital Designer</small>
+              <small class="brand-subtitle">Digital Coding</small>
             </div>
           </div>
         </a>
