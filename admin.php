@@ -64,6 +64,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             echo json_encode(saveStatistics($pdo, $_POST));
             exit;
             
+        case 'clear_manual_setting':
+            echo json_encode(clearManualSetting($pdo, $_POST['setting_key']));
+            exit;
+            
+        case 'regenerate_sitemap':
+            $result = regenerateSitemap();
+            echo json_encode([
+                'success' => $result,
+                'message' => $result ? 'Sitemap succesvol gegenereerd!' : 'Fout bij genereren sitemap'
+            ]);
+            exit;
+            
         case 'get_timeline_phases':
             echo json_encode(getTimelinePhases($pdo, $_POST['project_id']));
             exit;
@@ -157,6 +169,9 @@ function saveProject($pdo, $data) {
                 isset($data['is_hybrid']) ? (bool)$data['is_hybrid'] : false,
                 $data['id']
             ]);
+            
+            // Regenerate sitemap after updating project
+            regenerateSitemap();
             return ['success' => true, 'message' => 'Project succesvol bijgewerkt!'];
         } else {
             // Create new project
@@ -212,6 +227,9 @@ function saveProject($pdo, $data) {
                 isset($data['project_types']) ? $data['project_types'] : json_encode([$data['category']]),
                 isset($data['is_hybrid']) ? (bool)$data['is_hybrid'] : false
             ]);
+            
+            // Regenerate sitemap after adding new project
+            regenerateSitemap();
             return ['success' => true, 'message' => 'Project succesvol toegevoegd!'];
         }
     } catch (PDOException $e) {
@@ -219,10 +237,37 @@ function saveProject($pdo, $data) {
     }
 }
 
+// Function to regenerate static sitemap.xml from sitemap.php
+function regenerateSitemap() {
+    try {
+        // Capture output from sitemap.php
+        ob_start();
+        include 'sitemap.php';
+        $sitemapContent = ob_get_clean();
+        
+        // Write to sitemap.xml
+        $result = file_put_contents('sitemap.xml', $sitemapContent);
+        
+        if ($result !== false) {
+            error_log("Sitemap regenerated successfully");
+            return true;
+        } else {
+            error_log("Failed to write sitemap.xml");
+            return false;
+        }
+    } catch (Exception $e) {
+        error_log("Error regenerating sitemap: " . $e->getMessage());
+        return false;
+    }
+}
+
 function deleteProject($pdo, $id) {
     try {
         $stmt = $pdo->prepare("UPDATE projects SET is_deleted = 1, updated_at = NOW() WHERE id = ?");
         $stmt->execute([$id]);
+        
+        // Regenerate sitemap after deleting project
+        regenerateSitemap();
         return ['success' => true, 'message' => 'Project succesvol verwijderd!'];
     } catch (PDOException $e) {
         return ['success' => false, 'error' => 'Database error: ' . $e->getMessage()];
@@ -325,6 +370,9 @@ function importGitHubProject($pdo, $repoData) {
                 json_encode($tools), $repoInfo['homepage'] ?: $repoInfo['html_url'],
                 json_encode($features), $repoInfo['full_name'], $repoInfo['html_url']
             ]);
+            
+            // Regenerate sitemap after importing GitHub project
+            regenerateSitemap();
             return ['success' => true, 'message' => 'GitHub project succesvol geïmporteerd!'];
         }
     } catch (PDOException $e) {
@@ -355,6 +403,15 @@ function detectProjectCategory($repoInfo) {
 // Statistics management functions
 function getStatistics($pdo) {
     try {
+        // Ensure settings table exists
+        $pdo->exec("CREATE TABLE IF NOT EXISTS settings (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            setting_key VARCHAR(100) UNIQUE NOT NULL,
+            setting_value TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )");
+        
         $stmt = $pdo->query("
             SELECT setting_key, setting_value 
             FROM settings 
@@ -395,7 +452,8 @@ function getStatistics($pdo) {
             'settings' => $settings,
             'actual_counts' => [
                 'total_projects' => $actualProjectCount,
-                'development' => isset($actualCategoryCounts['development']) ? $actualCategoryCounts['development'] : 0,
+                'development' => (isset($actualCategoryCounts['development']) ? $actualCategoryCounts['development'] : 0) + 
+                                (isset($actualCategoryCounts['web']) ? $actualCategoryCounts['web'] : 0),
                 'design' => isset($actualCategoryCounts['design']) ? $actualCategoryCounts['design'] : 0,
                 'vintage' => isset($actualCategoryCounts['vintage']) ? $actualCategoryCounts['vintage'] : 0
             ]
@@ -405,26 +463,56 @@ function getStatistics($pdo) {
     }
 }
 
+function clearManualSetting($pdo, $settingKey) {
+    try {
+        $stmt = $pdo->prepare("DELETE FROM settings WHERE setting_key = ?");
+        $stmt->execute([$settingKey]);
+        return ['success' => true, 'message' => 'Manual setting cleared successfully'];
+    } catch (PDOException $e) {
+        return ['success' => false, 'error' => 'Database error: ' . $e->getMessage()];
+    }
+}
+
 function saveStatistics($pdo, $data) {
     try {
+        // Ensure settings table exists
+        $pdo->exec("CREATE TABLE IF NOT EXISTS settings (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            setting_key VARCHAR(100) UNIQUE NOT NULL,
+            setting_value TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        )");
+        
         $statisticsToUpdate = [
             'stats_years_experience' => isset($data['years_experience']) ? (int)$data['years_experience'] : 3,
             'stats_total_projects' => isset($data['total_projects']) ? (int)$data['total_projects'] : null,
             'stats_tools_count' => isset($data['tools_count']) ? (int)$data['tools_count'] : 5,
-            'filter_development_count' => isset($data['development_count']) ? (int)$data['development_count'] : null,
-            'filter_design_count' => isset($data['design_count']) ? (int)$data['design_count'] : null,
-            'filter_photography_count' => isset($data['photography_count']) ? (int)$data['photography_count'] : null,
-            'filter_all_count' => isset($data['all_count']) ? (int)$data['all_count'] : null,
             'github_username' => isset($data['github_username']) ? trim($data['github_username']) : null,
             'github_token' => isset($data['github_token']) ? trim($data['github_token']) : null,
-            // Auto-calculation flags
+            // Auto-calculation flags (always save these)
             'filter_development_count_auto' => isset($data['development_count_auto']) ? '1' : '0',
             'filter_design_count_auto' => isset($data['design_count_auto']) ? '1' : '0',
             'filter_photography_count_auto' => isset($data['photography_count_auto']) ? '1' : '0',
             'filter_all_count_auto' => isset($data['all_count_auto']) ? '1' : '0'
         ];
         
+        // Only save manual count values if auto mode is disabled
+        if (!isset($data['development_count_auto'])) {
+            $statisticsToUpdate['filter_development_count'] = isset($data['development_count']) ? (int)$data['development_count'] : null;
+        }
+        if (!isset($data['design_count_auto'])) {
+            $statisticsToUpdate['filter_design_count'] = isset($data['design_count']) ? (int)$data['design_count'] : null;
+        }
+        if (!isset($data['photography_count_auto'])) {
+            $statisticsToUpdate['filter_photography_count'] = isset($data['photography_count']) ? (int)$data['photography_count'] : null;
+        }
+        if (!isset($data['all_count_auto'])) {
+            $statisticsToUpdate['filter_all_count'] = isset($data['all_count']) ? (int)$data['all_count'] : null;
+        }
+        
         foreach ($statisticsToUpdate as $key => $value) {
+            // Always save auto flags and non-empty values
             if ($value !== null && ($value > 0 || in_array($key, ['github_username', 'github_token']) || strpos($key, '_auto') !== false)) {
                 $stmt = $pdo->prepare("
                     INSERT INTO settings (setting_key, setting_value) 
@@ -563,7 +651,17 @@ function deleteTimelinePhase($pdo, $phase_id) {
     
     <!-- Custom CSS -->
     <link href="css/style.min.css" rel="stylesheet">
-    
+    <script>
+    (function (c, s, q, u, a, r, e) {
+        c.hj=c.hj||function(){(c.hj.q=c.hj.q||[]).push(arguments)};
+        c._hjSettings = { hjid: a };
+        r = s.getElementsByTagName('head')[0];
+        e = s.createElement('script');
+        e.async = true;
+        e.src = q + c._hjSettings.hjid + u;
+        r.appendChild(e);
+    })(window, document, 'https://static.hj.contentsquare.net/c/csq-', '.js', 6534877);
+</script>
     <!-- Admin specific styles -->
     <style>
         /* Auto-disabled input styling */
@@ -573,12 +671,34 @@ function deleteTimelinePhase($pdo, $phase_id) {
             cursor: not-allowed;
         }
         
+        /* Rotating animation for loading indicators */
+        .rotating {
+            animation: rotate 1s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
         .input-group-text {
             font-size: 0.875rem;
         }
         
         .input-group-text .form-check-input {
             margin-right: 0.25rem;
+        }
+        
+        /* Enhanced auto checkbox styling */
+        .input-group-text.text-primary {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+            color: #1976d2 !important;
+        }
+        
+        .input-group-text.text-primary .form-check-input:checked {
+            background-color: #2196f3;
+            border-color: #2196f3;
         }
         
         /* Phase type selector enhancement */
@@ -598,9 +718,16 @@ function deleteTimelinePhase($pdo, $phase_id) {
         }
         
         @keyframes fieldUpdate {
-            0% { background-color: #e3f2fd; }
-            50% { background-color: #bbdefb; }
-            100% { background-color: #fff; }
+            0% { background-color: #e3f2fd; transform: scale(1); }
+            50% { background-color: #bbdefb; transform: scale(1.05); }
+            100% { background-color: transparent; transform: scale(1); }
+        }
+        
+        /* Enhanced count update animation */
+        #actualCounts .form-updated {
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
         }
         
         /* Preset indicator */
@@ -2124,7 +2251,13 @@ function deleteTimelinePhase($pdo, $phase_id) {
                             <div class="row">
                                 <div class="col-12">
                                     <div class="alert alert-light">
-                                        <h6><i class="lnr lnr-database"></i> Huidige Database Waardes (ter referentie)</h6>
+                                        <h6>
+                                            <i class="lnr lnr-database"></i> 
+                                            Huidige Database Waardes (ter referentie)
+                                            <small class="text-muted float-end" id="statsLoading" style="display: none;">
+                                                <i class="lnr lnr-sync rotating"></i> Bijwerken...
+                                            </small>
+                                        </h6>
                                         <div class="row" id="actualCounts">
                                             <div class="col-md-3">
                                                 <strong>Totaal Projecten:</strong> <span id="actualTotal">-</span>
@@ -2152,6 +2285,14 @@ function deleteTimelinePhase($pdo, $phase_id) {
                                     <button type="button" class="btn btn-secondary" id="loadCurrentStats">
                                         <i class="lnr lnr-sync"></i>
                                         Huidige Waardes Laden
+                                    </button>
+                                    <button type="button" class="btn btn-info btn-sm" id="forceAutoUpdate" title="Force update auto fields">
+                                        <i class="lnr lnr-magic-wand"></i>
+                                        Auto Bijwerken
+                                    </button>
+                                    <button type="button" class="btn btn-warning btn-sm" id="regenerateSitemap" title="Regenereer sitemap.xml voor Google Search Console">
+                                        <i class="lnr lnr-map"></i>
+                                        Sitemap Regenereren
                                     </button>
                                 </div>
                                 <small class="text-muted">
@@ -2274,9 +2415,36 @@ function deleteTimelinePhase($pdo, $phase_id) {
                     this.loadStatistics();
                 });
 
+                $('#forceAutoUpdate').on('click', () => {
+                    this.forceUpdateAutoFields();
+                });
+
+                $('#regenerateSitemap').on('click', () => {
+                    this.regenerateSitemap();
+                });
+
                 // Auto-calculation toggle handlers
-                $('#developmentCountAuto, #designCountAuto, #photographyCountAuto, #allCountAuto').on('change', () => {
+                $('#developmentCountAuto, #designCountAuto, #photographyCountAuto, #allCountAuto').on('change', (e) => {
+                    const $checkbox = $(e.target);
+                    const isChecked = $checkbox.is(':checked');
+                    const checkboxId = $checkbox.attr('id');
+                    
+                    // Add visual feedback
+                    $checkbox.parent().toggleClass('text-primary', isChecked);
+                    
+                    // Apply input toggle
                     this.toggleAutoInputs();
+                    
+                    // Brief visual feedback
+                    $checkbox.parent().addClass('form-updated');
+                    setTimeout(() => {
+                        $checkbox.parent().removeClass('form-updated');
+                    }, 300);
+                    
+                    // If switching to auto mode, clear any saved manual value
+                    if (isChecked) {
+                        this.clearSavedManualValue(checkboxId);
+                    }
                 });
 
                 // Load statistics on init
@@ -2387,6 +2555,10 @@ function deleteTimelinePhase($pdo, $phase_id) {
                         this.showAlert(result.message, 'success');
                         this.resetForm();
                         this.loadProjects();
+                        // Update statistics counts after save with small delay
+                        setTimeout(() => {
+                            this.loadStatistics();
+                        }, 500);
                     } else {
                         this.showAlert('Fout bij opslaan: ' + result.error, 'danger');
                     }
@@ -2498,6 +2670,10 @@ function deleteTimelinePhase($pdo, $phase_id) {
                         if (response.success) {
                             this.showAlert(response.message, 'success');
                             this.loadProjects();
+                            // Update statistics counts after deletion with small delay
+                            setTimeout(() => {
+                                this.loadStatistics();
+                            }, 500);
                         } else {
                             this.showAlert('Fout bij verwijderen: ' + response.error, 'danger');
                         }
@@ -2870,6 +3046,10 @@ function deleteTimelinePhase($pdo, $phase_id) {
                     if (response.success) {
                         this.showAlert(response.message, 'success');
                         this.loadProjects();
+                        // Update statistics counts after import with small delay
+                        setTimeout(() => {
+                            this.loadStatistics();
+                        }, 500);
                     } else {
                         this.showAlert('Fout bij importeren: ' + response.error, 'danger');
                     }
@@ -2913,25 +3093,47 @@ function deleteTimelinePhase($pdo, $phase_id) {
 
             async loadStatistics() {
                 try {
+                    $('#statsLoading').show();
                     const response = await this.makeRequest('get_statistics');
                     if (response.success) {
                         const settings = response.settings;
                         const actualCounts = response.actual_counts;
                         
-                        // Fill form fields with current settings
+                        // Fill form fields with current settings ONLY if auto mode is disabled
                         $('#yearsExperience').val(settings.stats_years_experience || '');
                         $('#totalProjects').val(settings.stats_total_projects || '');
                         $('#toolsCount').val(settings.stats_tools_count || '');
-                        $('#developmentCount').val(settings.filter_development_count || '');
-                        $('#designCount').val(settings.filter_design_count || '');
-                        $('#photographyCount').val(settings.filter_photography_count || '');
-                        $('#allCount').val(settings.filter_all_count || '');
                         
-                        // Fill auto-calculation checkboxes
+                        // Fill auto-calculation checkboxes first
                         $('#developmentCountAuto').prop('checked', settings.filter_development_count_auto === '1');
                         $('#designCountAuto').prop('checked', settings.filter_design_count_auto === '1');
                         $('#photographyCountAuto').prop('checked', settings.filter_photography_count_auto === '1');
                         $('#allCountAuto').prop('checked', settings.filter_all_count_auto === '1');
+                        
+                        // Now fill fields based on auto mode status
+                        if (settings.filter_development_count_auto === '1') {
+                            $('#developmentCount').val(actualCounts.development);
+                        } else {
+                            $('#developmentCount').val(settings.filter_development_count || '');
+                        }
+                        
+                        if (settings.filter_design_count_auto === '1') {
+                            $('#designCount').val(actualCounts.design);
+                        } else {
+                            $('#designCount').val(settings.filter_design_count || '');
+                        }
+                        
+                        if (settings.filter_photography_count_auto === '1') {
+                            $('#photographyCount').val(actualCounts.vintage);
+                        } else {
+                            $('#photographyCount').val(settings.filter_photography_count || '');
+                        }
+                        
+                        if (settings.filter_all_count_auto === '1') {
+                            $('#allCount').val(actualCounts.total_projects);
+                        } else {
+                            $('#allCount').val(settings.filter_all_count || '');
+                        }
                         
                         // Disable/enable inputs based on auto checkboxes
                         this.toggleAutoInputs();
@@ -2940,36 +3142,255 @@ function deleteTimelinePhase($pdo, $phase_id) {
                         $('#githubUsernameStats').val(settings.github_username || '');
                         $('#githubTokenStats').val(settings.github_token || '');
                         
-                        // Update actual counts display
-                        $('#actualTotal').text(actualCounts.total_projects);
-                        $('#actualDevelopment').text(actualCounts.development);
-                        $('#actualDesign').text(actualCounts.design);
-                        $('#actualVintage').text(actualCounts.vintage);
+                        // Update actual counts display with animation
+                        $('#actualTotal').text(actualCounts.total_projects).addClass('form-updated');
+                        $('#actualDevelopment').text(actualCounts.development).addClass('form-updated');
+                        $('#actualDesign').text(actualCounts.design).addClass('form-updated');
+                        $('#actualVintage').text(actualCounts.vintage).addClass('form-updated');
+                        
+                        // Remove animation class after animation completes
+                        setTimeout(() => {
+                            $('.form-updated').removeClass('form-updated');
+                        }, 600);
                         
                     } else {
                         this.showAlert('Fout bij laden statistieken: ' + response.error, 'danger');
                     }
                 } catch (error) {
                     this.showAlert('Network error bij laden statistieken: ' + error.message, 'danger');
+                } finally {
+                    $('#statsLoading').hide();
                 }
             }
 
-            toggleAutoInputs() {
+            async loadActualCounts() {
+                try {
+                    $('#statsLoading').show();
+                    const response = await this.makeRequest('get_statistics');
+                    if (response.success) {
+                        const actualCounts = response.actual_counts;
+                        
+                        // Update actual counts display with animation
+                        $('#actualTotal').text(actualCounts.total_projects).addClass('form-updated');
+                        $('#actualDevelopment').text(actualCounts.development).addClass('form-updated');
+                        $('#actualDesign').text(actualCounts.design).addClass('form-updated');
+                        $('#actualVintage').text(actualCounts.vintage).addClass('form-updated');
+                        
+                        // Update auto fields with fresh counts if auto mode is enabled
+                        if ($('#developmentCountAuto').is(':checked')) {
+                            $('#developmentCount').val(actualCounts.development);
+                        }
+                        if ($('#designCountAuto').is(':checked')) {
+                            $('#designCount').val(actualCounts.design);
+                        }
+                        if ($('#photographyCountAuto').is(':checked')) {
+                            $('#photographyCount').val(actualCounts.vintage);
+                        }
+                        if ($('#allCountAuto').is(':checked')) {
+                            $('#allCount').val(actualCounts.total_projects);
+                        }
+                        
+                        // Remove animation class after animation completes
+                        setTimeout(() => {
+                            $('.form-updated').removeClass('form-updated');
+                        }, 600);
+                        
+                    } else {
+                        this.showAlert('Fout bij laden statistieken: ' + response.error, 'danger');
+                    }
+                } catch (error) {
+                    this.showAlert('Network error bij laden statistieken: ' + error.message, 'danger');
+                } finally {
+                    $('#statsLoading').hide();
+                }
+            }
+
+            async forceUpdateAutoFields() {
+                try {
+                    // First get fresh counts
+                    const response = await this.makeRequest('get_statistics');
+                    if (response.success) {
+                        const actualCounts = response.actual_counts;
+                        
+                        // Force update all auto fields regardless of settings
+                        if ($('#allCountAuto').is(':checked')) {
+                            $('#allCount').val(actualCounts.total_projects).addClass('form-updated');
+                            console.log('Updated allCount to:', actualCounts.total_projects);
+                        }
+                        if ($('#developmentCountAuto').is(':checked')) {
+                            $('#developmentCount').val(actualCounts.development).addClass('form-updated');
+                        }
+                        if ($('#designCountAuto').is(':checked')) {
+                            $('#designCount').val(actualCounts.design).addClass('form-updated');
+                        }
+                        if ($('#photographyCountAuto').is(':checked')) {
+                            $('#photographyCount').val(actualCounts.vintage).addClass('form-updated');
+                        }
+                        
+                        // Also update the reference display
+                        $('#actualTotal').text(actualCounts.total_projects);
+                        $('#actualDevelopment').text(actualCounts.development);
+                        $('#actualDesign').text(actualCounts.design);
+                        $('#actualVintage').text(actualCounts.vintage);
+                        
+                        // Remove animation after delay
+                        setTimeout(() => {
+                            $('.form-updated').removeClass('form-updated');
+                        }, 600);
+                        
+                        this.showAlert('Auto velden bijgewerkt!', 'success');
+                    }
+                } catch (error) {
+                    this.showAlert('Fout bij bijwerken auto velden: ' + error.message, 'danger');
+                }
+            }
+
+            async regenerateSitemap() {
+                try {
+                    // Show loading state
+                    const $button = $('#regenerateSitemap');
+                    const originalText = $button.html();
+                    $button.prop('disabled', true).html('<i class="lnr lnr-sync"></i> Bezig...');
+                    
+                    const response = await this.makeRequest('regenerate_sitemap');
+                    
+                    if (response.success) {
+                        this.showAlert('Sitemap succesvol gegenereerd! Google Search Console kan nu de bijgewerkte sitemap.xml lezen.', 'success');
+                        
+                        // Brief success state
+                        $button.html('<i class="lnr lnr-checkmark-circle"></i> Voltooid!');
+                        setTimeout(() => {
+                            $button.prop('disabled', false).html(originalText);
+                        }, 2000);
+                    } else {
+                        this.showAlert('Fout bij genereren sitemap: ' + (response.message || 'Onbekende fout'), 'danger');
+                        $button.prop('disabled', false).html(originalText);
+                    }
+                } catch (error) {
+                    this.showAlert('Network error bij regenereren sitemap: ' + error.message, 'danger');
+                    const $button = $('#regenerateSitemap');
+                    $button.prop('disabled', false).html('<i class="lnr lnr-map"></i> Sitemap Regenereren');
+                }
+            }
+
+            async clearSavedManualValue(checkboxId) {
+                const settingMapping = {
+                    'developmentCountAuto': 'filter_development_count',
+                    'designCountAuto': 'filter_design_count',
+                    'photographyCountAuto': 'filter_photography_count',
+                    'allCountAuto': 'filter_all_count'
+                };
+                
+                const settingKey = settingMapping[checkboxId];
+                if (settingKey) {
+                    try {
+                        // Clear the manual value from database
+                        const formData = new FormData();
+                        formData.append('action', 'clear_manual_setting');
+                        formData.append('setting_key', settingKey);
+                        
+                        await this.makeRequest('clear_manual_setting', { setting_key: settingKey });
+                        console.log('Cleared manual value for:', settingKey);
+                    } catch (error) {
+                        console.log('Error clearing manual value:', error);
+                    }
+                }
+            }
+
+            async toggleAutoInputs() {
+                // Get fresh actual counts from server to ensure accuracy
+                try {
+                    const response = await this.makeRequest('get_statistics');
+                    if (response.success) {
+                        const actualCounts = response.actual_counts;
+                        
+                        // Use server counts for auto-population
+                        const currentCounts = {
+                            total: actualCounts.total_projects,
+                            development: actualCounts.development,
+                            design: actualCounts.design,
+                            vintage: actualCounts.vintage
+                        };
+                        
+                        // Disable/enable inputs based on auto checkbox state
+                        const autoFields = [
+                            ['#developmentCountAuto', '#developmentCount', 'development'],
+                            ['#designCountAuto', '#designCount', 'design'],
+                            ['#photographyCountAuto', '#photographyCount', 'vintage'],
+                            ['#allCountAuto', '#allCount', 'total']
+                        ];
+                        
+                        autoFields.forEach(([checkboxId, inputId, countType]) => {
+                            const isAuto = $(checkboxId).is(':checked');
+                            const $input = $(inputId);
+                            const $checkbox = $(checkboxId);
+                            
+                            // Update input state
+                            $input.prop('disabled', isAuto);
+                            
+                            // Update visual styling and populate value
+                            if (isAuto) {
+                                $input.addClass('auto-disabled');
+                                $checkbox.parent().addClass('text-primary');
+                                
+                                // Auto-populate with current actual count from server
+                                $input.val(currentCounts[countType]);
+                                $input.addClass('form-updated');
+                                setTimeout(() => {
+                                    $input.removeClass('form-updated');
+                                }, 600);
+                            } else {
+                                $input.removeClass('auto-disabled');
+                                $checkbox.parent().removeClass('text-primary');
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error getting fresh counts for auto toggle:', error);
+                    // Fallback to display values if server request fails
+                    this.toggleAutoInputsFallback();
+                }
+            }
+            
+            toggleAutoInputsFallback() {
+                // Fallback method using display values (original implementation)
+                const currentCounts = {
+                    total: $('#actualTotal').text() !== '-' ? $('#actualTotal').text() : '0',
+                    development: $('#actualDevelopment').text() !== '-' ? $('#actualDevelopment').text() : '0',
+                    design: $('#actualDesign').text() !== '-' ? $('#actualDesign').text() : '0',
+                    vintage: $('#actualVintage').text() !== '-' ? $('#actualVintage').text() : '0'
+                };
+                
                 // Disable/enable inputs based on auto checkbox state
                 const autoFields = [
-                    ['#developmentCountAuto', '#developmentCount'],
-                    ['#designCountAuto', '#designCount'],
-                    ['#photographyCountAuto', '#photographyCount'],
-                    ['#allCountAuto', '#allCount']
+                    ['#developmentCountAuto', '#developmentCount', 'development'],
+                    ['#designCountAuto', '#designCount', 'design'],
+                    ['#photographyCountAuto', '#photographyCount', 'vintage'],
+                    ['#allCountAuto', '#allCount', 'total']
                 ];
                 
-                autoFields.forEach(([checkboxId, inputId]) => {
+                autoFields.forEach(([checkboxId, inputId, countType]) => {
                     const isAuto = $(checkboxId).is(':checked');
-                    $(inputId).prop('disabled', isAuto);
+                    const $input = $(inputId);
+                    const $checkbox = $(checkboxId);
+                    
+                    // Update input state
+                    $input.prop('disabled', isAuto);
+                    
+                    // Update visual styling and populate value
                     if (isAuto) {
-                        $(inputId).addClass('auto-disabled');
+                        $input.addClass('auto-disabled');
+                        $checkbox.parent().addClass('text-primary');
+                        
+                        // Auto-populate with current actual count
+                        $input.val(currentCounts[countType]);
+                        $input.addClass('form-updated');
+                        setTimeout(() => {
+                            $input.removeClass('form-updated');
+                        }, 600);
                     } else {
-                        $(inputId).removeClass('auto-disabled');
+                        $input.removeClass('auto-disabled');
+                        $checkbox.parent().removeClass('text-primary');
                     }
                 });
             }
@@ -2987,20 +3408,33 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 formData.append('github_username', $('#githubUsernameStats').val());
                 formData.append('github_token', $('#githubTokenStats').val());
                 
-                // Add auto-calculation flags
-                if ($('#developmentCountAuto').is(':checked')) formData.append('development_count_auto', '1');
-                if ($('#designCountAuto').is(':checked')) formData.append('design_count_auto', '1');
-                if ($('#photographyCountAuto').is(':checked')) formData.append('photography_count_auto', '1');
-                if ($('#allCountAuto').is(':checked')) formData.append('all_count_auto', '1');
+                // Add auto-calculation flags with visual feedback
+                const autoCheckboxes = [
+                    ['#developmentCountAuto', 'development_count_auto'],
+                    ['#designCountAuto', 'design_count_auto'],
+                    ['#photographyCountAuto', 'photography_count_auto'],
+                    ['#allCountAuto', 'all_count_auto']
+                ];
+                
+                autoCheckboxes.forEach(([checkboxId, fieldName]) => {
+                    if ($(checkboxId).is(':checked')) {
+                        formData.append(fieldName, '1');
+                        // Add visual feedback for auto checkboxes being saved
+                        $(checkboxId).parent().addClass('text-success').removeClass('text-primary');
+                        setTimeout(() => {
+                            $(checkboxId).parent().removeClass('text-success').addClass('text-primary');
+                        }, 1000);
+                    }
+                });
 
                 try {
                     const response = await this.makeRequest('save_statistics', formData);
                     if (response.success) {
-                        this.showAlert('Statistieken succesvol bijgewerkt! Wijzigingen zijn direct zichtbaar op de website.', 'success');
-                        // Reload current statistics to refresh actual counts
+                        this.showAlert('Statistieken succesvol bijgewerkt! Auto-instellingen zijn opgeslagen.', 'success');
+                        // Reload the entire statistics form to show saved auto checkbox states
                         setTimeout(() => {
                             this.loadStatistics();
-                        }, 1000);
+                        }, 500);
                     } else {
                         this.showAlert('Fout bij opslaan statistieken: ' + response.error, 'danger');
                     }
