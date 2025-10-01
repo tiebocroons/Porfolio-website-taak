@@ -3,13 +3,6 @@
  * Load GitHub projects dynamically into portfolio
  */
 
-import { 
-  initializeGitHubIntegration, 
-  createDevelopmentProjectHTML,
-  fetchAllRepositories,
-  fetchRepositoryLanguages
-} from './github-api.js';
-
 // Portfolio configuration
 const PORTFOLIO_CONFIG = {
   maxDevelopmentProjects: 4,
@@ -354,7 +347,8 @@ async function updateDevelopmentSkills() {
 }
 
 // Initialize dynamic portfolio
-export async function initializeDynamicPortfolio() {
+// Initialize dynamic portfolio loading
+window.initializeDynamicPortfolio = async function initializeDynamicPortfolio() {
   console.log('Initializing dynamic portfolio with GitHub integration...');
   
   // Wait for DOM to be ready
