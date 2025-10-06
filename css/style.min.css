@@ -102,7 +102,7 @@ section {
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.20);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.5rem 0;
 }
@@ -201,7 +201,7 @@ section {
   display: block;
   width: 25px;
   height: 3px;
-  background: hsl(312, 100%, 50%);
+  background: hsl(312, 100%, 18%);
   margin: 5px 0;
   transition: all 0.3s ease;
   border-radius: 2px;
