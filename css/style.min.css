@@ -164,7 +164,7 @@ section {
 }
 
 .brand-name {
-  color: hsl(312, 100%, 50%);
+  color: #420033;
   font-weight: 700;
   font-size: 1.3rem;
   line-height: 1.2;
@@ -172,7 +172,7 @@ section {
 }
 
 .brand-subtitle {
-  color: hsl(312, 100%, 50%);
+  color: #420033;
   font-size: 0.75rem;
   font-weight: 400;
   text-transform: uppercase;
@@ -201,7 +201,7 @@ section {
   display: block;
   width: 25px;
   height: 3px;
-  background: hsl(312, 100%, 18%);
+  background: #420033;
   margin: 5px 0;
   transition: all 0.3s ease;
   border-radius: 2px;
