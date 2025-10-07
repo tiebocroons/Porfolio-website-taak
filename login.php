@@ -61,20 +61,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <!-- Favicon -->
   <link rel="icon" type="image" href="img/testi-1.png" />
 
-  <!-- External CSS -->
+  <!-- Critical resource preloading -->
+  <link rel="preload" href="img/testi-1.png" as="image" fetchpriority="high">
+  <link rel="preload" href="css/style.min.css" as="style">
+  <link rel="preload" href="vendor/bootstrap/bootstrap.min.css" as="style">
+  
+  <!-- DNS prefetching for external domains -->
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+  <link rel="dns-prefetch" href="//fonts.gstatic.com">
+  <link rel="dns-prefetch" href="//cdn.linearicons.com">
+  <link rel="dns-prefetch" href="//unpkg.com">
+  <link rel="dns-prefetch" href="//use.fontawesome.com">
+  <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+  
+  <!-- Preconnect to critical origins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Critical CSS loaded with high priority -->
   <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+  <link rel="stylesheet" href="css/style.min.css">
   
-  <!-- Fonts with font-display swap for better performance -->
-  <link href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600,700&display=swap" rel="stylesheet" />
+  <!-- Non-critical CSS loaded asynchronously -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" media="print" onload="this.media='all'" />
+  <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" media="print" onload="this.media='all'" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" media="print" onload="this.media='all'" />
   
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" />
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
+  <!-- Fonts with optimized loading strategy -->
+  <link href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
   
-  <!-- Custom CSS -->
-  <link href="css/style.min.css" rel="stylesheet">
+  <!-- Fallback for non-supporting browsers -->
+  <noscript>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600,700&display=swap" rel="stylesheet" />
+  </noscript>
+
     <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -82,416 +107,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-KBKMP25R');</script>
 <!-- End Google Tag Manager -->
+  
+  <!-- Critical inline CSS for above-the-fold rendering -->
   <style>
-    /* Font optimization - Enhanced fallback fonts for better loading performance */
-    body {
-      font-family: "Open Sans", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    }
-    
-    h1, h2, h3, h4, h5, h6 {
-      font-family: "Montserrat", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    }
-    
-    /* Login page specific styles matching portfolio design */
-    body {
-      background: #f5f8fd url("img/intro-bg.jpg") center top no-repeat;
-      background-size: cover;
-      font-family: "Open Sans", sans-serif;
-      color: #444;
-      min-height: 100vh;
-      position: relative;
-    }
-    
-    /* Background overlay */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(245, 248, 253, 0.9);
-      z-index: -1;
-    }
-    
-    /* Login container */
-    .login-container {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px 0;
-    }
-    
-    /* Login card matching visual-card style */
-    .login-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      border: none;
-      overflow: hidden;
-      max-width: 450px;
-      width: 100%;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .login-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
-    }
-    
-    /* Login header */
-    .login-header {
-      background: hsl(312, 100%, 50%);
-      color: white;
-      padding: 40px 30px;
-      text-align: center;
-      position: relative;
-    }
-    
-    .login-header::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, hsl(312, 100%, 50%) 0%, hsl(312, 100%, 45%) 100%);
-      z-index: -1;
-    }
-    
-    .brand-logo {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      margin: 0 auto 20px;
-      padding: 3px;
-      background: rgba(255, 255, 255, 0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .brand-logo img {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    
-    .login-title {
-      color: white !important;
-      font-family: "Montserrat", sans-serif;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-    
-    .login-subtitle {
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 0.95rem;
-      margin: 0;
-    }
-    
-    /* Login body */
-    .login-body {
-      padding: 40px 30px;
-    }
-    
-    /* Form elements matching portfolio style */
-    .form-group {
-      margin-bottom: 25px;
-    }
-    
-    .form-label {
-      color: #413e66;
-      font-weight: 600;
-      font-family: "Montserrat", sans-serif;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .form-label i {
-      color: hsl(312, 100%, 50%);
-      font-size: 0.9rem;
-    }
-    
-    .form-control {
-      border-radius: 8px;
-      border: 2px solid #e9ecef;
-      padding: 15px 18px;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      font-family: "Open Sans", sans-serif;
-      background: rgba(255, 255, 255, 0.8);
-    }
-    
-    .form-control:focus {
-      border-color: #1bb1dc;
-      box-shadow: 0 0 0 0.2rem rgba(27, 177, 220, 0.25);
-      outline: none;
-      background: rgba(255, 255, 255, 0.95);
-    }
-    
-    .form-control::placeholder {
-      color: #999;
-      font-style: italic;
-    }
-    
-    /* Password toggle */
-    .password-container {
-      position: relative;
-    }
-    
-    .password-toggle {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: #666;
-      cursor: pointer;
-      font-size: 1.1rem;
-      transition: color 0.3s ease;
-    }
-    
-    .password-toggle:hover {
-      color: hsl(312, 100%, 50%);
-    }
-    
-    /* Login button matching portfolio buttons */
-    .btn-login {
-      background: #1bb1dc;
-      border-color: #1bb1dc;
-      color: white;
-      border-radius: 8px;
-      padding: 15px 25px;
-      font-weight: 600;
-      font-family: "Montserrat", sans-serif;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-size: 14px;
-      width: 100%;
-      transition: all 0.3s ease;
-      border: none;
-    }
-    
-    .btn-login:hover {
-      background: #0a98c0;
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(27, 177, 220, 0.4);
-    }
-    
-    .btn-login:focus {
-      box-shadow: 0 0 0 0.2rem rgba(27, 177, 220, 0.25);
-    }
-    
-    .btn-login:disabled {
-      background: #6c757d;
-      cursor: not-allowed;
-      transform: none;
-    }
-    
-    /* Remember me checkbox */
-    .form-check {
-      margin: 20px 0;
-    }
-    
-    .form-check-input {
-      background-color: rgba(255, 255, 255, 0.8);
-      border-color: #e9ecef;
-      border-width: 2px;
-    }
-    
-    .form-check-input:checked {
-      background-color: hsl(312, 100%, 50%);
-      border-color: hsl(312, 100%, 50%);
-    }
-    
-    .form-check-input:focus {
-      border-color: #1bb1dc;
-      box-shadow: 0 0 0 0.25rem rgba(27, 177, 220, 0.25);
-    }
-    
-    .form-check-label {
-      color: #666;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-    
-    /* Alert messages */
-    .alert {
-      border-radius: 8px;
-      border: none;
-      padding: 15px 20px;
-      margin-bottom: 20px;
-      font-size: 0.95rem;
-    }
-    
-    .alert-danger {
-      background-color: #f8d7da;
-      color: #721c24;
-      border-left: 4px solid #dc3545;
-    }
-    
-    .alert-success {
-      background-color: #d4edda;
-      color: #155724;
-      border-left: 4px solid #28a745;
-    }
-    
-    /* Loading state */
-    .loading {
-      opacity: 0.7;
-      pointer-events: none;
-    }
-    
-    .loading .btn-login {
-      position: relative;
-    }
-    
-    .loading .btn-login::after {
-      content: '';
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      top: 50%;
-      left: 50%;
-      margin-left: -10px;
-      margin-top: -10px;
-      border: 2px solid transparent;
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    /* Footer links */
-    .login-footer {
-      padding: 20px 30px;
-      background: rgba(245, 248, 253, 0.5);
-      text-align: center;
-      border-top: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    
-    .back-to-portfolio {
-      color: #1bb1dc;
-      text-decoration: none;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: color 0.3s ease;
-    }
-    
-    .back-to-portfolio:hover {
-      color: #0a98c0;
-      text-decoration: none;
-    }
-    
-    /* Security info */
-    .security-info {
-      background: rgba(27, 177, 220, 0.1);
-      border-radius: 8px;
-      padding: 15px;
-      margin-top: 20px;
-      font-size: 0.85rem;
-      color: #666;
-      text-align: center;
-    }
-    
-    .security-info i {
-      color: #1bb1dc;
-      margin-right: 5px;
-    }
-    
-    /* Responsive design */
-    @media (max-width: 576px) {
-      .login-container {
-        padding: 20px 15px;
-      }
-      
-      .login-card {
-        margin: 0 10px;
-      }
-      
-      .login-header {
-        padding: 30px 20px;
-      }
-      
-      .login-body {
-        padding: 30px 20px;
-      }
-      
-      .brand-logo {
-        width: 70px;
-        height: 70px;
-      }
-      
-      .brand-logo img {
-        width: 60px;
-        height: 60px;
-      }
-      
-      .login-title {
-        font-size: 1.5rem;
-      }
-    }
-    
-    /* Animated background elements (subtle) */
-    .bg-shapes {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -2;
-      overflow: hidden;
-      pointer-events: none;
-    }
-    
-    .bg-shapes::before,
-    .bg-shapes::after {
-      content: '';
-      position: absolute;
-      border-radius: 50%;
-      opacity: 0.1;
-      animation: float 6s ease-in-out infinite;
-    }
-    
-    .bg-shapes::before {
-      width: 200px;
-      height: 200px;
-      background: hsl(312, 100%, 50%);
-      top: 20%;
-      left: 10%;
-      animation-delay: 0s;
-    }
-    
-    .bg-shapes::after {
-      width: 300px;
-      height: 300px;
-      background: #1bb1dc;
-      bottom: 20%;
-      right: 10%;
-      animation-delay: 3s;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(180deg); }
-    }
+    /* Minimale kritieke CSS voor immediate rendering */
+    .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .login-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 15px; max-width: 450px; width: 100%; }
+    .login-header { background: hsl(312, 100%, 50%); color: white; padding: 40px 30px; text-align: center; }
+    .brand-logo { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; }
+    .brand-logo img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; }
   </style>
 </head>
-<body>
+<body class="login-page">
   <!-- Background shapes -->
   <div class="bg-shapes"></div>
   
@@ -601,17 +228,65 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       
     </div>
   </div>
-  <!-- JavaScript Libraries -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="vendor/bootstrap/bootstrap.min.js"></script>
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <!-- JavaScript Libraries - Progressive Loading -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+  <script src="vendor/bootstrap/bootstrap.min.js" defer></script>
+  
+  <!-- Non-critical JS loaded with lower priority -->
+  <script>
+    // Progressive script loading for login page
+    function loadNonCriticalScripts() {
+      const scripts = [
+        'https://unpkg.com/aos@next/dist/aos.js'
+      ];
+      
+      scripts.forEach((src, index) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.defer = true;
+        if (index === scripts.length - 1) {
+          script.onload = () => initializeAOS();
+        }
+        document.head.appendChild(script);
+      });
+    }
+    
+    // Initialize AOS when available
+    function initializeAOS() {
+      if (typeof AOS !== 'undefined') {
+        AOS.init({
+          duration: 800,
+          once: true,
+          disable: window.innerWidth < 768 // Disable on mobile for performance
+        });
+      }
+    }
+    
+    // Load non-critical scripts after DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(loadNonCriticalScripts, 100);
+      });
+    } else {
+      setTimeout(loadNonCriticalScripts, 100);
+    }
+  </script>
   
   <script>
     // Initialize AOS animations
-    AOS.init({
-      duration: 800,
-      once: true
-    });
+    function initAOSWhenReady() {
+      if (typeof AOS !== 'undefined') {
+        AOS.init({
+          duration: 800,
+          once: true
+        });
+      } else {
+        setTimeout(initAOSWhenReady, 100);
+      }
+    }
+    
+    // Start AOS when scripts are loaded
+    initAOSWhenReady();
 
     class LoginManager {
       constructor() {
@@ -619,8 +294,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       }
 
       init() {
+        // Wait for jQuery to be available
+        if (typeof $ === 'undefined') {
+          setTimeout(() => this.init(), 50);
+          return;
+        }
+        
         this.bindEvents();
         this.loadRememberedCredentials();
+        
+        // Performance monitoring
+        this.monitorPerformance();
         
         // Check for PHP success and redirect
         <?php if ($success_message): ?>
@@ -628,6 +312,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           window.location.href = 'admin.php';
         }, 2000);
         <?php endif; ?>
+      }
+      
+      monitorPerformance() {
+        // Monitor login page performance
+        if ('PerformanceObserver' in window) {
+          const observer = new PerformanceObserver((entryList) => {
+            const entries = entryList.getEntries();
+            const lastEntry = entries[entries.length - 1];
+            if (console && console.log) {
+              console.log('Login LCP:', Math.round(lastEntry.startTime), 'ms');
+            }
+          });
+          try {
+            observer.observe({ entryTypes: ['largest-contentful-paint'] });
+          } catch (e) {
+            // Ignore if not supported
+          }
+        }
       }
 
       bindEvents() {
@@ -758,24 +460,33 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       }
     }
 
-    // Initialize when document is ready
-    $(document).ready(() => {
-      new LoginManager();
-      
-      // Handle remember me functionality
-      $('#loginForm').on('submit', function() {
-        const rememberMe = $('#rememberMe').is(':checked');
-        const username = $('#username').val();
-        
-        if (rememberMe) {
-          localStorage.setItem('rememberMe', 'true');
-          localStorage.setItem('username', username);
-        } else {
-          localStorage.removeItem('rememberMe');
-          localStorage.removeItem('username');
-        }
-      });
-    });
+    // Initialize when jQuery is available
+    function initializeWhenReady() {
+      if (typeof $ !== 'undefined') {
+        $(document).ready(() => {
+          new LoginManager();
+          
+          // Handle remember me functionality
+          $('#loginForm').on('submit', function() {
+            const rememberMe = $('#rememberMe').is(':checked');
+            const username = $('#username').val();
+            
+            if (rememberMe) {
+              localStorage.setItem('rememberMe', 'true');
+              localStorage.setItem('username', username);
+            } else {
+              localStorage.removeItem('rememberMe');
+              localStorage.removeItem('username');
+            }
+          });
+        });
+      } else {
+        setTimeout(initializeWhenReady, 50);
+      }
+    }
+    
+    // Start initialization
+    initializeWhenReady();
   </script>
 </body>
 </html>
