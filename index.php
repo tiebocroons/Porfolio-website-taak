@@ -217,25 +217,51 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     />
     <link rel="icon" type="image" href="img/testi-1.png" />
 
-    <!-- External CSS -->
-    <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
-    <link rel="stylesheet" href="vendor/select2/select2.min.css" />
-    <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" />
-    <link rel="stylesheet" href="vendor/lightcase/lightcase.css" />
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <!-- LCP Optimization: Preload critical resources -->
+    <link rel="preload" href="img/testi-1.png" as="image" type="image/png" />
+    <link rel="preload" href="css/style.min.css" as="style" />
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap" as="style" crossorigin />
+    
+    <!-- DNS prefetching for external resources -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//cdn.linearicons.com" />
+    <link rel="dns-prefetch" href="//unpkg.com" />
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
+    
+    <!-- Preconnect to critical origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
+    <!-- Critical CSS loaded first with high priority -->
+    <link rel="stylesheet" href="css/style.min.css" />
+    
     <!-- Fonts with font-display swap for better performance -->
     <link
       href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap"
       rel="stylesheet"
     />
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/style.min.css" />
+    
+    <!-- Non-critical CSS loaded with lower priority -->
+    <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="vendor/select2/select2.min.css" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="vendor/lightcase/lightcase.css" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" media="print" onload="this.media='all'" />
     <link
       rel="stylesheet"
       href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css"
+      media="print" onload="this.media='all'"
     />
+    
+    <!-- Fallback for browsers that don't support onload -->
+    <noscript>
+      <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
+      <link rel="stylesheet" href="vendor/select2/select2.min.css" />
+      <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" />
+      <link rel="stylesheet" href="vendor/lightcase/lightcase.css" />
+      <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+      <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" />
+    </noscript>
 
     <!-- Schema.org Structured Data -->
     <script type="application/ld+json">
@@ -340,7 +366,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a class="navbar-brand modern-brand" href="#home">
           <div class="brand-container">
             <div class="brand-icon">
-              <img src="img/testi-1.png" alt="Tiebo Croons" class="brand-image">
+              <img src="img/testi-1.png" alt="Tiebo Croons" class="brand-image" loading="eager" fetchpriority="high" width="60" height="60">
             </div>
             <div class="brand-text">
               <h4 class="brand-name mb-0">Tiebo Croons</h4>
@@ -1661,6 +1687,45 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
   </style>
   
+  <!-- LCP Optimization: Resource loading script -->
+  <script>
+    // Optimize resource loading to reduce LCP delays
+    (function() {
+      // Preload critical images immediately
+      const criticalImages = ['img/testi-1.png'];
+      criticalImages.forEach(src => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = src;
+        document.head.appendChild(link);
+      });
+      
+      // Load non-critical CSS asynchronously
+      function loadCSS(href) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = href;
+        link.media = 'print';
+        link.onload = function() { this.media = 'all'; };
+        document.head.appendChild(link);
+      }
+      
+      // Defer non-critical CSS if not already loaded
+      if (window.matchMedia && window.matchMedia('print').matches) {
+        setTimeout(() => {
+          ['vendor/bootstrap/bootstrap.min.css',
+           'vendor/select2/select2.min.css',
+           'vendor/owlcarousel/owl.carousel.min.css',
+           'vendor/lightcase/lightcase.css',
+           'https://unpkg.com/aos@next/dist/aos.css',
+           'https://cdn.linearicons.com/free/1.0.0/icon-font.min.css'
+          ].forEach(loadCSS);
+        }, 100);
+      }
+    })();
+  </script>
+  
   <!-- GitHub Integration -->
   <script src="js/github-api.js"></script>
   <script src="js/portfolio-integration.js"></script>
@@ -1668,6 +1733,50 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     // Initialize dynamic GitHub portfolio when page loads
     document.addEventListener('DOMContentLoaded', function() {
       initializeDynamicPortfolio();
+      
+      // LCP Optimization: Resource loading optimizations
+      (function() {
+        // Mark LCP element as high priority
+        const lcpElements = document.querySelectorAll('.display-1, .brand-image, h1');
+        lcpElements.forEach(el => {
+          if (el.tagName === 'IMG') {
+            el.loading = 'eager';
+            el.fetchPriority = 'high';
+          }
+        });
+        
+        // Preload next-likely resources
+        const nextResources = [
+          'img/obj_triangle.png',
+          'vendor/bootstrap/bootstrap.min.js'
+        ];
+        
+        setTimeout(() => {
+          nextResources.forEach(src => {
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = src;
+            document.head.appendChild(link);
+          });
+        }, 1000);
+      })();
+      
+      // Performance monitoring for LCP (development/debug only)
+      if (typeof PerformanceObserver !== 'undefined') {
+        const observer = new PerformanceObserver((entryList) => {
+          const entries = entryList.getEntries();
+          const lastEntry = entries[entries.length - 1];
+          if (console && console.log) {
+            console.log('LCP:', Math.round(lastEntry.startTime), 'ms');
+            console.log('LCP Element:', lastEntry.element?.tagName || 'Unknown');
+          }
+        });
+        try {
+          observer.observe({ entryTypes: ['largest-contentful-paint'] });
+        } catch (e) {
+          // Ignore if LCP observation not supported
+        }
+      }
     });
   </script>
   
