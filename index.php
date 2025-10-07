@@ -218,9 +218,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <!-- External CSS -->
     <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
-    <link rel="stylesheet" href="vendor/select2/select2.min.css" />
-    <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" />
-    <link rel="stylesheet" href="vendor/lightcase/lightcase.css" />
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
     <!-- Fonts -->
