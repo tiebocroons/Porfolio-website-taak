@@ -224,9 +224,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="stylesheet" href="vendor/lightcase/lightcase.css" />
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
-    <!-- Fonts -->
+    <!-- Fonts with font-display swap for better performance -->
     <link
-      href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700"
+      href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap"
       rel="stylesheet"
     />
 
@@ -1560,6 +1560,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   
   <!-- Additional CSS for dynamic effects -->
   <style>
+    /* Font optimization for better loading performance */
+    @font-face {
+      font-family: 'Lato';
+      font-display: swap;
+    }
+    
+    @font-face {
+      font-family: 'Work Sans';
+      font-display: swap;
+    }
+    
+    /* Ensure fallback fonts are available immediately */
+    body {
+      font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    
     .pillar-hover {
       transform: translateY(-3px) !important;
       box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3) !important;

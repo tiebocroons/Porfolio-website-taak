@@ -229,9 +229,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   </style>
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
-    <!-- Fonts -->
+    <!-- Fonts with font-display swap for better performance -->
     <link
-      href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700"
+      href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap"
       rel="stylesheet"
     />
 
@@ -252,6 +252,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     />
     
     <style>
+      /* Font optimization - Enhanced fallback fonts for better loading performance */
+      body {
+        font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      }
+      
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      }
+      
       /* Dynamic layout adjustments */
       .design-project-layout .row.justify-content-center > [class*="col-"] {
         flex: 0 0 100%;
