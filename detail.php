@@ -171,85 +171,56 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
     <link rel="icon" type="image" href="img/testi-1.png" />
 
-    <!-- External CSS -->
+    <!-- Critical resource preloading -->
+    <link rel="preload" href="img/testi-1.png" as="image" fetchpriority="high">
+    <link rel="preload" href="css/style.min.css" as="style">
+    <link rel="preload" href="vendor/bootstrap/bootstrap.min.css" as="style">
+    
+    <!-- DNS prefetching for external domains -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link rel="dns-prefetch" href="//cdn.linearicons.com">
+    <link rel="dns-prefetch" href="//unpkg.com">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//use.fontawesome.com">
+    
+    <!-- Preconnect to critical origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Critical CSS loaded first -->
     <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
-    <link rel="stylesheet" href="vendor/select2/select2.min.css" />
-    <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" />
-    <link rel="stylesheet" href="vendor/lightcase/lightcase.css" />
-
-  <!-- Custom breadcrumb styling -->
-  <style>
-    .breadcrumb-item a {
-      color: #007bff;
-    }
-    .breadcrumb-item.active {
-      color: #6c757d;
-    }
-    .admin-actions {
-      border-top: 1px solid #dee2e6;
-      padding-top: 10px;
-    }
-    
-    /* Social Links Styling */
-    .social-links {
-      margin-top: 1.5rem;
-    }
-    
-    .social-icons {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-    }
-    
-    .social-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      color: #6c757d;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .social-link:hover {
-      background: #007bff;
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
-    }
-    
-    .social-link i {
-      font-size: 16px;
-    }
-  </style>
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-
-    <!-- Fonts with font-display swap for better performance -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- CSS -->
     <link rel="stylesheet" href="css/style.min.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css"
-    />
-    <!-- Font Awesome as backup for icons -->
-    <link
-      rel="stylesheet" 
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-    />
+    
+    <!-- Non-critical CSS loaded asynchronously -->
+    <link rel="stylesheet" href="vendor/select2/select2.min.css" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="vendor/lightcase/lightcase.css" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" media="print" onload="this.media='all'" />
+
+  </head>
+
+  <body data-spy="scroll" data-target="#navbar" class="static-layout detail-page <?php echo !in_array($project['category'], ['development', 'web', 'mobile']) ? 'design-project-layout' : 'development-project-layout'; ?>">
+    
+    <!-- Fonts with optimized loading strategy -->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    
+    <!-- Icons loaded asynchronously -->
+    <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" media="print" onload="this.media='all'" />
+    
+    <!-- Fallback for non-supporting browsers -->
+    <noscript>
+      <link rel="stylesheet" href="vendor/select2/select2.min.css" />
+      <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" />
+      <link rel="stylesheet" href="vendor/lightcase/lightcase.css" />
+      <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+      <link href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap" rel="stylesheet" />
+      <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" />
+    </noscript>
     
     <style>
       /* Font optimization - Enhanced fallback fonts for better loading performance */
@@ -2005,28 +1976,91 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       </div>
     </footer>
   </body>
-  <!-- External JS -->
+  <!-- Critical JavaScript -->
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
     integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
+    defer
   ></script>
-  <script src="vendor/bootstrap/popper.min.js"></script>
-  <script src="vendor/bootstrap/bootstrap.min.js"></script>
-  <script src="vendor/select2/select2.min.js "></script>
-  <script src="vendor/owlcarousel/owl.carousel.min.js"></script>
-  <script src="vendor/isotope/isotope.min.js"></script>
-  <script src="vendor/lightcase/lightcase.js"></script>
-  <script src="vendor/waypoints/waypoint.min.js"></script>
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-  <script src="stellar/jquery.stellar.js"></script>
-
-  <!-- Main JS -->
-  <script src="js/app.min.js "></script>
+  <script src="vendor/bootstrap/popper.min.js" defer></script>
+  <script src="vendor/bootstrap/bootstrap.min.js" defer></script>
   
-  <!-- Contact Form JS -->
-  <script src="contactform/contactform.js"></script>
+  <!-- Non-critical JavaScript loaded progressively -->
+  <script>
+    // Progressive script loading for detail page
+    function loadNonCriticalScripts() {
+      const scriptGroups = {
+        ui: [
+          'vendor/select2/select2.min.js',
+          'vendor/owlcarousel/owl.carousel.min.js',
+          'vendor/isotope/isotope.min.js'
+        ],
+        animation: [
+          'vendor/lightcase/lightcase.js',
+          'vendor/waypoints/waypoint.min.js',
+          'https://unpkg.com/aos@next/dist/aos.js'
+        ],
+        app: [
+          'stellar/jquery.stellar.js',
+          'js/app.min.js',
+          'contactform/contactform.js'
+        ]
+      };
+      
+      // Load UI scripts first
+      loadScriptGroup(scriptGroups.ui, 100, () => {
+        console.log('UI scripts loaded');
+      });
+      
+      // Load animation scripts after delay
+      loadScriptGroup(scriptGroups.animation, 300, () => {
+        initializeAnimations();
+      });
+      
+      // Load app scripts last
+      loadScriptGroup(scriptGroups.app, 500, () => {
+        console.log('App scripts loaded');
+      });
+    }
+    
+    function loadScriptGroup(scripts, delay, callback) {
+      setTimeout(() => {
+        let loaded = 0;
+        scripts.forEach(src => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.defer = true;
+          script.onload = () => {
+            loaded++;
+            if (loaded === scripts.length && callback) {
+              callback();
+            }
+          };
+          document.head.appendChild(script);
+        });
+      }, delay);
+    }
+    
+    function initializeAnimations() {
+      // Initialize AOS when available
+      if (typeof AOS !== 'undefined') {
+        AOS.init({
+          duration: 1000,
+          once: true,
+          disable: window.innerWidth < 768
+        });
+      }
+    }
+    
+    // Start loading when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadNonCriticalScripts);
+    } else {
+      loadNonCriticalScripts();
+    }
+  </script>
   
   <!-- Auto-close navbar script -->
   <script>
@@ -2040,11 +2074,35 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         }
       });
       
-      // Initialize AOS
-      AOS.init({
-        duration: 1000,
-        once: true
-      });
+      // Initialize AOS when scripts are loaded
+      function initAOSWhenReady() {
+        if (typeof AOS !== 'undefined') {
+          AOS.init({
+            duration: 1000,
+            once: true
+          });
+        } else {
+          setTimeout(initAOSWhenReady, 100);
+        }
+      }
+      
+      initAOSWhenReady();
+      
+      // Performance monitoring for detail page
+      if ('PerformanceObserver' in window) {
+        const observer = new PerformanceObserver((entryList) => {
+          const entries = entryList.getEntries();
+          const lastEntry = entries[entries.length - 1];
+          if (console && console.log) {
+            console.log('Detail LCP:', Math.round(lastEntry.startTime), 'ms');
+          }
+        });
+        try {
+          observer.observe({ entryTypes: ['largest-contentful-paint'] });
+        } catch (e) {
+          // Ignore if not supported
+        }
+      }
       
       // Debug timeline badges and icons
       console.log('Timeline badges:', $('.timeline-date.badge').length);
@@ -2095,6 +2153,49 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         updateTimelineBadges();
       });
       
+      // Resource chain optimization for detail page
+      const detailOptimizer = {
+        // Lazy load images in project gallery
+        initLazyImages: function() {
+          if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries) => {
+              entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                  const img = entry.target;
+                  if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                    img.classList.add('loaded');
+                    imageObserver.unobserve(img);
+                  }
+                }
+              });
+            }, { rootMargin: '50px' });
+            
+            document.querySelectorAll('img[data-src]').forEach(img => {
+              imageObserver.observe(img);
+            });
+          }
+        },
+        
+        // Preload related project resources
+        preloadRelatedProjects: function() {
+          const relatedLinks = document.querySelectorAll('.related-project-link, a[href*="detail.php"]');
+          setTimeout(() => {
+            relatedLinks.forEach(link => {
+              const prefetchLink = document.createElement('link');
+              prefetchLink.rel = 'prefetch';
+              prefetchLink.href = link.href;
+              document.head.appendChild(prefetchLink);
+            });
+          }, 2000);
+        }
+      };
+      
+      // Initialize detail page optimizations
+      detailOptimizer.initLazyImages();
+      detailOptimizer.preloadRelatedProjects();
+      
       // Timeline Expansion functionality
       $('.expandable-timeline .timeline-header').on('click', function() {
         const $timelineItem = $(this).closest('.expandable-timeline');
@@ -2139,539 +2240,5 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       );
     });
   </script>
-  
-  <!-- Timeline Styles -->
-  <style>
-    /* Timeline Marker Styles */
-    .timeline-marker {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 5px;
-      position: relative;
-      z-index: 2;
-    }
-    
-    .timeline-marker.completed {
-      background: linear-gradient(135deg, #28a745, #20c997);
-      box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
-    }
-    
-    .timeline-marker.in-progress {
-      background: linear-gradient(135deg, #ffc107, #fd7e14);
-      box-shadow: 0 3px 10px rgba(255, 193, 7, 0.3);
-    }
-    
-    .timeline-marker.pending {
-      background: linear-gradient(135deg, #6c757d, #adb5bd);
-      box-shadow: 0 3px 10px rgba(108, 117, 125, 0.3);
-    }
-    
-    .timeline-marker i {
-      font-size: 16px;
-      color: white;
-      line-height: 1;
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      text-align: center;
-    }
-    
-    /* Ensure icons are visible */
-    .timeline-marker i:before {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      text-align: center;
-      line-height: 16px;
-    }
-    
-    /* Fallback for when Linear Icons fail to load */
-    .timeline-marker i.fas {
-      font-family: "Font Awesome 6 Free" !important;
-      font-weight: 900;
-    }
-    
-    /* Debug styling to see if icons are loading */
-    .timeline-marker i.timeline-icon {
-      background-color: rgba(255,255,255,0.1);
-      border-radius: 2px;
-      min-width: 16px;
-      min-height: 16px;
-    }
-    
-    /* Timeline Content */
-    .timeline-content {
-      flex: 1;
-      padding-left: 20px;
-      max-width: calc(100% - 60px);
-    }
-    
-    /* Badge styling */
-    .badge {
-      font-size: 0.75rem;
-      padding: 0.375rem 0.75rem;
-      border-radius: 0.375rem;
-    }
-    
-    .badge-secondary {
-      background-color: #6c757d;
-      color: white;
-    }
-    
-    .badge-warning {
-      background-color: #ffc107;
-      color: #ffff;
-    }
-    
-    .badge-success {
-      background-color: #28a745;
-      color: white;
-    }
-    
-    .badge-danger {
-      background-color: #dc3545;
-      color: white;
-    }
-    
-    /* Enhanced timeline for creative process phases */
-    .timeline-item[data-phase="challenge"] .timeline-marker {
-      background: linear-gradient(135deg, #ffc107, #fd7e14);
-      border: 3px solid #fff3cd;
-    }
-    
-    .timeline-item[data-phase="approach"] .timeline-marker {
-      background: linear-gradient(135deg, #17a2b8, #0dcaf0);
-      border: 3px solid #cff4fc;
-    }
-    
-    .timeline-item[data-phase="solution"] .timeline-marker {
-      background: linear-gradient(135deg, #28a745, #20c997);
-      border: 3px solid #d1e7dd;
-    }
-    
-    /* Enhanced creative process styling */
-    .timeline-item[data-phase="challenge"] {
-      border-left: 4px solid #ffc107;
-      background: rgba(255, 193, 7, 0.05);
-      border-radius: 8px;
-      margin: 15px 0;
-      padding: 10px;
-    }
-    
-    .timeline-item[data-phase="approach"] {
-      border-left: 4px solid #17a2b8;
-      background: rgba(23, 162, 184, 0.05);
-      border-radius: 8px;
-      margin: 15px 0;
-      padding: 10px;
-    }
-    
-    .timeline-item[data-phase="solution"] {
-      border-left: 4px solid #28a745;
-      background: rgba(40, 167, 69, 0.05);
-      border-radius: 8px;
-      margin: 15px 0;
-      padding: 10px;
-    }
-    
-    .expandable-timeline {
-      transition: all 0.3s ease;
-      /* Use flexbox to position marker and content side by side */
-      display: flex !important;
-      align-items: flex-start;
-      gap: 15px;
-      width: 100% !important;
-      max-width: 100% !important;
-      overflow: hidden;
-    }
-    
-    .expandable-timeline .timeline-header {
-      transition: all 0.3s ease;
-      border-radius: 8px;
-      padding: 10px;
-      /* Remove negative margins that cause width expansion */
-      margin: 0;
-      /* Prevent width expansion on hover */
-      box-sizing: border-box;
-      width: 100%;
-    }
-    
-    .expandable-timeline .timeline-header:hover {
-      background: rgba(0, 123, 255, 0.05);
-      /* Removed transform: translateX(5px) to prevent width changes */
-    }
-    
-    .timeline-hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      /* Maintain flex layout on hover */
-      display: flex !important;
-      align-items: flex-start !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      min-width: 100% !important;
-      box-sizing: border-box !important;
-    }
-    
-    .timeline-expanded {
-      background: rgba(0, 123, 255, 0.02);
-      border-radius: 12px;
-      padding: 15px;
-      /* Completely prevent width expansion */
-      margin: 0 !important;
-      border-left: 3px solid #007bff;
-      /* Ensure content stays within bounds */
-      box-sizing: border-box !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      overflow: hidden;
-    }
-    
-    .expand-icon {
-      float: right;
-      transition: all 0.3s ease;
-      color: #007bff;
-      font-size: 14px;
-    }
-    
-    .expand-icon.expanded {
-      transform: rotate(180deg);
-      color: #28a745;
-    }
-    
-    .timeline-details {
-      margin-top: 15px;
-    }
-    
-    .detail-content {
-      border-left: 4px solid #007bff;
-      animation: fadeInDetail 0.3s ease-out;
-    }
-    
-    @keyframes fadeInDetail {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .task-item {
-      padding: 5px 0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .task-item i {
-      flex-shrink: 0;
-    }
-    
-    .week-deliverables, .week-stats, .final-results {
-      background: rgba(255, 255, 255, 0.7);
-      border-radius: 8px;
-      padding: 15px;
-    }
-    
-    .tech-badges .badge {
-      margin-bottom: 5px;
-    }
-    
-    .stat-number {
-      font-size: 1.2em;
-      font-weight: bold;
-      color: #007bff;
-    }
-    
-    /* Timeline Container Width Control - Override all potential conflicts */
-    .timeline-item.expandable-timeline {
-      width: 100% !important;
-      max-width: 100% !important;
-      min-width: 100% !important;
-      box-sizing: border-box !important;
-      display: flex !important; /* Use flex for proper alignment */
-      align-items: flex-start !important;
-      gap: 15px !important;
-      margin-left: 0 !important;
-      margin-right: 0 !important;
-    }
-    
-    /* Also control the timeline content container */
-    .expandable-timeline .timeline-content {
-      flex: 1; /* Take up remaining space */
-      width: auto !important;
-      max-width: none !important;
-      box-sizing: border-box !important;
-      overflow: hidden;
-    }
-    
-    /* Timeline marker positioning */
-    .expandable-timeline .timeline-marker {
-      flex-shrink: 0; /* Don't shrink the marker */
-      position: static; /* Remove any absolute positioning */
-      margin-top: 5px; /* Align with text */
-    }
-    
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .timeline-item.expandable-timeline {
-        gap: 10px !important; /* Smaller gap on mobile */
-      }
-      
-      .timeline-expanded {
-        margin: 0 !important; /* Remove negative margins on mobile */
-        padding: 10px;
-        box-sizing: border-box !important;
-        width: 100% !important;
-        max-width: 100% !important;
-      }
-      
-      .expandable-timeline .timeline-header {
-        margin: 0 !important; /* Remove all negative margins */
-        padding: 5px;
-        width: 100% !important;
-        box-sizing: border-box !important;
-      }
-      
-      .expandable-timeline .timeline-marker {
-        margin-top: 2px; /* Better alignment on mobile */
-      }
-      
-      .detail-content {
-        padding: 15px !important;
-      }
-    }
-    
-    /* Design-specific timeline badges */
-    .badge-figma {
-      background-color: #F24E1E;
-      color: white;
-    }
-    
-    .badge-photoshop {
-      background-color: #31A8FF;
-      color: white;
-    }
-    
-    .badge-illustrator {
-      background-color: #FF9A00;
-      color: white;
-    }
-    
-    .badge-indesign {
-      background-color: #FF3366;
-      color: white;
-    }
-    
-    /* Creative Process Timeline Styling */
-    .timeline-item[data-phase="challenge"] .timeline-marker {
-      background: linear-gradient(45deg, #ffc107, #ff8f00);
-      border: 2px solid #fff;
-      box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.2);
-    }
-    
-    .timeline-item[data-phase="approach"] .timeline-marker {
-      background: linear-gradient(45deg, #17a2b8, #0d8aa8);
-      border: 2px solid #fff;
-      box-shadow: 0 0 0 4px rgba(23, 162, 184, 0.2);
-    }
-    
-    .timeline-item[data-phase="development"] .timeline-marker {
-      background: linear-gradient(45deg, #007bff, #0056b3);
-      border: 2px solid #fff;
-      box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
-    }
-    
-    .timeline-item[data-phase="design"] .timeline-marker {
-      background: linear-gradient(45deg, #28a745, #1e7e34);
-      border: 2px solid #fff;
-      box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.2);
-    }
-    
-    .timeline-item[data-phase="solution"] .timeline-marker {
-      background: linear-gradient(45deg, #28a745, #20c997);
-      border: 2px solid #fff;
-      box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.2);
-    }
-    
-    /* Creative process badge styling */
-    .badge-warning {
-      background-color: #ffc107;
-      color: #fff;
-      font-weight: 600;
-    }
-    
-    .badge-info {
-      background-color: #17a2b8;
-      color: #fff;
-      font-weight: 600;
-    }
-    
-    .badge-success {
-      background-color: #28a745;
-      color: #fff;
-      font-weight: 600;
-    }
-    
-    /* Enhanced timeline content styling for creative process */
-    .timeline-item[data-phase="challenge"] .timeline-content {
-      border-left: 3px solid #ffc107;
-      padding-left: 20px;
-    }
-    
-    .timeline-item[data-phase="approach"] .timeline-content {
-      border-left: 3px solid #17a2b8;
-      padding-left: 20px;
-    }
-    
-    .timeline-item[data-phase="solution"] .timeline-content {
-      border-left: 3px solid #28a745;
-      padding-left: 20px;
-    }
-    
-    /* Timeline marker states for dynamic phases */
-    .timeline-marker.completed {
-      background: linear-gradient(45deg, #28a745, #20c997);
-      box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.2);
-    }
-    
-    .timeline-marker.in-progress {
-      background: linear-gradient(45deg, #ffc107, #ff8f00);
-      box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.2);
-      animation: pulse-warning 2s infinite;
-    }
-    
-    .timeline-marker.pending {
-      background: linear-gradient(45deg, #6c757d, #495057);
-      box-shadow: 0 0 0 4px rgba(108, 117, 125, 0.2);
-      opacity: 0.7;
-    }
-    
-    /* Pulsing animation for in-progress phases */
-    @keyframes pulse-warning {
-      0%, 100% {
-        box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.2);
-      }
-      50% {
-        box-shadow: 0 0 0 8px rgba(255, 193, 7, 0.1);
-      }
-    }
-    
-    .feature-list {
-      list-style: none;
-      padding: 0;
-    }
-    
-    .feature-list li {
-      padding: 4px 0;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-    }
-    
-    .feature-list li:last-child {
-      border-bottom: none;
-    }
-    
-    .stats-grid .stat-item {
-      display: flex;
-      align-items: center;
-      font-size: 0.9rem;
-    }
-    
-    .design-specs .spec-item {
-      display: flex;
-      align-items: center;
-      font-size: 0.9rem;
-      margin-bottom: 8px;
-    }
-    
-    .project-status {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    
-    /* Enhanced timeline badges */
-    .timeline-date.badge-warning {
-      background-color: #ffc107;
-      color: #fff;
-    }
-    
-    .timeline-date.badge-info {
-      background-color: #17a2b8;
-      color: white;
-    }
-    
-    .timeline-date.badge-success {
-      background-color: #28a745;
-      color: white;
-    }
-    
-    .timeline-date.badge-primary {
-      background-color: #007bff;
-      color: white;
-    }
-
-    /* Overlay Content Styles - Matching index.php */
-    .overlay-content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      z-index: 10;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .image-overlay:hover .overlay-content,
-    .gallery-overlay:hover .overlay-content {
-      opacity: 1;
-    }
-
-    .gallery-overlay,
-    .image-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(0, 123, 255, 0.9), rgba(0, 86, 179, 0.95));;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .portfolio-image-container:hover .image-overlay,
-    .gallery-image-wrapper:hover .gallery-overlay {
-      opacity: 1;
-    }
-
-    .gallery-image-wrapper,
-    .portfolio-image-container {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .gallery-zoom {
-      color: white;
-      font-size: 24px;
-      text-decoration: none;
-    }
-
-    .gallery-zoom:hover {
-      color: #fff;
-      text-decoration: none;
-    }
-  </style>
 </body>
 </html>
