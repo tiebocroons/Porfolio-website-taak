@@ -1,4 +1,3 @@
-
 <?php
 // Start session for potential login functionality
 session_start();
@@ -217,51 +216,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     />
     <link rel="icon" type="image" href="img/testi-1.png" />
 
-    <!-- LCP Optimization: Preload critical resources -->
-    <link rel="preload" href="img/testi-1.png" as="image" type="image/png" />
-    <link rel="preload" href="css/style.min.css" as="style" />
-    <link rel="preload" href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap" as="style" crossorigin />
-    
-    <!-- DNS prefetching for external resources -->
-    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-    <link rel="dns-prefetch" href="//cdn.linearicons.com" />
-    <link rel="dns-prefetch" href="//unpkg.com" />
-    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
-    
-    <!-- Preconnect to critical origins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- External CSS -->
+    <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="vendor/select2/select2.min.css" />
+    <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" />
+    <link rel="stylesheet" href="vendor/lightcase/lightcase.css" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
-    <!-- Critical CSS loaded first with high priority -->
-    <link rel="stylesheet" href="css/style.min.css" />
-    
-    <!-- Fonts with font-display swap for better performance -->
+    <!-- Fonts -->
     <link
-      href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap"
+      href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700"
       rel="stylesheet"
     />
-    
-    <!-- Non-critical CSS loaded with lower priority -->
-    <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" media="print" onload="this.media='all'" />
-    <link rel="stylesheet" href="vendor/select2/select2.min.css" media="print" onload="this.media='all'" />
-    <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" media="print" onload="this.media='all'" />
-    <link rel="stylesheet" href="vendor/lightcase/lightcase.css" media="print" onload="this.media='all'" />
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" media="print" onload="this.media='all'" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.min.css" />
     <link
       rel="stylesheet"
       href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css"
-      media="print" onload="this.media='all'"
     />
-    
-    <!-- Fallback for browsers that don't support onload -->
-    <noscript>
-      <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
-      <link rel="stylesheet" href="vendor/select2/select2.min.css" />
-      <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" />
-      <link rel="stylesheet" href="vendor/lightcase/lightcase.css" />
-      <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-      <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" />
-    </noscript>
 
     <!-- Schema.org Structured Data -->
     <script type="application/ld+json">
@@ -366,7 +339,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a class="navbar-brand modern-brand" href="#home">
           <div class="brand-container">
             <div class="brand-icon">
-              <img src="img/testi-1.png" alt="Tiebo Croons" class="brand-image" loading="eager" fetchpriority="high" width="60" height="60">
+              <img src="img/testi-1.png" alt="Tiebo Croons" class="brand-image">
             </div>
             <div class="brand-text">
               <h4 class="brand-name mb-0">Tiebo Croons</h4>
@@ -554,8 +527,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
                 <div class="card-body p-4">
                   <p class="card-text mb-4">
-                    Met een passie voor grafische media en digitale innovatie breng ik creatieve visies tot leven. 
-                    Van concept tot uitvoering, ik focus op het creëren van betekenisvolle digitale ervaringen.
+                    Ik ben een ontwerper die gelooft dat digitale producten pas echt werken als ze eenvoudig, aantrekkelijk en toegankelijk zijn. Wat mij drijft, is het creëren van digitale ervaringen waar mensen met plezier naar terugkeren.
+Mijn kracht ligt in het vertalen van complexe vraagstukken naar iets helder en bruikbaar — altijd met de gebruiker als uitgangspunt. Ik zie techniek als een middel, niet als doel: het ondersteunt de ervaring, niet andersom.
+Niets frustreert me meer dan producten die onnodig ingewikkeld zijn. Daarom kies ik bewust voor eenvoud, structuur en duidelijkheid in alles wat ik maak.
                   </p>
                   
                   <!-- Visual Stats -->
@@ -594,6 +568,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                       <i class="lnr lnr-users text-info"></i>
                       <span>Sterke focus op gebruikerservaring</span>
                     </div>
+                    <div class="trait-item">
+                      <i class="lnr lnr-heart text-danger"></i>
+                      <span>Passie voor clean en modern design</span>
+                    </div>
+                    <div class="trait-item">
+                      <i class="lnr lnr-graduation-hat text-purple"></i>
+                      <span>Altijd bereid om nieuwe skills te leren</span>
+                    </div>
+                    <div class="trait-item">
+                      <i class="lnr lnr-bubble text-primary"></i>
+                      <span>Goede communicatie en teamwork</span>
+                    </div>
+                    <div class="trait-item">
+                      <i class="lnr lnr-laptop text-success"></i>
+                      <span>Ervaring met responsive en mobile-first design</span>
+                    </div>
+                  </div>
+                  
+                  <!-- CV Download Button -->
+                  <div class="text-center mt-4">
+                    <a href="cv/Tiebo_Croons_CV.pdf" target="_blank" class="btn btn-gradient-primary btn-lg">
+                      <i class="lnr lnr-download mr-2"></i>
+                      Download Mijn CV
+                    </a>
+                    <p class="text-muted mt-2 small">PDF - Laatst bijgewerkt: <?php echo date('F Y'); ?></p>
                   </div>
                 </div>
               </div>
@@ -669,7 +668,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="goal-items">
                       <div class="goal-item">UX/UI Designer</div>
                       <div class="goal-item">Web Developer</div>
-                      <div class="goal-item">Digital Strategist</div>
+                      <div class="goal-item">Teaching young minds</div>
                       <div class="goal-item">Immersive Tech Expert</div>
                     </div>
                   </div>
@@ -701,29 +700,56 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                   <div class="skill-bars">
                     <div class="skill-item">
                       <div class="skill-info">
-                        <span>Adobe Photoshop</span>
-                        <span class="skill-percentage">85%</span>
+                        <span>Figma</span>
+                        <span class="skill-percentage">90%</span>
                       </div>
                       <div class="skill-bar">
-                        <div class="skill-progress" data-skill="85"></div>
+                        <div class="skill-progress" data-skill="90"></div>
+                      </div>
+                    </div>
+                    <div class="skill-item">
+                      <div class="skill-info">
+                        <span>Adobe Photoshop</span>
+                        <span class="skill-percentage">60%</span>
+                      </div>
+                      <div class="skill-bar">
+                        <div class="skill-progress" data-skill="60"></div>
                       </div>
                     </div>
                     <div class="skill-item">
                       <div class="skill-info">
                         <span>Adobe Illustrator</span>
-                        <span class="skill-percentage">80%</span>
+                        <span class="skill-percentage">70%</span>
                       </div>
                       <div class="skill-bar">
-                        <div class="skill-progress" data-skill="80"></div>
+                        <div class="skill-progress" data-skill="70"></div>
                       </div>
                     </div>
                     <div class="skill-item">
                       <div class="skill-info">
-                        <span>UI/UX Design</span>
-                        <span class="skill-percentage">75%</span>
+                        <span>Adobe Premiere</span>
+                        <span class="skill-percentage">60%</span>
                       </div>
                       <div class="skill-bar">
-                        <div class="skill-progress" data-skill="75"></div>
+                        <div class="skill-progress" data-skill="60"></div>
+                      </div>
+                    </div>
+                    <div class="skill-item">
+                      <div class="skill-info">
+                        <span>Adobe InDesign</span>
+                        <span class="skill-percentage">70%</span>
+                      </div>
+                      <div class="skill-bar">
+                        <div class="skill-progress" data-skill="70"></div>
+                      </div>
+                    </div>
+                    <div class="skill-item">
+                      <div class="skill-info">
+                        <span>After Effects</span>
+                        <span class="skill-percentage">65%</span>
+                      </div>
+                      <div class="skill-bar">
+                        <div class="skill-progress" data-skill="65"></div>
                       </div>
                     </div>
                   </div>
@@ -744,10 +770,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                           <i class="fab fa-html5" style="margin-right: 6px;"></i>
                           HTML
                         </span>
-                        <span class="skill-percentage">75%</span>
+                        <span class="skill-percentage">95%</span>
                       </div>
                       <div class="skill-bar">
-                        <div class="skill-progress" data-skill="75" style="background: linear-gradient(90deg, #e34c2622, #e34c2688);"></div>
+                        <div class="skill-progress" data-skill="95" style="background: linear-gradient(90deg, #e34c2622, #e34c2688);"></div>
                       </div>
                     </div>
                     <div class="skill-item">
@@ -756,10 +782,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                           <i class="fab fa-css3-alt" style="margin-right: 6px;"></i>
                           CSS
                         </span>
-                        <span class="skill-percentage">70%</span>
+                        <span class="skill-percentage">85%</span>
                       </div>
                       <div class="skill-bar">
-                        <div class="skill-progress" data-skill="70" style="background: linear-gradient(90deg, #1572b622, #1572b688);"></div>
+                        <div class="skill-progress" data-skill="85" style="background: linear-gradient(90deg, #1572b622, #1572b688);"></div>
                       </div>
                     </div>
                     <div class="skill-item">
@@ -768,10 +794,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                           <i class="fab fa-js-square" style="margin-right: 6px;"></i>
                           JavaScript
                         </span>
-                        <span class="skill-percentage">60%</span>
+                        <span class="skill-percentage">70%</span>
                       </div>
                       <div class="skill-bar">
-                        <div class="skill-progress" data-skill="60" style="background: linear-gradient(90deg, #f1e05a22, #f1e05a88);"></div>
+                        <div class="skill-progress" data-skill="70" style="background: linear-gradient(90deg, #f1e05a22, #f1e05a88);"></div>
                       </div>
                     </div>
                     <div class="skill-item">
@@ -780,10 +806,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                           <i class="fab fa-php" style="margin-right: 6px;"></i>
                           PHP
                         </span>
-                        <span class="skill-percentage">65%</span>
+                        <span class="skill-percentage">70%</span>
                       </div>
                       <div class="skill-bar">
-                        <div class="skill-progress" data-skill="65" style="background: linear-gradient(90deg, #4f5d9522, #4f5d9588);"></div>
+                        <div class="skill-progress" data-skill="70" style="background: linear-gradient(90deg, #4f5d9522, #4f5d9588);"></div>
                       </div>
                     </div>
                   </div>
@@ -866,15 +892,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                   <div class="competency-icon">
                     <i class="lnr lnr-eye"></i>
                   </div>
-                  <h5 class="competency-title">Oog voor Detail</h5>
+                  <h5 class="competency-title">Oplettend</h5>
                   <p class="competency-desc">
-                    Hoge waarde aan details met focus op kwaliteit en nauwkeurigheid. 
-                    Kritische blik op eigen werk met bereidheid tot verbetering.
+                    Altijd opzoek naar perfecte teamsfeer. Zorgt voor nauwkeurigheid en consistentie in alle projecten. 
+                    Streeft naar hoge kwaliteitsnormen en klanttevredenheid.
                   </p>
                   <div class="competency-tags">
-                    <span class="comp-tag">Kwaliteitscontrole</span>
-                    <span class="comp-tag">Nauwkeurigheid</span>
-                    <span class="comp-tag">Perfectie</span>
+                    <span class="comp-tag">Teamverband</span>
+                    <span class="comp-tag">Samenhorigheid</span>
+                    <span class="comp-tag">Plezier</span>
                   </div>
                 </div>
               </div>
@@ -1008,9 +1034,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </div>
           <!-- Enhanced Portfolio Grid -->
           <div class="portfolio-grid-container grid-portfolio">
-            <!-- Isotope grid sizers -->
-            <div class="grid-sizer col-lg-4"></div>
-            <div class="gutter-sizer"></div>
             
             <?php
             // Display dynamic portfolio items from database within the grid
@@ -1259,40 +1282,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               </div>
             </div>
           </div>
-          
-          <!-- Social Links Section -->
-          <div class="row" data-aos="fade-up" data-aos-delay="300">
-            <div class="col-12">
-              <div class="social-connect visual-card p-5 text-center">
-                <h4 class="social-title mb-3">
-                  <i class="lnr lnr-users text-primary me-2"></i>
-                  Volg Mijn Journey
-                </h4>
-                <p class="social-description text-muted mb-4">
-                  Blijf op de hoogte van mijn nieuwste projecten en ontdekkingen
-                </p>
-                
-                <div class="social-links d-flex justify-content-center flex-wrap gap-3">
-                  <a href="https://www.linkedin.com/in/tiebo-croons" target="_blank" 
-                     class="social-link linkedin" title="LinkedIn - Professioneel netwerk">
-                    <i class="fab fa-linkedin"></i>
-                    <span>LinkedIn</span>
-                  </a>
-                  <a href="https://github.com/tiebocroons" target="_blank" 
-                     class="social-link github" title="GitHub - Code repositories">
-                    <i class="fab fa-github"></i>
-                    <span>GitHub</span>
-                  </a>
-                  <a href="https://www.instagram.com/tiebo.crs/" target="_blank" 
-                     class="social-link instagram" title="Instagram - Creatieve content">
-                    <i class="fab fa-instagram"></i>
-                    <span>Instagram</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-          
         </div>
       </section>
     <!-- Modern Footer -->
@@ -1415,7 +1404,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <script src="vendor/bootstrap/bootstrap.min.js"></script>
   <script src="vendor/select2/select2.min.js "></script>
   <script src="vendor/owlcarousel/owl.carousel.min.js"></script>
-  <script src="vendor/isotope/isotope.min.js"></script>
+
   <script src="vendor/lightcase/lightcase.js"></script>
   <script src="vendor/waypoints/waypoint.min.js"></script>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
@@ -1584,199 +1573,94 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
   </script>
   
-  <!-- Additional CSS for dynamic effects -->
-  <style>
-    /* Font optimization for better loading performance */
-    @font-face {
-      font-family: 'Lato';
-      font-display: swap;
-    }
-    
-    @font-face {
-      font-family: 'Work Sans';
-      font-display: swap;
-    }
-    
-    /* Ensure fallback fonts are available immediately */
-    body {
-      font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    }
-    
-    h1, h2, h3, h4, h5, h6 {
-      font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    }
-    
-    .pillar-hover {
-      transform: translateY(-3px) !important;
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3) !important;
-    }
-    
-    .goal-clicked {
-      transform: scale(0.95);
-      transition: transform 0.1s ease;
-    }
-    
-    .stat-number {
-      transition: all 0.3s ease;
-    }
-    
-    .timeline-item:hover .timeline-marker {
-      transform: scale(1.1);
-      transition: transform 0.3s ease;
-    }
-    
-    .visual-card:hover .icon-wrapper {
-      transform: scale(1.1) rotate(5deg);
-      transition: all 0.3s ease;
-    }
-    
-    .comp-tag-hover {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-      color: white !important;
-      transform: translateY(-2px) !important;
-    }
-    
-    .competency-animated {
-      animation: slideInUp 0.6s ease-out;
-    }
-    
-    @keyframes slideInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .competency-clicked {
-      transform: scale(0.95) !important;
-      transition: transform 0.1s ease !important;
-    }
-    
-    .competency-card {
-      cursor: pointer;
-    }
-    
-    /* Dynamic Portfolio Badges */
-    .badge-development { background-color: #007bff; color: white; }
-    .badge-design { background-color: #e83e8c; color: white; }
-    .badge-vintage { background-color: #6f42c1; color: white; }
-    .badge-web { background-color: #28a745; color: white; }
-    .badge-mobile { background-color: #fd7e14; color: white; }
-    .badge-tool { background-color: #6c757d; color: white; }
-    .badge-date { background-color: #17a2b8; color: white; }
-    
-    /* Completion status styling */
-    .completion-status {
-      font-size: 0.8rem;
-    }
-    
-    .completion-status.completed {
-      color: #28a745;
-    }
-    
-    .completion-status.in_progress {
-      color: #ffc107;
-    }
-    
-    .completion-status.planned {
-      color: #6c757d;
-    }
-  </style>
-  
-  <!-- LCP Optimization: Resource loading script -->
+  <!-- Portfolio Filter Functionality -->
   <script>
-    // Optimize resource loading to reduce LCP delays
-    (function() {
-      // Preload critical images immediately
-      const criticalImages = ['img/testi-1.png'];
-      criticalImages.forEach(src => {
-        const link = document.createElement('link');
-        link.rel = 'preload';
-        link.as = 'image';
-        link.href = src;
-        document.head.appendChild(link);
-      });
-      
-      // Load non-critical CSS asynchronously
-      function loadCSS(href) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = href;
-        link.media = 'print';
-        link.onload = function() { this.media = 'all'; };
-        document.head.appendChild(link);
-      }
-      
-      // Defer non-critical CSS if not already loaded
-      if (window.matchMedia && window.matchMedia('print').matches) {
-        setTimeout(() => {
-          ['vendor/bootstrap/bootstrap.min.css',
-           'vendor/select2/select2.min.css',
-           'vendor/owlcarousel/owl.carousel.min.css',
-           'vendor/lightcase/lightcase.css',
-           'https://unpkg.com/aos@next/dist/aos.css',
-           'https://cdn.linearicons.com/free/1.0.0/icon-font.min.css'
-          ].forEach(loadCSS);
-        }, 100);
-      }
-    })();
-  </script>
-  
-  <!-- GitHub Integration -->
-  <script src="js/github-api.js"></script>
-  <script src="js/portfolio-integration.js"></script>
-  <script>
-    // Initialize dynamic GitHub portfolio when page loads
+    // Enhanced portfolio filtering with smooth transitions
     document.addEventListener('DOMContentLoaded', function() {
-      initializeDynamicPortfolio();
-      
-      // LCP Optimization: Resource loading optimizations
-      (function() {
-        // Mark LCP element as high priority
-        const lcpElements = document.querySelectorAll('.display-1, .brand-image, h1');
-        lcpElements.forEach(el => {
-          if (el.tagName === 'IMG') {
-            el.loading = 'eager';
-            el.fetchPriority = 'high';
-          }
+      // Wait a bit for all elements to be ready
+      setTimeout(function() {
+        // Portfolio Filter Functionality with smooth animations
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const portfolioItems = document.querySelectorAll('.grid-item');
+        
+        console.log('Filter buttons found:', filterButtons.length);
+        console.log('Portfolio items found:', portfolioItems.length);
+        
+        // Add initial transition styles to all portfolio items
+        portfolioItems.forEach(item => {
+          item.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+          item.style.transform = 'scale(1)';
+          item.style.opacity = '1';
         });
         
-        // Preload next-likely resources
-        const nextResources = [
-          'img/obj_triangle.png',
-          'vendor/bootstrap/bootstrap.min.js'
-        ];
-        
-        setTimeout(() => {
-          nextResources.forEach(src => {
-            const link = document.createElement('link');
-            link.rel = 'prefetch';
-            link.href = src;
-            document.head.appendChild(link);
+        filterButtons.forEach(button => {
+          button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            console.log('Filter clicked:', this.getAttribute('data-filter'));
+            
+            // Remove active class from all buttons with smooth transition
+            filterButtons.forEach(btn => {
+              btn.classList.remove('is-checked');
+              btn.style.transform = 'scale(1)';
+            });
+            
+            // Add active class to clicked button with bounce effect
+            this.classList.add('is-checked');
+            this.style.transform = 'scale(1.05)';
+            
+            // Reset transform after animation
+            setTimeout(() => {
+              this.style.transform = 'scale(1)';
+            }, 200);
+            
+            // Get filter value
+            const filterValue = this.getAttribute('data-filter');
+            console.log('Filtering by:', filterValue);
+            
+            // First phase: Hide all items with fade out
+            portfolioItems.forEach((item, index) => {
+              item.style.opacity = '0';
+              item.style.transform = 'scale(0.8)';
+            });
+            
+            // Second phase: Show matching items after fade out completes
+            setTimeout(() => {
+              portfolioItems.forEach((item, index) => {
+                console.log('Item', index, 'classes:', item.className);
+                
+                if (filterValue === '*') {
+                  // Show all items
+                  item.style.display = 'flex';
+                  setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'scale(1)';
+                  }, index * 50); // Staggered animation
+                  console.log('Showing item', index);
+                } else {
+                  // Check if item has the filter class
+                  const filterClass = filterValue.substring(1); // Remove the dot
+                  console.log('Looking for class:', filterClass);
+                  
+                  if (item.classList.contains(filterClass)) {
+                    item.style.display = 'flex';
+                    setTimeout(() => {
+                      item.style.opacity = '1';
+                      item.style.transform = 'scale(1)';
+                    }, index * 50); // Staggered animation
+                    console.log('Showing item', index, '- has class', filterClass);
+                  } else {
+                    setTimeout(() => {
+                      item.style.display = 'none';
+                    }, 200); // Hide after fade out
+                    console.log('Hiding item', index, '- does not have class', filterClass);
+                  }
+                }
+              });
+            }, 200); // Wait for fade out to complete
           });
-        }, 1000);
-      })();
-      
-      // Performance monitoring for LCP (development/debug only)
-      if (typeof PerformanceObserver !== 'undefined') {
-        const observer = new PerformanceObserver((entryList) => {
-          const entries = entryList.getEntries();
-          const lastEntry = entries[entries.length - 1];
-          if (console && console.log) {
-            console.log('LCP:', Math.round(lastEntry.startTime), 'ms');
-            console.log('LCP Element:', lastEntry.element?.tagName || 'Unknown');
-          }
         });
-        try {
-          observer.observe({ entryTypes: ['largest-contentful-paint'] });
-        } catch (e) {
-          // Ignore if LCP observation not supported
-        }
-      }
+      }, 500); // Wait 500ms for DOM to be fully ready
     });
   </script>
   
