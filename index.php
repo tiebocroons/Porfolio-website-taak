@@ -23,7 +23,7 @@ $isLoggedIn = isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'
 
 // You can add more PHP variables here for dynamic content
 $siteTitle = "Portfolio | Tiebo Croons";
-$metaDescription = "Ontdek het portfolio van Tiebo Croons, ervaren web developer en designer uit België. Gespecialiseerd in moderne webtechnologieën zoals PHP, JavaScript, React, en Vue.js. Bekijk projecten in web development, frontend/backend development, UI/UX design en meer. Van concept tot deployment - professionele weboplossingen die werken.";
+$metaDescription = "Ontdek het portfolio van Tiebo Croons, ervaren web developer en designer uit België. Gespecialiseerd in moderne webtechnologieën zoals PHP, JavaScript, React, en Vue.js. Bekijk projecten in web development, frontend/backend development, UI/UX design en meer. Van concept tot deployment.";
 
 // Function to get portfolio statistics
 function getPortfolioStats() {
@@ -156,7 +156,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-KBKMP25R');</script>
 <!-- End Google Tag Manager -->
-
     <!-- Mobile Optimization -->
     <meta name="format-detection" content="telephone=no" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -216,26 +215,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y6MVVR1W8Q"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-Y6MVVR1W8Q');
-</script>
-<script>
-    (function (c, s, q, u, a, r, e) {
-        c.hj=c.hj||function(){(c.hj.q=c.hj.q||[]).push(arguments)};
-        c._hjSettings = { hjid: a };
-        r = s.getElementsByTagName('head')[0];
-        e = s.createElement('script');
-        e.async = true;
-        e.src = q + c._hjSettings.hjid + u;
-        r.appendChild(e);
-    })(window, document, 'https://static.hj.contentsquare.net/c/csq-', '.js', 6534877);
-</script>
     <link rel="icon" type="image" href="img/testi-1.png" />
 
     <!-- External CSS -->
@@ -477,7 +456,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <a href="https://github.com/tiebocroons" target="_blank" class="social-btn github-btn mx-2" aria-label="GitHub" title="Bekijk mijn GitHub projecten">
               <i class="fab fa-github"></i>
             </a>
-            <a href="https://www.linkedin.com/in/tiebo-croons" target="_blank" class="social-btn linkedin-btn mx-2" aria-label="LinkedIn" title="Verbind met me op LinkedIn">
+            <a href="https://www.linkedin.com/in/tiebo-croons-82b0172a1" target="_blank" class="social-btn linkedin-btn mx-2" aria-label="LinkedIn" title="Verbind met me op LinkedIn">
               <i class="fab fa-linkedin"></i>
             </a>
             <a href="https://www.instagram.com/tiebo.crs/" target="_blank" class="social-btn instagram-btn mx-2" aria-label="Instagram" title="Volg me op Instagram">
