@@ -164,7 +164,7 @@ section {
 }
 
 .brand-name {
-  color: hsl(312, 100%, 50%);
+  color: #4103b3;
   font-weight: 700;
   font-size: 1.3rem;
   line-height: 1.2;
@@ -172,7 +172,7 @@ section {
 }
 
 .brand-subtitle {
-  color: hsl(312, 100%, 50%);
+  color: #4103b3;
   font-size: 0.75rem;
   font-weight: 400;
   text-transform: uppercase;
@@ -229,7 +229,7 @@ section {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  color: hsl(312, 100%, 50%) !important;
+  color: #4103b3 !important;
   font-weight: 600;
   font-size: 1rem;
   text-decoration: none;
@@ -271,9 +271,9 @@ section {
 
 .modern-link:hover {
   color: #fff !important;
-  background: hsla(312, 100%, 50%, 0.1);
+  background: #4103b3;
   transform: translateY(-3px);
-  border-color: hsla(312, 100%, 50%, 0.3);
+  border-color: rgba(255, 0, 204, 0.3);
   box-shadow: 0 8px 25px hsla(312, 100%, 50%, 0.3);
 }
 
@@ -289,17 +289,21 @@ section {
   font-size: 1.2rem;
   opacity: 0.8;
   transition: all 0.4s ease;
-  background: linear-gradient(45deg, hsl(312, 100%, 50%), hsl(312, 100%, 40%));
+  background: linear-gradient(45deg, #4103b3, #3502a6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 8px hsla(312, 100%, 50%, 0.3));
+  filter: drop-shadow(0 0 8px rgba(65, 3, 179, 0.3));
 }
 
 .modern-link:hover .nav-icon {
   opacity: 1;
   transform: scale(1.2) rotateY(360deg);
-  filter: drop-shadow(0 0 12px hsla(312, 100%, 50%, 0.5));
+  background: linear-gradient(45deg, hsl(312, 100%, 50%), hsl(312, 100%, 40%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 12px hsla(312, 100%, 50%, 0.45));
 }
 
 .nav-text {
