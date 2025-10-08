@@ -3,8 +3,12 @@ const CACHE_NAME = 'portfolio-v1.2';
 const CRITICAL_RESOURCES = [
   '/',
   '/index.html',
-  '/css/style.min.css',
   '/vendor/bootstrap/bootstrap.min.css',
+  '/css/style.min.css',
+  '/css/index.css',
+  '/css/detail.css',
+  '/css/login.css',
+  '/css/admin-complete.css',
   '/js/app.min.js',
   '/vendor/bootstrap/bootstrap.min.js',
   '/vendor/bootstrap/popper.min.js'
