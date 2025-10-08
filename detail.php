@@ -57,7 +57,15 @@ function getProjectById($id) {
     try {
         $pdo = getDatabaseConnection();
         $stmt = $pdo->prepare("
-            SELECT * FROM projects 
+            SELECT id, title, description, short_description, category, status, github_repo, 
+                   live_url, demo_url, image_url, thumbnail_url, tools, features, timeline,
+                   CAST(gallery_images AS CHAR) as gallery_images,
+                   github_data, client_name, project_duration, completion_date, is_featured, 
+                   is_deleted, sort_order, github_url, api_docs_url, challenges, design_concept, 
+                   color_palette, typography, design_category, design_style, performance_score, 
+                   code_quality, lines_of_code, components_count, development_weeks,
+                   creative_challenge, creative_approach, creative_solution, created_at, updated_at
+            FROM projects 
             WHERE id = ? AND is_deleted = 0
         ");
         $stmt->execute([$id]);
@@ -191,12 +199,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <!-- Critical CSS loaded first -->
     <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/style.min.css" />
+    <link rel="stylesheet" href="css/detail.css" />
     
     <!-- Non-critical CSS loaded asynchronously -->
-    <link rel="stylesheet" href="vendor/select2/select2.min.css" media="print" onload="this.media='all'" />
-    <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" media="print" onload="this.media='all'" />
-    <link rel="stylesheet" href="vendor/lightcase/lightcase.css" media="print" onload="this.media='all'" />
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" media="print" onload="this.media='all'" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" media="print" onload="this.media='all'" />
 
   </head>
 
@@ -212,9 +220,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     
     <!-- Fallback for non-supporting browsers -->
     <noscript>
-      <link rel="stylesheet" href="vendor/select2/select2.min.css" />
-      <link rel="stylesheet" href="vendor/owlcarousel/owl.carousel.min.css" />
-      <link rel="stylesheet" href="vendor/lightcase/lightcase.css" />
       <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
       <link href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap" rel="stylesheet" />
       <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css" />
@@ -399,6 +404,152 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       .gallery-more-content span {
         font-size: 0.875rem;
         font-weight: 500;
+      }
+      
+      /* Full-Width Gallery Styles */
+      .gallery-section {
+        background: #fff;
+        border-radius: 15px;
+        padding: 3rem 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        margin-left: -15px;
+        margin-right: -15px;
+      }
+      
+      @media (min-width: 768px) {
+        .gallery-section {
+          margin-left: -30px;
+          margin-right: -30px;
+          padding: 3rem;
+        }
+      }
+      
+      .gallery-grid-full {
+        display: grid;
+        gap: 30px;
+      }
+      
+      .gallery-card {
+        border: none !important;
+        border-radius: 15px !important;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      }
+      
+      .gallery-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      }
+      
+      .gallery-image-container {
+        position: relative;
+        background: #f8f9fa;
+        aspect-ratio: 4/3;
+        min-height: 250px;
+        max-height: 400px;
+        overflow: hidden;
+        border-radius: 15px 15px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .gallery-image-container .portfolio-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+      }
+      
+      .gallery-card:hover .portfolio-image {
+        transform: scale(1.02);
+      }
+      
+      /* Gallery Button Styles */
+      .gallery-zoom {
+        background: rgba(255, 255, 255, 0.95) !important;
+        color: #2c3e50 !important;
+        border: none !important;
+        padding: 12px 20px !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        border-radius: 25px !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+        transition: all 0.3s ease !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+      }
+      
+      .gallery-zoom:hover {
+        background: #fff !important;
+        color: #2c3e50 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+      }
+      
+      .gallery-zoom i {
+        font-size: 16px !important;
+      }
+      
+      .gallery-content {
+        background: #fff;
+        border-top: 1px solid #f8f9fa;
+      }
+      
+      .gallery-title {
+        color: #2c3e50;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+      
+      .gallery-description {
+        color: #6c757d;
+        font-size: 0.875rem;
+        line-height: 1.4;
+      }
+      
+      /* Responsive Gallery Grid */
+      @media (min-width: 576px) {
+        .gallery-grid-full {
+          grid-template-columns: repeat(1, 1fr);
+        }
+      }
+      
+      @media (min-width: 768px) {
+        .gallery-grid-full {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      
+      @media (min-width: 1200px) {
+        .gallery-grid-full {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .gallery-grid-full.three-images {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .gallery-grid-full.four-plus {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      
+      /* Special layout for different image counts */
+      .gallery-grid-full.two-images {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .gallery-grid-full.three-images {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .gallery-grid-full.four-plus .gallery-item-wrapper:first-child {
+        grid-column: span 1;
       }
       
       /* Project Avatar/Logo Styles */
@@ -645,7 +796,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               <div class="project-header">
                 <div class="project-avatar mb-4">
                   <div class="avatar-wrapper">
-                    <img src="<?php echo htmlspecialchars($project['image_url'] ?: 'img/app-profile-mockup.png'); ?>" alt="<?php echo htmlspecialchars($project['title']); ?>" class="project-main-image">
+                    <img src="<?php echo htmlspecialchars($project['image_url'] ?: 'img/bg.png'); ?>" alt="<?php echo htmlspecialchars($project['title']); ?>" class="project-main-image">
                   </div>
                   <h2 class="mt-3 mb-2"><?php echo htmlspecialchars($project['title']); ?></h2>
                   <p class="text-muted"><?php echo ucfirst(htmlspecialchars($project['category'])); ?> Project</p>
@@ -1011,81 +1162,125 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               </div>
             </div>
             
-            <!-- Design Project: Gallery Images -->
-            <?php if (($project['category'] == 'design' || $project['category'] == 'vintage') && !empty($project['gallery_images'])): ?>
-            <div class="col-lg-4 mb-4" data-aos="fade-left" data-aos-delay="300">
-              <div class="card visual-card h-100">
-                <div class="card-header-visual">
-                  <div class="icon-wrapper bg-gradient-warning">
-                    <i class="lnr lnr-picture text-white"></i>
-                  </div>
-                  <h4 class="card-title">Project Galerij</h4>
-                </div>
-                <div class="card-body p-4">
-                  
-                  <!-- Gallery Grid -->
-                  <div class="gallery-grid">
-                    <?php 
-                    $galleryImages = explode(',', $project['gallery_images']);
-                    $imageCount = count($galleryImages);
-                    foreach (array_slice($galleryImages, 0, 6) as $index => $image): 
-                      $trimmedImage = trim($image);
-                      if (!empty($trimmedImage)):
-                    ?>
-                    <div class="gallery-item" data-aos="zoom-in" data-aos-delay="<?php echo 300 + ($index * 100); ?>">
-                      <div class="gallery-image-wrapper">
-                        <img src="<?php echo htmlspecialchars($trimmedImage); ?>" alt="Project afbeelding <?php echo $index + 1; ?>" class="gallery-image">
-                        <div class="gallery-overlay">
-                          <div class="overlay-content">
-                            <a href="<?php echo htmlspecialchars($trimmedImage); ?>" class="gallery-zoom" data-lightbox="project-gallery">
-                              <i class="lnr lnr-eye"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <?php 
-                      endif;
-                    endforeach; 
-                    ?>
-                    
-                    <?php if ($imageCount > 6): ?>
-                    <div class="gallery-more" data-aos="zoom-in" data-aos-delay="300">
-                      <div class="gallery-more-content">
-                        <i class="lnr lnr-plus-circle text-primary"></i>
-                        <span>+<?php echo $imageCount - 6; ?> meer</span>
-                      </div>
-                    </div>
-                    <?php endif; ?>
-                  </div>
-                  
-                  <!-- Gallery Stats -->
-                  <div class="gallery-stats mt-4 pt-3 border-top">
-                    <div class="row text-center">
-                      <div class="col-6">
-                        <div class="stat-number text-primary"><?php echo $imageCount; ?></div>
-                        <div class="stat-label small text-muted">Afbeeldingen</div>
-                      </div>
-                      <div class="col-6">
-                        <div class="stat-number text-success">HD</div>
-                        <div class="stat-label small text-muted">Kwaliteit</div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
-            </div>
-            <?php endif; ?>
+            <!-- Project Gallery Images (for all project types) -->
+            <?php 
+            // Debug: Show what we have for gallery images
+            $debugGalleryImages = isset($project['gallery_images']) ? $project['gallery_images'] : 'NULL';
+            if (is_array($debugGalleryImages)) {
+                echo "<!-- DEBUG: project gallery_images = ARRAY with " . count($debugGalleryImages) . " items -->";
+            } else {
+                echo "<!-- DEBUG: project gallery_images = " . htmlspecialchars($debugGalleryImages) . " -->";
+            }
+            echo "<!-- DEBUG: empty check = " . (empty($project['gallery_images']) ? 'TRUE' : 'FALSE') . " -->";
             
+            if (!empty($project['gallery_images'])): ?>
           </div>
           <!-- End Project Overview Cards -->
-
         </div>
       </div>
     </section>
-
-    <!-- Project Details Section -->
+    
+    <!-- Full Width Gallery Section -->
+    <section id="project-gallery" class="gallery-full-width-section">
+      <div class="container-fluid px-4">
+        <div class="row">
+          <div class="col-12">
+            <div class="gallery-section">
+              <!-- Gallery Header -->
+              <div class="gallery-header text-center mb-5">
+                <h3 class="section-title mb-3">
+                  <i class="lnr lnr-picture text-primary"></i>
+                  <span class="text-primary">Project</span> <b>Galerij</b>
+                </h3>
+              </div>
+                
+                <!-- Gallery Grid -->
+                <?php 
+                // Handle both JSON array format and comma-separated strings for backward compatibility
+                $galleryImages = [];
+                
+                if (!empty($project['gallery_images'])) {
+                    // Check if it's already an array (direct from database)
+                    if (is_array($project['gallery_images'])) {
+                        $galleryImages = $project['gallery_images'];
+                        echo "<!-- DEBUG: Using array directly, count = " . count($galleryImages) . " -->";
+                    } else {
+                        // Try to decode as JSON first (new format from admin system)
+                        $decoded = json_decode($project['gallery_images'], true);
+                        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                            $galleryImages = $decoded;
+                            echo "<!-- DEBUG: JSON decode successful, count = " . count($galleryImages) . " -->";
+                        } else {
+                            // Fallback to comma-separated format (old format)
+                            $imageUrls = array_filter(array_map('trim', explode(',', $project['gallery_images'])));
+                            foreach ($imageUrls as $url) {
+                                $galleryImages[] = [
+                                    'url' => $url,
+                                    'alt' => 'Project afbeelding',
+                                    'caption' => ''
+                                ];
+                            }
+                            echo "<!-- DEBUG: Using comma-separated format, count = " . count($galleryImages) . " -->";
+                        }
+                    }
+                }
+                
+                $imageCount = count($galleryImages);
+                echo "<!-- DEBUG: Final image count = " . $imageCount . " -->";
+                
+                // Determine grid class based on image count
+                $gridClass = 'gallery-grid-full';
+                if ($imageCount == 2) {
+                    $gridClass .= ' two-images';
+                } else if ($imageCount == 3) {
+                    $gridClass .= ' three-images';
+                } else if ($imageCount >= 4) {
+                    $gridClass .= ' four-plus';
+                }
+                
+                if ($imageCount > 0): ?>
+                <div class="portfolio-grid-container <?php echo $gridClass; ?>">
+                  <?php 
+                  foreach ($galleryImages as $index => $imageData): 
+                    $imageUrl = is_array($imageData) ? $imageData['url'] : $imageData;
+                    $imageAlt = is_array($imageData) ? ($imageData['alt'] ?: 'Project afbeelding') : 'Project afbeelding';
+                    $imageCaption = is_array($imageData) ? $imageData['caption'] : '';
+                    
+                    echo "<!-- DEBUG: Processing image " . ($index + 1) . " = " . htmlspecialchars($imageUrl) . " -->";
+                    
+                    if (!empty($imageUrl)):
+                  ?>
+                  <div class="grid-item col-lg-6 col-md-6 col-sm-12" data-aos="zoom-in" data-aos-delay="<?php echo 200 + ($index * 100); ?>">
+                    <div class="gallery-image-container">
+                      <img src="<?php echo htmlspecialchars($imageUrl); ?>" 
+                           alt="<?php echo htmlspecialchars($imageAlt); ?>" 
+                           class="gallery-image"
+                           onerror="console.log('Image failed to load: <?php echo htmlspecialchars($imageUrl); ?>'); this.parentElement.style.display='none';">
+                      <div class="image-overlay gallery-overlay">
+                        <div class="overlay-content">
+                          <a href="<?php echo htmlspecialchars($imageUrl); ?>" class="btn btn-light gallery-zoom" data-lightbox="project-gallery" data-title="<?php echo htmlspecialchars($imageAlt); ?>">
+                            <i class="lnr lnr-magnifier"></i> Vergroot afbeelding
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <?php 
+                    endif;
+                  endforeach; 
+                  ?>
+                </div>
+                <?php else: ?>
+                  <p><!-- DEBUG: No images to display (imageCount = 0) --></p>
+                <?php endif; ?>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Continue with Project Details Section -->
     <section id="project-details" class="bg-light">
       <div class="container">
         <div class="section-content">
@@ -1093,6 +1288,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <!-- Section Header -->
           <div class="row mb-5" data-aos="fade-up">
             <div class="col-12 text-center">
+            <?php else: ?>
+              <!-- DEBUG: Gallery images empty or null -->
+            <?php endif; ?>
               <h2 class="section-title mb-3">
                 <span class="text-primary">Project</span> <b>Details</b>
               </h2>
@@ -1803,7 +2001,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="<?php echo 100 + ($index * 100); ?>">
                 <div class="portfolio-card visual-card">
                   <div class="portfolio-image-container">
-                    <img src="<?php echo htmlspecialchars($relatedProject['image_url'] ?: 'img/app-profile-mockup.png'); ?>" alt="<?php echo htmlspecialchars($relatedProject['title']); ?>" class="portfolio-image">
+                    <img src="<?php echo htmlspecialchars($relatedProject['image_url'] ?: 'img/bg.png'); ?>" alt="<?php echo htmlspecialchars($relatedProject['title']); ?>" class="portfolio-image">
                     <div class="image-overlay">
                       <div class="overlay-content">
                         <a href="detail.php?id=<?php echo $relatedProject['id']; ?>" class="btn btn-light btn-sm">
@@ -1982,7 +2180,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
     crossorigin="anonymous"
     referrerpolicy="no-referrer"
-    defer
   ></script>
   <script src="vendor/bootstrap/popper.min.js" defer></script>
   <script src="vendor/bootstrap/bootstrap.min.js" defer></script>
@@ -1993,19 +2190,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     function loadNonCriticalScripts() {
       const scriptGroups = {
         ui: [
-          'vendor/select2/select2.min.js',
-          'vendor/owlcarousel/owl.carousel.min.js',
-          'vendor/isotope/isotope.min.js'
+          'vendor/waypoints/waypoint.min.js'
         ],
         animation: [
-          'vendor/lightcase/lightcase.js',
-          'vendor/waypoints/waypoint.min.js',
           'https://unpkg.com/aos@next/dist/aos.js'
         ],
         app: [
-          'stellar/jquery.stellar.js',
-          'js/app.min.js',
-          'contactform/contactform.js'
+          'js/app.min.js'
         ]
       };
       

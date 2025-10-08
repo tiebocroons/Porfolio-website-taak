@@ -35,7 +35,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             echo json_encode(getProjects($pdo));
             exit;
             
+        case 'check_errors':
+            if (function_exists('error_get_last')) {
+                $lastError = error_get_last();
+                echo json_encode(array('success' => true, 'last_error' => $lastError));
+            } else {
+                echo json_encode(array('success' => true, 'last_error' => null));
+            }
+            exit;
+            
+        case 'test_db':
+            try {
+                $stmt = $pdo->query("DESCRIBE projects");
+                $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                echo json_encode(array('success' => true, 'columns' => $columns));
+            } catch (Exception $e) {
+                echo json_encode(array('success' => false, 'error' => $e->getMessage()));
+            }
+            exit;
+            
         case 'save_project':
+            error_log("Save project called with data: " . print_r($_POST, true));
+            if (!empty($_FILES)) {
+                error_log("Files uploaded: " . print_r($_FILES, true));
+            }
             echo json_encode(saveProject($pdo, $_POST));
             exit;
             
@@ -102,15 +125,79 @@ function getProjects($pdo) {
 
 function saveProject($pdo, $data) {
     try {
-        $timeline = isset($data['timeline']) ? json_encode($data['timeline']) : json_encode([]);
+        error_log("Starting saveProject with data keys: " . implode(', ', array_keys($data)));
+        
+        $timeline = isset($data['timeline']) ? json_encode($data['timeline']) : json_encode(array());
         $tools = json_encode(array_filter(explode(',', isset($data['tools']) ? trim($data['tools']) : '')));
         $features = json_encode(array_filter(explode("\n", isset($data['features']) ? trim($data['features']) : '')));
         
-        // Handle gallery images
-        $gallery_images = json_encode(array_filter(explode("\n", isset($data['gallery_images']) ? trim($data['gallery_images']) : '')));
+        // Handle gallery images - support both file uploads and manual URLs
+        $gallery_images_array = array();
+        
+        // Handle uploaded files first
+        if (isset($_FILES['gallery_files']) && !empty($_FILES['gallery_files']['name'][0])) {
+            $upload_dir = 'img/uploads/';
+            
+            // Create upload directory if it doesn't exist
+            if (!file_exists($upload_dir)) {
+                mkdir($upload_dir, 0755, true);
+            }
+            
+            $uploaded_files = $_FILES['gallery_files'];
+            $file_count = count($uploaded_files['name']);
+            
+            for ($i = 0; $i < $file_count; $i++) {
+                if ($uploaded_files['error'][$i] === UPLOAD_ERR_OK) {
+                    $file_name = $uploaded_files['name'][$i];
+                    $file_tmp = $uploaded_files['tmp_name'][$i];
+                    $file_size = $uploaded_files['size'][$i];
+                    $file_type = $uploaded_files['type'][$i];
+                    
+                    // Validate file type
+                    $allowed_types = array('image/jpeg', 'image/png', 'image/gif', 'image/webp');
+                    if (in_array($file_type, $allowed_types) && $file_size <= 5 * 1024 * 1024) { // 5MB limit
+                        
+                        // Generate unique filename
+                        $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
+                        $unique_name = 'gallery_' . time() . '_' . $i . '.' . $file_extension;
+                        $target_path = $upload_dir . $unique_name;
+                        
+                        // Move uploaded file
+                        if (move_uploaded_file($file_tmp, $target_path)) {
+                            $gallery_images_array[] = array(
+                                'url' => $target_path,
+                                'alt' => 'Geüploade project afbeelding',
+                                'caption' => pathinfo($file_name, PATHINFO_FILENAME)
+                            );
+                            error_log("Gallery file uploaded: " . $target_path);
+                        } else {
+                            error_log("Failed to move uploaded file: " . $file_name);
+                        }
+                    } else {
+                        error_log("Invalid file type or size for: " . $file_name);
+                    }
+                }
+            }
+        }
+        
+        // Add manual URLs if provided (these will be added after uploaded files)
+        if (isset($data['gallery_images']) && !empty(trim($data['gallery_images']))) {
+            $manual_urls = array_filter(array_map('trim', explode("\n", $data['gallery_images'])));
+            foreach ($manual_urls as $url) {
+                $gallery_images_array[] = array(
+                    'url' => $url,
+                    'alt' => 'Project afbeelding',
+                    'caption' => ''
+                );
+            }
+        }
+        
+        $gallery_images = json_encode($gallery_images_array);
+        error_log("Gallery images processed: " . $gallery_images);
         
         if (isset($data['id']) && !empty($data['id'])) {
-            // Update existing project
+            error_log("Updating existing project with ID: " . $data['id']);
+            // Update existing project - simplified version
             $stmt = $pdo->prepare("UPDATE projects SET 
                 title = ?, description = ?, short_description = ?, category = ?, status = ?,
                 tools = ?, live_url = ?, demo_url = ?, features = ?, image_url = ?, 
@@ -118,14 +205,9 @@ function saveProject($pdo, $data) {
                 is_featured = ?, timeline = ?, gallery_images = ?,
                 github_url = ?, api_docs_url = ?, challenges = ?,
                 design_concept = ?, color_palette = ?, typography = ?,
-                design_category = ?, design_style = ?, 
-                performance_score = ?, code_quality = ?, lines_of_code = ?, 
-                components_count = ?, development_weeks = ?,
-                creative_challenge = ?, creative_approach = ?, creative_solution = ?,
-                inspiration_source = ?, lessons_learned = ?, 
-                project_types = ?, is_hybrid = ?, updated_at = NOW()
+                updated_at = NOW()
                 WHERE id = ?");
-            $stmt->execute([
+            $stmt->execute(array(
                 $data['title'], 
                 $data['description'], 
                 isset($data['short_description']) ? $data['short_description'] : '',
@@ -150,41 +232,21 @@ function saveProject($pdo, $data) {
                 isset($data['design_concept']) ? $data['design_concept'] : '',
                 isset($data['color_palette']) ? $data['color_palette'] : '',
                 isset($data['typography']) ? $data['typography'] : '',
-                isset($data['design_category']) ? $data['design_category'] : null,
-                isset($data['design_style']) ? $data['design_style'] : null,
-                // Statistical fields
-                isset($data['performance_score']) ? (int)$data['performance_score'] : null,
-                isset($data['code_quality']) ? $data['code_quality'] : null,
-                isset($data['lines_of_code']) ? (int)$data['lines_of_code'] : null,
-                isset($data['components_count']) ? (int)$data['components_count'] : null,
-                isset($data['development_weeks']) ? (int)$data['development_weeks'] : null,
-                // Creative Process fields
-                isset($data['creative_challenge']) ? $data['creative_challenge'] : '',
-                isset($data['creative_approach']) ? $data['creative_approach'] : '',
-                isset($data['creative_solution']) ? $data['creative_solution'] : '',
-                isset($data['inspiration_source']) ? $data['inspiration_source'] : '',
-                isset($data['lessons_learned']) ? $data['lessons_learned'] : '',
-                // New hybrid project fields
-                isset($data['project_types']) ? $data['project_types'] : json_encode([$data['category']]),
-                isset($data['is_hybrid']) ? (bool)$data['is_hybrid'] : false,
                 $data['id']
-            ]);
+            ));
             
-            // Regenerate sitemap after updating project
-            regenerateSitemap();
-            return ['success' => true, 'message' => 'Project succesvol bijgewerkt!'];
+            error_log("Project updated successfully");
+            return array('success' => true, 'message' => 'Project succesvol bijgewerkt!');
         } else {
-            // Create new project
+            error_log("Creating new project");
+            // Create new project - simplified version
             $stmt = $pdo->prepare("INSERT INTO projects 
                 (title, description, short_description, category, status, tools, live_url, demo_url, 
                  features, image_url, client_name, project_duration, completion_date, is_featured, 
                  timeline, gallery_images, github_url, api_docs_url, challenges, design_concept, 
-                 color_palette, typography, design_category, design_style, performance_score, 
-                 code_quality, lines_of_code, components_count, development_weeks,
-                 creative_challenge, creative_approach, creative_solution, inspiration_source, lessons_learned,
-                 project_types, is_hybrid, created_at, updated_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
-            $stmt->execute([
+                 color_palette, typography, created_at, updated_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+            $stmt->execute(array(
                 $data['title'], 
                 $data['description'], 
                 isset($data['short_description']) ? $data['short_description'] : '',
@@ -208,32 +270,18 @@ function saveProject($pdo, $data) {
                 // Design fields
                 isset($data['design_concept']) ? $data['design_concept'] : '',
                 isset($data['color_palette']) ? $data['color_palette'] : '',
-                isset($data['typography']) ? $data['typography'] : '',
-                isset($data['design_category']) ? $data['design_category'] : null,
-                isset($data['design_style']) ? $data['design_style'] : null,
-                // Statistical fields
-                isset($data['performance_score']) ? (int)$data['performance_score'] : null,
-                isset($data['code_quality']) ? $data['code_quality'] : null,
-                isset($data['lines_of_code']) ? (int)$data['lines_of_code'] : null,
-                isset($data['components_count']) ? (int)$data['components_count'] : null,
-                isset($data['development_weeks']) ? (int)$data['development_weeks'] : null,
-                // Creative Process fields
-                isset($data['creative_challenge']) ? $data['creative_challenge'] : '',
-                isset($data['creative_approach']) ? $data['creative_approach'] : '',
-                isset($data['creative_solution']) ? $data['creative_solution'] : '',
-                isset($data['inspiration_source']) ? $data['inspiration_source'] : '',
-                isset($data['lessons_learned']) ? $data['lessons_learned'] : '',
-                // New hybrid project fields
-                isset($data['project_types']) ? $data['project_types'] : json_encode([$data['category']]),
-                isset($data['is_hybrid']) ? (bool)$data['is_hybrid'] : false
-            ]);
+                isset($data['typography']) ? $data['typography'] : ''
+            ));
             
-            // Regenerate sitemap after adding new project
-            regenerateSitemap();
-            return ['success' => true, 'message' => 'Project succesvol toegevoegd!'];
+            error_log("New project created successfully");
+            return array('success' => true, 'message' => 'Project succesvol toegevoegd!');
         }
     } catch (PDOException $e) {
-        return ['success' => false, 'error' => 'Database error: ' . $e->getMessage()];
+        error_log("Database error in saveProject: " . $e->getMessage());
+        return array('success' => false, 'message' => 'Database fout: ' . $e->getMessage());
+    } catch (Exception $e) {
+        error_log("General error in saveProject: " . $e->getMessage());
+        return array('success' => false, 'message' => 'Fout bij opslaan: ' . $e->getMessage());
     }
 }
 
@@ -634,7 +682,6 @@ function deleteTimelinePhase($pdo, $phase_id) {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -642,812 +689,52 @@ function deleteTimelinePhase($pdo, $phase_id) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Admin - Project Management</title>
     
+    <!-- Preload Fonts - Portfolio Theme -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    
+    <!-- CSS Preloading -->
+    <link rel="preload" href="vendor/bootstrap/bootstrap.min.css" as="style">
+    <link rel="preload" href="css/style.min.css" as="style">
+    <link rel="preload" href="css/admin.css" as="style">
+    
     <!-- Bootstrap CSS -->
     <link href="vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Core Button & Base Styles (needed for admin buttons) -->
+    <link rel="stylesheet" href="css/style.min.css">
     
     <!-- Icon Libraries -->
     <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Custom CSS -->
-    <link href="css/style.min.css" rel="stylesheet">
-    <script>
-    (function (c, s, q, u, a, r, e) {
-        c.hj=c.hj||function(){(c.hj.q=c.hj.q||[]).push(arguments)};
-        c._hjSettings = { hjid: a };
-        r = s.getElementsByTagName('head')[0];
-        e = s.createElement('script');
-        e.async = true;
-        e.src = q + c._hjSettings.hjid + u;
-        r.appendChild(e);
-    })(window, document, 'https://static.hj.contentsquare.net/c/csq-', '.js', 6534877);
-</script>
-    <!-- Admin specific styles -->
-    <style>
-        /* Auto-disabled input styling */
-        .form-control.auto-disabled {
-            background-color: #e9ecef;
-            opacity: 0.65;
-            cursor: not-allowed;
-        }
-        
-        /* Rotating animation for loading indicators */
-        .rotating {
-            animation: rotate 1s linear infinite;
-        }
-        
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .input-group-text {
-            font-size: 0.875rem;
-        }
-        
-        .input-group-text .form-check-input {
-            margin-right: 0.25rem;
-        }
-        
-        /* Enhanced auto checkbox styling */
-        .input-group-text.text-primary {
-            background-color: #e3f2fd;
-            border-color: #2196f3;
-            color: #1976d2 !important;
-        }
-        
-        .input-group-text.text-primary .form-check-input:checked {
-            background-color: #2196f3;
-            border-color: #2196f3;
-        }
-        
-        /* Phase type selector enhancement */
-        #phaseType {
-            border-left: 4px solid #007bff;
-            transition: all 0.3s ease;
-        }
-        
-        #phaseType:focus {
-            border-left-color: #0056b3;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-        
-        /* Form field update animation */
-        .form-updated {
-            animation: fieldUpdate 0.6s ease-in-out;
-        }
-        
-        @keyframes fieldUpdate {
-            0% { background-color: #e3f2fd; transform: scale(1); }
-            50% { background-color: #bbdefb; transform: scale(1.05); }
-            100% { background-color: transparent; transform: scale(1); }
-        }
-        
-        /* Enhanced count update animation */
-        #actualCounts .form-updated {
-            padding: 2px 6px;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-        
-        /* Preset indicator */
-        .preset-indicator {
-            position: relative;
-        }
-        
-        .preset-indicator::after {
-            content: '✨';
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 12px;
-            opacity: 0.6;
-            pointer-events: none;
-        }
-        
-        /* Base styles matching portfolio design */
-        body {
-            background: #f5f8fd url("img/intro-bg.jpg") center top no-repeat;
-            background-size: cover;
-            font-family: "Open Sans", sans-serif;
-            color: #444;
-            min-height: 100vh;
-        }
-        
-        /* Background overlay for admin */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(245, 248, 253, 0.95);
-            z-index: -1;
-        }
-        
-        .admin-container {
-            min-height: 100vh;
-            padding: 20px 0;
-        }
-        
-        /* Admin header matching visual-card style */
-        .admin-header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            border: none;
-            margin-bottom: 30px;
-            padding: 30px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            color: #2c2c2c;
-        }
-        
-        .admin-header h1 {
-            color: #2c2c2c !important;
-            font-family: "Montserrat", sans-serif;
-            font-weight: 600;
-        }
-        
-        .admin-header p {
-            color: #495057 !important;
-        }
-        
-        .admin-header:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Admin cards matching visual-card style */
-        .admin-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            border: none;
-            margin-bottom: 30px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .admin-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Card headers matching portfolio theme */
-        .card-header {
-            background: hsl(312, 100%, 50%);
-            color: white;
-            border-radius: 15px 15px 0 0 !important;
-            border: none;
-            padding: 20px;
-        }
-        
-        .card-header h3 {
-            color: white !important;
-            margin: 0;
-            font-family: "Montserrat", sans-serif;
-            font-weight: 600;
-        }
-        
-        /* Form elements matching portfolio style */
-        .form-control, .form-select {
-            border-radius: 8px;
-            border: 2px solid #e9ecef;
-            padding: 12px 15px;
-            transition: all 0.3s ease;
-            font-family: "Open Sans", sans-serif;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: #1bb1dc;
-            box-shadow: 0 0 0 0.2rem rgba(27, 177, 220, 0.25);
-            outline: none;
-        }
-        
-        /* Button styles matching portfolio theme */
-        .btn-primary {
-            background: #1bb1dc;
-            border-color: #1bb1dc;
-            border-radius: 8px;
-            padding: 12px 25px;
-            font-weight: 600;
-            font-family: "Montserrat", sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 13px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            background: #0a98c0;
-            border-color: #0a98c0;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(27, 177, 220, 0.3);
-        }
-        
-        /* Project items matching portfolio card style */
-        .project-item {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-        
-        .project-item:hover {
-            background: rgba(255, 255, 255, 0.95);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Badge styles matching portfolio badges */
-        .badge-development { 
-            background: #1bb1dc; 
-            color: white; 
-        }
-        .badge-design { 
-            background: hsl(312, 100%, 50%); 
-            color: white; 
-        }
-        .badge-photography { 
-            background: #17a2b8; 
-            color: white; 
-        }
-        
-        /* Stats section matching portfolio stats */
-        .stats-row {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            backdrop-filter: blur(10px);
-        }
-        
-        .stat-item {
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: hsl(312, 100%, 50%);
-            font-family: "Montserrat", sans-serif;
-        }
-        
-        .stat-label {
-            color: #495057;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        /* Alert styles with improved contrast */
-        .alert {
-            border-radius: 8px;
-            border: none;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-        }
-        
-        .alert-success {
-            background-color: #d4edda;
-            color: #0f5132;
-            border-left: 4px solid #28a745;
-        }
-        
-        .alert-danger {
-            background-color: #f8d7da;
-            color: #58151c;
-            border-left: 4px solid #dc3545;
-        }
-        
-        /* Loading spinner */
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .spinner-border {
-            width: 2rem;
-            height: 2rem;
-            color: hsl(312, 100%, 50%);
-        }
-        
-        /* Project category badges */
-        .badge-development {
-            background-color: #007bff;
-            color: white;
-        }
-        
-        .badge-design {
-            background-color: #e83e8c;
-            color: white;
-        }
-        
-        .badge-vintage {
-            background-color: #6f42c1;
-            color: white;
-        }
-        
-        .badge-web {
-            background-color: #28a745;
-            color: white;
-        }
-        
-        .badge-mobile {
-            background-color: #fd7e14;
-            color: white;
-        }
-        
-        .badge-other {
-            background-color: #6c757d;
-            color: white;
-        }
-        
-        /* Project list styling */
-        .project-item {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 4px solid #007bff;
-            transition: all 0.3s ease;
-        }
-        
-        .project-item:hover {
-            background: rgba(255, 255, 255, 1);
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* Dynamic form section styling */
-        #developmentFields, #designFields {
-            border: 2px dashed rgba(27, 177, 220, 0.3);
-            border-radius: 12px;
-            padding: 25px;
-            margin: 20px 0;
-            background: rgba(27, 177, 220, 0.05);
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        
-        #developmentFields:before {
-            content: "💻 Development Project";
-            position: absolute;
-            top: -12px;
-            left: 20px;
-            background: rgba(27, 177, 220, 0.1);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #1bb1dc;
-            border: 1px solid rgba(27, 177, 220, 0.3);
-        }
-        
-        #designFields:before {
-            content: "🎨 Design Project";
-            position: absolute;
-            top: -12px;
-            left: 20px;
-            background: rgba(255, 20, 147, 0.1);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: hsl(312, 100%, 50%);
-            border: 1px solid rgba(255, 20, 147, 0.3);
-        }
-        
-        #designFields {
-            border-color: rgba(255, 20, 147, 0.3);
-            background: rgba(255, 20, 147, 0.05);
-        }
-        
-        /* Form section icons with better contrast */
-        .form-label i {
-            margin-right: 8px;
-            color: #495057;
-            width: 16px;
-            text-align: center;
-        }
-        
-        #developmentFields .form-label i {
-            color: #1bb1dc;
-        }
-        
-        #designFields .form-label i {
-            color: hsl(312, 100%, 50%);
-        }
-        
-        /* Hybrid project info styling */
-        #hybridProjectInfo {
-            border-left: 4px solid #17a2b8;
-            background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(23, 162, 184, 0.05));
-            border: 1px solid rgba(23, 162, 184, 0.2);
-            border-radius: 8px;
-        }
-        
-        #hybridProjectInfo .lnr {
-            color: #17a2b8;
-            font-size: 1.2em;
-        }
-        
-        /* Image gallery section */
-        #imageGallerySection {
-            border: 2px dashed rgba(255, 193, 7, 0.4);
-            border-radius: 8px;
-            padding: 20px;
-            background: rgba(255, 193, 7, 0.05);
-        }
-        
-        /* Enhanced form validation styling */
-        .required-conditional {
-            border-left: 3px solid #28a745 !important;
-        }
-        
-        .required-conditional:focus {
-            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15) !important;
-        }
-        
-        /* Category hint styling with better contrast */
-        #categoryHint {
-            font-style: italic;
-            color: #0056b3 !important;
-            font-weight: 500;
-        }
-        
-        /* Success state for filled sections */
-        .form-section-completed {
-            border-color: rgba(40, 167, 69, 0.5) !important;
-            background-color: rgba(40, 167, 69, 0.05) !important;
-        }
-        
-        .form-section-completed:before {
-            color: #28a745 !important;
-        }
-        
-        /* Timeline Phase Management Styles */
-        #timelineManagementSection {
-            background: rgba(74, 144, 226, 0.02);
-            border: 1px solid rgba(74, 144, 226, 0.1);
-            border-radius: 12px;
-        }
-        
-        #timelinePhaseForm {
-            border: 2px dashed rgba(74, 144, 226, 0.3);
-            border-radius: 10px;
-            background: rgba(74, 144, 226, 0.05);
-            padding: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        #timelinePhaseForm.show {
-            border-style: solid;
-            background: rgba(74, 144, 226, 0.08);
-        }
-        
-        .timeline-phases {
-            max-height: 600px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-        
-        .timeline-phases::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .timeline-phases::-webkit-scrollbar-track {
-            background: rgba(74, 144, 226, 0.1);
-            border-radius: 4px;
-        }
-        
-        .timeline-phases::-webkit-scrollbar-thumb {
-            background: rgba(74, 144, 226, 0.3);
-            border-radius: 4px;
-        }
-        
-        .timeline-phases::-webkit-scrollbar-thumb:hover {
-            background: rgba(74, 144, 226, 0.5);
-        }
-        
-        .phase-item {
-            position: relative;
-            margin-bottom: 1.5rem !important;
-            transform: translateX(0);
-            transition: all 0.3s ease;
-        }
-        
-        .phase-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.15);
-        }
-        
-        .phase-item .admin-card {
-            border-left: 4px solid var(--accent-color);
-            transition: all 0.3s ease;
-        }
-        
-        .phase-item:hover .admin-card {
-            border-left-width: 6px;
-        }
-        
-        .phase-item .card-header {
-            background: linear-gradient(45deg, rgba(74, 144, 226, 0.05), rgba(74, 144, 226, 0.1));
-            border-bottom: 1px solid rgba(74, 144, 226, 0.1);
-        }
-        
-        .phase-item .card-header h5 {
-            color: var(--accent-color);
-            font-weight: 600;
-        }
-        
-        .phase-status-badge {
-            font-size: 0.75rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-left: 0.5rem;
-        }
-        
-        .status-planned {
-            background: rgba(108, 117, 125, 0.1);
-            color: #6c757d;
-            border: 1px solid rgba(108, 117, 125, 0.2);
-        }
-        
-        .status-in_progress {
-            background: rgba(255, 193, 7, 0.15);
-            color: #664d03;
-            border: 1px solid rgba(255, 193, 7, 0.4);
-        }
-        
-        .status-completed {
-            background: rgba(40, 167, 69, 0.15);
-            color: #0f5132;
-            border: 1px solid rgba(40, 167, 69, 0.4);
-        }
-        
-        .status-on_hold {
-            background: rgba(220, 53, 69, 0.15);
-            color: #58151c;
-            border: 1px solid rgba(220, 53, 69, 0.4);
-        }
-        
-        .phase-item .btn-sm {
-            transition: all 0.2s ease;
-        }
-        
-        .phase-item .btn-outline-light:hover {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-            color: white;
-            transform: scale(1.05);
-        }
-        
-        .phase-item .btn-outline-danger:hover {
-            transform: scale(1.05);
-        }
-        
-        .phase-planning-info {
-            background: rgba(74, 144, 226, 0.05);
-            border-radius: 6px;
-            padding: 0.75rem;
-            border-left: 3px solid var(--accent-color);
-        }
-        
-        .phase-tasks-list {
-            background: rgba(40, 167, 69, 0.05);
-            border-radius: 6px;
-            padding: 0.75rem;
-            border-left: 3px solid #28a745;
-        }
-        
-        .phase-deliverables-list {
-            background: rgba(255, 193, 7, 0.05);
-            border-radius: 6px;
-            padding: 0.75rem;
-            border-left: 3px solid #ffc107;
-        }
-        
-        .phase-tasks-list ul,
-        .phase-deliverables-list ul {
-            margin-bottom: 0;
-            padding-left: 1.2rem;
-        }
-        
-        .phase-tasks-list li,
-        .phase-deliverables-list li {
-            margin-bottom: 0.25rem;
-            font-size: 0.9rem;
-        }
-        
-        /* Timeline selection styles */
-        #timelineProjectSelect {
-            border: 2px solid rgba(74, 144, 226, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        #timelineProjectSelect:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.15);
-        }
-        
-        /* Add Phase Button */
-        #addTimelinePhase {
-            background: linear-gradient(45deg, var(--accent-color), #5a9bd4);
-            border: none;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        #addTimelinePhase:hover {
-            background: linear-gradient(45deg, #5a9bd4, var(--accent-color));
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.3);
-        }
-        
-        /* Empty state styling with improved contrast */
-        .timeline-empty-state {
-            text-align: center;
-            padding: 3rem;
-            background: rgba(74, 144, 226, 0.02);
-            border: 2px dashed rgba(74, 144, 226, 0.2);
-            border-radius: 12px;
-            margin: 2rem 0;
-        }
-        
-        .timeline-empty-state i {
-            font-size: 4rem !important;
-            color: rgba(74, 144, 226, 0.4);
-            margin-bottom: 1rem;
-        }
-        
-        .timeline-empty-state p {
-            color: #495057;
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        /* Phase form animations */
-        #timelinePhaseForm {
-            transition: all 0.4s ease;
-        }
-        
-        .phase-form-slide-down {
-            animation: slideDown 0.4s ease-out;
-        }
-        
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Responsive timeline styles */
-        @media (max-width: 768px) {
-            .phase-item {
-                margin-bottom: 1rem !important;
-            }
-            
-            .phase-item .card-header {
-                padding: 0.75rem;
-            }
-            
-            .phase-item .card-header h5 {
-                font-size: 1rem;
-            }
-            
-            .phase-status-badge {
-                font-size: 0.7rem;
-                padding: 0.2rem 0.4rem;
-            }
-            
-            .timeline-phases {
-                max-height: 400px;
-            }
-        }
-        
-        /* Additional contrast improvements */
-        body {
-            color: #2c2c2c;
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            color: #2c2c2c !important;
-        }
-        
-        .form-label, label {
-            color: #2c2c2c !important;
-            font-weight: 600;
-        }
-        
-        .text-secondary {
-            color: #495057 !important;
-        }
-        
-        /* Input placeholder contrast */
-        .form-control::placeholder,
-        .form-select::placeholder {
-            color: #6c757d;
-            opacity: 1;
-        }
-        
-        /* Button text contrast */
-        .btn {
-            font-weight: 600;
-        }
-        
-        .btn-light {
-            background-color: #f8f9fa;
-            border-color: #dee2e6;
-            color: #2c2c2c;
-        }
-        
-        .btn-light:hover {
-            background-color: #e2e6ea;
-            border-color: #dae0e5;
-            color: #2c2c2c;
-        }
-        
-        /* Card text contrast */
-        .card-text, .small {
-            color: #495057;
-        }
-        
-        /* Link contrast */
-        a {
-            color: #0056b3;
-        }
-        
-        a:hover {
-            color: #004085;
-        }
-    </style>
+    <!-- Admin CSS (loads last to override others) -->
+    <link href="css/admin.css" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="img/favicon-32x32.png" type="image/png">
 </head>
 
-<body>
+<body class="admin-page">
     <div class="container-fluid admin-container">
         
-        <!-- Admin Header -->
-        <div class="admin-header">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h1 class="mb-2">
-                        <i class="lnr lnr-cog"></i>
-                        Portfolio Admin Dashboard
-                    </h1>
-                    <p class="text-muted mb-0">Beheer je projecten, update content en bekijk statistieken</p>
-                </div>
-                <div class="col-md-4 text-md-end">
-                    <button type="button" class="btn btn-outline-info me-2" id="manageTimelineBtn">
-                        <i class="lnr lnr-calendar-full"></i>
-                        Timeline Beheer
-                    </button>
-                    <button type="button" class="btn btn-outline-danger me-2" id="logoutBtn">
+        <!-- Portfolio-style Hero Section -->
+        <div class="admin-hero">
+            <div class="admin-hero-content">
+                <h1>Portfolio Admin</h1>
+                <p>Beheer je projecten, update content en bekijk statistieken met moderne stijl</p>
+                <div class="admin-nav">
+                    <a href="index.php" class="admin-nav-btn portfolio-btn">
+                        <i class="lnr lnr-home"></i>
+                        Portfolio
+                    </a>
+                    <button type="button" class="admin-nav-btn logout" id="logoutBtn">
                         <i class="lnr lnr-exit"></i>
                         Uitloggen
                     </button>
-                    <a href="index.php" class="btn btn-outline-primary">
-                        <i class="lnr lnr-home"></i>
-                        Naar Portfolio
-                    </a>
                 </div>
             </div>
+        </div>
             
             <!-- Quick Stats -->
             <div class="stats-row mt-4">
@@ -1483,10 +770,12 @@ function deleteTimelinePhase($pdo, $phase_id) {
         <!-- Alert Container -->
         <div id="alertContainer"></div>
 
-        <div class="row">
-            <!-- Project Form -->
-            <div class="col-lg-6">
-                <div class="admin-card">
+        <!-- Main Admin Sections -->
+        <div class="admin-section">
+            <div class="row">
+                <!-- Project Form -->
+                <div class="col-lg-6">
+                    <div class="admin-card">
                     <div class="card-header">
                         <h3 class="mb-0" id="formTitle">
                             <i class="lnr lnr-plus-circle"></i>
@@ -1543,7 +832,7 @@ function deleteTimelinePhase($pdo, $phase_id) {
                                         Selecteer primaire categorie. Development en Design velden kunnen beide gebruikt worden voor hybride projecten.
                                     </small>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6" id="projectTypeSection" style="display: none;">
                                     <label class="form-label">Project Type (Multi-selectie)</label>
                                     <div class="project-type-checkboxes mt-2">
                                         <div class="form-check form-check-inline">
@@ -1609,6 +898,54 @@ function deleteTimelinePhase($pdo, $phase_id) {
                                     <label for="projectClientName" class="form-label">Klant (optioneel)</label>
                                     <input type="text" class="form-control" id="projectClientName" name="client_name" placeholder="Naam van de klant">
                                 </div>
+                            </div>
+                            
+                            <!-- Gallery Checkbox Section -->
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="enableGallery" name="enable_gallery">
+                                        <label class="form-check-label" for="enableGallery">
+                                            <strong>📸 Image Gallery</strong>
+                                            <small class="d-block text-muted">Toon een afbeeldingengalerij voor dit project (aanbevolen voor design projecten of projecten zonder live demo)</small>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Gallery Upload Section -->
+                            <div id="gallerySection" class="mb-4" style="display: none;">
+                                <label class="form-label">
+                                    <i class="lnr lnr-picture"></i>
+                                    Project Afbeeldingen
+                                </label>
+                                <div class="gallery-upload-area">
+                                    <input type="file" id="galleryUpload" name="gallery_files[]" multiple accept="image/*" style="display: none;">
+                                    <div id="galleryPreview" class="gallery-preview">
+                                        <div class="gallery-item upload-placeholder" onclick="$('#galleryUpload').click()">
+                                            <i class="lnr lnr-plus-circle"></i>
+                                            <span>Afbeeldingen toevoegen</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Manual Gallery URLs -->
+                                <div class="mt-3">
+                                    <label for="galleryUrls" class="form-label">
+                                        <i class="lnr lnr-link"></i>
+                                        Galerij URLs (handmatig)
+                                    </label>
+                                    <textarea class="form-control" id="galleryUrls" name="gallery_images" rows="3" 
+                                              placeholder="img/project1.jpg&#10;img/project2.png&#10;img/project3.jpg"></textarea>
+                                    <small class="text-muted">
+                                        Een URL per regel. Deze worden gecombineerd met geüploade afbeeldingen.
+                                    </small>
+                                </div>
+                                
+                                <small class="text-muted">
+                                    <i class="lnr lnr-question-circle"></i>
+                                    Upload screenshots, mockups, of andere visuele elementen van je project. Ondersteunt JPG, PNG, GIF (max 5MB per afbeelding).
+                                </small>
                             </div>
                             
                             <!-- Hybrid Project Info -->
@@ -1739,6 +1076,59 @@ function deleteTimelinePhase($pdo, $phase_id) {
                                         <i class="lnr lnr-question-circle"></i>
                                         Deze statistieken worden gebruikt voor de project detail pagina's
                                     </small>
+                                </div>
+                                
+                                <!-- Development Process Section -->
+                                <div id="developmentProcessSection" style="display: none;">
+                                    <hr class="my-4">
+                                    <h6 class="text-primary mb-3">
+                                        <i class="lnr lnr-rocket"></i>
+                                        Development Proces
+                                    </h6>
+                                    
+                                    <div class="mb-3">
+                                        <label for="developmentMethodology" class="form-label">
+                                            <i class="lnr lnr-layers"></i>
+                                            Ontwikkelmethodologie
+                                        </label>
+                                        <select class="form-select" id="developmentMethodology" name="development_methodology">
+                                            <option value="">Selecteer methodologie</option>
+                                            <option value="agile">Agile/Scrum</option>
+                                            <option value="waterfall">Waterfall</option>
+                                            <option value="kanban">Kanban</option>
+                                            <option value="iterative">Iterative Development</option>
+                                            <option value="custom">Custom Approach</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="developmentPhases" class="form-label">
+                                            <i class="lnr lnr-list"></i>
+                                            Ontwikkelingsfasen
+                                        </label>
+                                        <textarea class="form-control" id="developmentPhases" name="development_phases" rows="4" 
+                                                  placeholder="1. Requirements Analysis&#10;2. Design & Prototyping&#10;3. Development&#10;4. Testing & QA&#10;5. Deployment"></textarea>
+                                        <small class="text-muted">Beschrijf de belangrijkste fasen van het ontwikkelproces</small>
+                                    </div>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="testingStrategy" class="form-label">
+                                                <i class="lnr lnr-checkmark-circle"></i>
+                                                Testing Strategie
+                                            </label>
+                                            <input type="text" class="form-control" id="testingStrategy" name="testing_strategy" 
+                                                   placeholder="Unit tests, Integration tests, E2E tests">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="deploymentMethod" class="form-label">
+                                                <i class="lnr lnr-cloud-upload"></i>
+                                                Deployment Methode
+                                            </label>
+                                            <input type="text" class="form-control" id="deploymentMethod" name="deployment_method" 
+                                                   placeholder="CI/CD, Docker, Vercel, AWS">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -1906,6 +1296,127 @@ function deleteTimelinePhase($pdo, $phase_id) {
                                 </div>
                             </div>
                             
+                            <!-- Timeline Management Section -->
+                            <div class="mb-4" id="timelineSection">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">
+                                        <i class="lnr lnr-calendar-full"></i>
+                                        Project Timeline
+                                    </h5>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" id="addTimelinePhaseBtn">
+                                        <i class="lnr lnr-plus-circle"></i>
+                                        Fase Toevoegen
+                                    </button>
+                                </div>
+                                
+                                <!-- Timeline Phases Container -->
+                                <div id="timelinePhasesContainer">
+                                    <div class="timeline-empty text-center text-muted py-3" id="timelineEmpty">
+                                        <i class="lnr lnr-calendar-full" style="font-size: 2rem; opacity: 0.3;"></i>
+                                        <p class="mb-0 mt-2">Geen timeline fasen toegevoegd</p>
+                                        <small>Klik op "Fase Toevoegen" om te beginnen</small>
+                                    </div>
+                                </div>
+                                
+                                <!-- Timeline Phase Form (Hidden by default) -->
+                                <div id="timelinePhaseFormInline" style="display: none;">
+                                    <div class="border rounded p-3 mt-3" style="background-color: #f8f9fa;">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <h6 class="mb-0">
+                                                <i class="lnr lnr-pencil"></i>
+                                                <span id="inlinePhaseFormTitle">Nieuwe Timeline Fase</span>
+                                            </h6>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" id="cancelInlinePhaseForm">
+                                                <i class="lnr lnr-cross"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="row mb-2">
+                                            <div class="col-md-6">
+                                                <label for="inlinePhaseName" class="form-label form-label-sm">Fase Naam</label>
+                                                <input type="text" class="form-control form-control-sm" id="inlinePhaseName" 
+                                                       placeholder="bijv. Design & Planning">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="inlinePhaseType" class="form-label form-label-sm">Type</label>
+                                                <select class="form-select form-select-sm" id="inlinePhaseType">
+                                                    <option value="">Selecteer...</option>
+                                                    <option value="planning">Planning</option>
+                                                    <option value="design">Design</option>
+                                                    <option value="development">Development</option>
+                                                    <option value="testing">Testing</option>
+                                                    <option value="deployment">Deployment</option>
+                                                    <option value="challenge">Challenge</option>
+                                                    <option value="approach">Approach</option>
+                                                    <option value="solution">Solution</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="inlinePhaseWeek" class="form-label form-label-sm">Week</label>
+                                                <input type="number" class="form-control form-control-sm" id="inlinePhaseWeek" 
+                                                       min="1" max="52" placeholder="1">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-2">
+                                            <label for="inlinePhaseDescription" class="form-label form-label-sm">Korte Beschrijving</label>
+                                            <textarea class="form-control form-control-sm" id="inlinePhaseDescription" rows="2" 
+                                                      placeholder="Korte samenvatting van deze fase"></textarea>
+                                        </div>
+                                        
+                                        <div class="mb-2">
+                                            <label for="inlinePhaseDetails" class="form-label form-label-sm">Gedetailleerde Beschrijving</label>
+                                            <textarea class="form-control form-control-sm" id="inlinePhaseDetails" rows="3" 
+                                                      placeholder="Gedetailleerde uitleg van activiteiten en processen"></textarea>
+                                        </div>
+                                        
+                                        <div class="row mb-2">
+                                            <div class="col-md-4">
+                                                <label for="inlinePhaseStatus" class="form-label form-label-sm">Status</label>
+                                                <select class="form-select form-select-sm" id="inlinePhaseStatus">
+                                                    <option value="planned">Gepland</option>
+                                                    <option value="in_progress">In Uitvoering</option>
+                                                    <option value="completed">Voltooid</option>
+                                                    <option value="skipped">Overgeslagen</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="inlinePhaseStartDate" class="form-label form-label-sm">Start Datum</label>
+                                                <input type="date" class="form-control form-control-sm" id="inlinePhaseStartDate">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="inlinePhaseEndDate" class="form-label form-label-sm">Eind Datum</label>
+                                                <input type="date" class="form-control form-control-sm" id="inlinePhaseEndDate">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label for="inlinePhaseTasks" class="form-label form-label-sm">Taken</label>
+                                                <textarea class="form-control form-control-sm" id="inlinePhaseTasks" rows="3" 
+                                                          placeholder="Elke taak op een nieuwe regel"></textarea>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="inlinePhaseDeliverables" class="form-label form-label-sm">Opgeleverd</label>
+                                                <textarea class="form-control form-control-sm" id="inlinePhaseDeliverables" rows="3" 
+                                                          placeholder="Elke deliverable op een nieuwe regel"></textarea>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex gap-2">
+                                            <button type="button" class="btn btn-primary btn-sm" id="saveInlinePhase">
+                                                <i class="lnr lnr-checkmark-circle"></i>
+                                                Fase Opslaan
+                                            </button>
+                                            <button type="button" class="btn btn-secondary btn-sm" id="cancelInlinePhase">
+                                                <i class="lnr lnr-cross-circle"></i>
+                                                Annuleren
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" id="projectFeatured" name="is_featured" value="1">
@@ -1941,7 +1452,7 @@ function deleteTimelinePhase($pdo, $phase_id) {
                             <i class="lnr lnr-list"></i>
                             Projecten Overzicht
                         </h3>
-                        <button type="button" class="btn btn-outline-light btn-sm" id="refreshProjects">
+                        <button type="button" class="btn btn-primary btn-sm" id="refreshProjects">
                             <i class="lnr lnr-sync"></i>
                             Vernieuwen
                         </button>
@@ -1974,178 +1485,18 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 </div>
             </div>
         </div>
-
-        <!-- Timeline Management Section -->
-        <div class="row mt-4" id="timelineManagementSection" style="display: none;">
-            <div class="col-12">
-                <div class="admin-card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <div>
-                            <h3 class="mb-0">
-                                <i class="lnr lnr-calendar-full"></i>
-                                Project Timeline Beheer
-                            </h3>
-                            <p class="mb-0 text-muted">Beheer timeline fasen voor gedetailleerde project voortgang</p>
-                        </div>
-                        <div>
-                            <button type="button" class="btn btn-light btn-sm" id="addTimelinePhase">
-                                <i class="lnr lnr-plus-circle"></i>
-                                Nieuwe Fase
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body p-4">
-                        
-                        <!-- Project Selection for Timeline -->
-                        <div class="row mb-4">
-                            <div class="col-md-6">
-                                <label for="timelineProjectSelect" class="form-label">Project Selecteren</label>
-                                <select class="form-select" id="timelineProjectSelect">
-                                    <option value="">Selecteer een project voor timeline beheer</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 d-flex align-items-end">
-                                <button type="button" class="btn btn-primary" id="loadProjectTimeline">
-                                    <i class="lnr lnr-eye"></i>
-                                    Timeline Laden
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Timeline Phase Form -->
-                        <div id="timelinePhaseForm" style="display: none;">
-                            <div class="admin-card">
-                                <div class="card-header">
-                                    <h5 class="mb-0">
-                                        <i class="lnr lnr-pencil"></i>
-                                        <span id="phaseFormTitle">Nieuwe Timeline Fase</span>
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <form id="phaseForm">
-                                        <input type="hidden" name="action" value="save_timeline_phase">
-                                        <input type="hidden" id="phaseId" name="phase_id">
-                                        <input type="hidden" id="phaseProjectId" name="project_id">
-                                        
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <label for="phaseName" class="form-label">Fase Naam</label>
-                                                <input type="text" class="form-control" id="phaseName" name="phase_name" required 
-                                                       placeholder="bijv. Design & Planning">
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label for="phaseType" class="form-label">Fase Type</label>
-                                                <div class="input-group">
-                                                    <select class="form-select" id="phaseType" name="phase_type">
-                                                        <option value="">Selecteer type...</option>
-                                                        <option value="planning" data-icon="calendar">Planning</option>
-                                                        <option value="design" data-icon="magic-wand">Design</option>
-                                                        <option value="development" data-icon="laptop">Development</option>
-                                                        <option value="testing" data-icon="bug">Testing</option>
-                                                        <option value="deployment" data-icon="rocket">Deployment</option>
-                                                        <option value="challenge" data-icon="question-circle">Challenge</option>
-                                                        <option value="approach" data-icon="cog">Approach</option>
-                                                        <option value="solution" data-icon="checkmark-circle">Solution</option>
-                                                    </select>
-                                                    <button type="button" class="btn btn-outline-secondary" id="forceFillBtn" 
-                                                            title="Force fill all fields with preset data" disabled>
-                                                        <i class="lnr lnr-magic-wand"></i>
-                                                    </button>
-                                                </div>
-                                                <small class="text-muted">Automatically fills empty fields</small>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label for="phaseWeekNumber" class="form-label">Week Nummer</label>
-                                                <input type="number" class="form-control" id="phaseWeekNumber" name="week_number" 
-                                                       min="1" max="52" placeholder="1">
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="mb-3">
-                                            <label for="phaseDescription" class="form-label">Korte Beschrijving</label>
-                                            <textarea class="form-control" id="phaseDescription" name="phase_description" rows="2" 
-                                                      placeholder="Korte samenvatting van deze fase"></textarea>
-                                        </div>
-                                        
-                                        <div class="mb-3">
-                                            <label for="phaseDetails" class="form-label">Gedetailleerde Beschrijving</label>
-                                            <textarea class="form-control" id="phaseDetails" name="phase_details" rows="4" 
-                                                      placeholder="Gedetailleerde uitleg van activiteiten en processen in deze fase"></textarea>
-                                        </div>
-                                        
-                                        <div class="row mb-3">
-                                            <div class="col-md-4">
-                                                <label for="phaseStatus" class="form-label">Status</label>
-                                                <select class="form-select" id="phaseStatus" name="phase_status">
-                                                    <option value="planned">Gepland</option>
-                                                    <option value="in_progress">In Uitvoering</option>
-                                                    <option value="completed">Voltooid</option>
-                                                    <option value="skipped">Overgeslagen</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label for="phaseStartDate" class="form-label">Start Datum</label>
-                                                <input type="date" class="form-control" id="phaseStartDate" name="start_date">
-                                            </div>
-                                            <div class="col-md-4">
-                                                <label for="phaseEndDate" class="form-label">Eind Datum</label>
-                                                <input type="date" class="form-control" id="phaseEndDate" name="end_date">
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="row mb-3">
-                                            <div class="col-md-6">
-                                                <label for="phaseTasks" class="form-label">Taken</label>
-                                                <textarea class="form-control" id="phaseTasks" name="tasks" rows="4" 
-                                                          placeholder="Elke taak op een nieuwe regel:&#10;Taak 1&#10;Taak 2&#10;Taak 3"></textarea>
-                                                <small class="text-muted">Elke taak op een nieuwe regel</small>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label for="phaseDeliverables" class="form-label">Opgeleverd</label>
-                                                <textarea class="form-control" id="phaseDeliverables" name="deliverables" rows="4" 
-                                                          placeholder="Elke deliverable op een nieuwe regel:&#10;Document 1&#10;Prototype&#10;Code repository"></textarea>
-                                                <small class="text-muted">Elke deliverable op een nieuwe regel</small>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="d-flex gap-2">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="lnr lnr-checkmark-circle"></i>
-                                                <span id="phaseSubmitText">Fase Opslaan</span>
-                                            </button>
-                                            <button type="button" class="btn btn-secondary" id="cancelPhaseForm">
-                                                <i class="lnr lnr-cross-circle"></i>
-                                                Annuleren
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Timeline Phases List -->
-                        <div id="timelinePhasesList">
-                            <div class="text-center text-muted py-5">
-                                <i class="lnr lnr-calendar-full" style="font-size: 3rem; opacity: 0.3;"></i>
-                                <p class="mt-3">Selecteer een project om de timeline te beheren</p>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
         </div>
-
-        <!-- Statistics Management Section -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="admin-card">
+            <!-- Statistics Management Section -->
+        <div class="admin-section">
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="admin-card">
                     <div class="card-header">
                         <h3 class="mb-0">
                             <i class="lnr lnr-chart-bars"></i>
                             Website Statistieken Beheer
                         </h3>
-                        <p class="mb-0 text-muted">Beheer de getallen die op je portfolio website worden getoond</p>
+                        <p class="mb-0 text-white">Beheer de getallen die op je portfolio website worden getoond</p>
                     </div>
                     <div class="card-body p-4">
                         <form id="statisticsForm">
@@ -2476,6 +1827,22 @@ function deleteTimelinePhase($pdo, $phase_id) {
                     this.toggleFormSections();
                 });
                 
+                // Gallery checkbox change handler
+                $('#enableGallery').on('change', () => {
+                    if ($('#enableGallery').is(':checked')) {
+                        $('#gallerySection').slideDown(300);
+                    } else {
+                        $('#gallerySection').slideUp(300);
+                    }
+                });
+                
+                // Live URL field change handler (affects gallery visibility)
+                $('#projectLiveUrl').on('input blur', () => {
+                    setTimeout(() => {
+                        this.toggleFormSections();
+                    }, 200);
+                });
+                
                 // Hybrid project detection - listen for changes in key fields
                 const hybridTriggerFields = '#projectGitHub, #projectChallenges, #linesOfCode, #developmentWeeks, #designConcept, #colorPalette, #typography, #designStyle, #designProcess';
                 $(hybridTriggerFields).on('input change blur', (e) => {
@@ -2543,6 +1910,10 @@ function deleteTimelinePhase($pdo, $phase_id) {
                     
                     // Add hybrid project indicator
                     formData.append('is_hybrid', $('#isHybridProject').is(':checked') ? '1' : '0');
+                    
+                    // Add timeline data
+                    const timelineData = this.getTimelineDataForSave();
+                    formData.append('timeline', JSON.stringify(timelineData));
 
                     const response = await fetch('admin.php', {
                         method: 'POST',
@@ -2653,6 +2024,9 @@ function deleteTimelinePhase($pdo, $phase_id) {
                         // Toggle form sections based on category
                         this.toggleFormSections();
                         
+                        // Load timeline data for this project
+                        this.loadTimelineFromProject(project);
+                        
                         // Scroll to form
                         $('html, body').animate({
                             scrollTop: $('#projectForm').offset().top - 100
@@ -2690,6 +2064,11 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 $('#submitText').text('Project Opslaan');
                 $('#projectYear').val(new Date().getFullYear());
                 
+                // Reset timeline data
+                this.inlineTimelinePhases = [];
+                this.renderInlineTimelinePhases();
+                this.hideInlinePhaseForm();
+                
                 // Reset form sections
                 this.toggleFormSections();
             }
@@ -2709,6 +2088,21 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 const hasWebType = selectedTypes.includes('web') || selectedTypes.includes('development');
                 const hasMobileType = selectedTypes.includes('mobile');
                 const hasDesignType = selectedTypes.includes('design');
+                const hasDevelopmentType = selectedTypes.includes('development');
+                
+                // Show/hide Project Type (Multi-selectie) section when Hybride project is checked
+                if (isHybridChecked) {
+                    $('#projectTypeSection').slideDown(300);
+                } else {
+                    $('#projectTypeSection').slideUp(300);
+                }
+                
+                // Show/hide Development Process section when Development is selected in project types
+                if (hasDevelopmentType && $('#projectTypeSection').is(':visible')) {
+                    $('#developmentProcessSection').slideDown(300);
+                } else {
+                    $('#developmentProcessSection').slideUp(300);
+                }
                 
                 // Check if project has content in both development and design fields (hybrid project)
                 const hasDevContent = $('#projectGitHub').val() || $('#projectChallenges').val() || 
@@ -2727,7 +2121,7 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 }
                 
                 // Show/hide project type guide
-                if (selectedCategory && (isDevelopment || isDesign)) {
+                if (selectedCategory && (isDevelopment || (isDesign && isHybridChecked))) {
                     $('#projectTypeGuide').slideDown(300);
                 } else {
                     $('#projectTypeGuide').slideUp(300);
@@ -2736,7 +2130,12 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 // Check current visibility to prevent unnecessary animations
                 const isDevFieldsVisible = $('#developmentFields').is(':visible');
                 const isDesignFieldsVisible = $('#designFields').is(':visible');
-                const shouldShowDev = isDevelopment || hasDevContent || isHybridChecked;
+                
+                // Special case: Design-only project (not hybrid)
+                const isDesignOnly = isDesign && !isHybridChecked;
+                
+                // Updated logic for showing development and design fields
+                const shouldShowDev = isDesignOnly ? false : (isDevelopment || hasDevContent || isHybridChecked);
                 const shouldShowDesign = isDesign || hasDesignContent || isHybridChecked;
                 
                 if (shouldShowDev && !isDevFieldsVisible) {
@@ -2781,6 +2180,31 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 
                 // Always show universal fields
                 $('#universalFields').show();
+                
+                // Gallery checkbox logic: show when no live URL or design category
+                const currentLiveUrl = $('#projectLiveUrl').val();
+                const shouldShowGalleryCheckbox = !currentLiveUrl || isDesign || hasDesignType;
+                
+                if (shouldShowGalleryCheckbox) {
+                    $('#enableGallery').closest('.row').slideDown(300);
+                    
+                    // Auto-check gallery for design-only projects
+                    if (isDesignOnly) {
+                        $('#enableGallery').prop('checked', true);
+                        $('#gallerySection').slideDown(300);
+                        
+                        // Update label for design-only projects
+                        $('#enableGallery').next('label').find('small').text('Aanbevolen voor design projecten - toon je creativiteit!');
+                    } else {
+                        // Reset to default label
+                        $('#enableGallery').next('label').find('small').text('Toon een afbeeldingengalerij voor dit project (aanbevolen voor design projecten of projecten zonder live demo)');
+                    }
+                } else {
+                    $('#enableGallery').closest('.row').slideUp(300);
+                    // Also hide gallery section if checkbox is hidden
+                    $('#gallerySection').slideUp(300);
+                    $('#enableGallery').prop('checked', false);
+                }
                 
                 // Add visual feedback
                 this.addSectionAnimations();
@@ -3445,11 +2869,6 @@ function deleteTimelinePhase($pdo, $phase_id) {
 
             // Timeline Management Methods
             setupTimelineManagement() {
-                // Timeline management button
-                $('#manageTimelineBtn').on('click', () => {
-                    this.toggleTimelineSection();
-                });
-                
                 // Load project timeline button
                 $('#loadProjectTimeline').on('click', () => {
                     const projectId = $('#timelineProjectSelect').val();
@@ -3481,21 +2900,24 @@ function deleteTimelinePhase($pdo, $phase_id) {
                     this.hidePhaseForm();
                 });
                 
+                // Inline timeline form handlers (in project form)
+                $('#addTimelinePhaseBtn').on('click', () => {
+                    this.showInlinePhaseForm();
+                });
+                
+                $('#cancelInlinePhaseForm, #cancelInlinePhase').on('click', () => {
+                    this.hideInlinePhaseForm();
+                });
+                
+                $('#saveInlinePhase').on('click', () => {
+                    this.saveInlineTimelinePhase();
+                });
+                
                 // Load projects for timeline selection
                 this.loadProjectsForTimeline();
-            }
-            
-            toggleTimelineSection() {
-                const section = $('#timelineManagementSection');
-                const isVisible = section.is(':visible');
                 
-                if (!isVisible) {
-                    section.slideDown(300);
-                    $('#manageTimelineBtn').html('<i class="lnr lnr-cross-circle"></i> Timeline Sluiten');
-                } else {
-                    section.slideUp(300);
-                    $('#manageTimelineBtn').html('<i class="lnr lnr-calendar-full"></i> Timeline Beheer');
-                }
+                // Initialize inline timeline
+                this.inlineTimelinePhases = [];
             }
             
             async loadProjectsForTimeline() {
@@ -3640,337 +3062,657 @@ function deleteTimelinePhase($pdo, $phase_id) {
                                     </div>` : ''}
                                 </div>
                             </div>
+                        `;
+            });
+            
+                            $('#projectTimeline').html(html);
+        }
+        
+        // Inline Timeline Management Methods (for project form)
+        showInlinePhaseForm() {
+            $('#timelinePhaseFormInline').slideDown(300);
+            $('#addTimelinePhaseBtn').prop('disabled', true);
+            $('#inlinePhaseName').focus();
+            this.clearInlinePhaseForm();
+        }
+        
+        hideInlinePhaseForm() {
+            $('#timelinePhaseFormInline').slideUp(300);
+            $('#addTimelinePhaseBtn').prop('disabled', false);
+            this.clearInlinePhaseForm();
+        }
+        
+        clearInlinePhaseForm() {
+            $('#inlinePhaseName').val('');
+            $('#inlinePhaseType').val('');
+            $('#inlinePhaseWeek').val('');
+            $('#inlinePhaseDescription').val('');
+            $('#inlinePhaseDetails').val('');
+            $('#inlinePhaseStatus').val('planned');
+            $('#inlinePhaseStartDate').val('');
+            $('#inlinePhaseEndDate').val('');
+            $('#inlinePhaseTasks').val('');
+            $('#inlinePhaseDeliverables').val('');
+            $('#inlinePhaseFormTitle').text('Nieuwe Timeline Fase');
+        }
+        
+        saveInlineTimelinePhase() {
+            const phaseName = $('#inlinePhaseName').val().trim();
+            const phaseType = $('#inlinePhaseType').val();
+            
+            if (!phaseName) {
+                this.showAlert('Fase naam is verplicht', 'danger');
+                $('#inlinePhaseName').focus();
+                return;
+            }
+            
+            const phaseData = {
+                id: 'temp_' + Date.now(), // Temporary ID for new phases
+                phase_name: phaseName,
+                phase_type: phaseType,
+                week_number: $('#inlinePhaseWeek').val() || null,
+                phase_description: $('#inlinePhaseDescription').val(),
+                phase_details: $('#inlinePhaseDetails').val(),
+                phase_status: $('#inlinePhaseStatus').val(),
+                start_date: $('#inlinePhaseStartDate').val() || null,
+                end_date: $('#inlinePhaseEndDate').val() || null,
+                tasks: $('#inlinePhaseTasks').val().split('\n').filter(task => task.trim() !== ''),
+                deliverables: $('#inlinePhaseDeliverables').val().split('\n').filter(item => item.trim() !== '')
+            };
+            
+            // Add to temporary phases array
+            if (!this.inlineTimelinePhases) {
+                this.inlineTimelinePhases = [];
+            }
+            
+            this.inlineTimelinePhases.push(phaseData);
+            this.renderInlineTimelinePhases();
+            this.hideInlinePhaseForm();
+            
+            this.showAlert('Timeline fase toegevoegd. Sla het project op om permanent te maken.', 'success');
+        }
+        
+        renderInlineTimelinePhases() {
+            const container = $('#timelinePhasesContainer');
+            
+            if (!this.inlineTimelinePhases || this.inlineTimelinePhases.length === 0) {
+                container.html(`
+                    <div class="timeline-empty text-center text-muted py-3" id="timelineEmpty">
+                        <i class="lnr lnr-calendar-full" style="font-size: 2rem; opacity: 0.3;"></i>
+                        <p class="mb-0 mt-2">Geen timeline fasen toegevoegd</p>
+                        <small>Klik op "Fase Toevoegen" om te beginnen</small>
+                    </div>
+                `);
+                return;
+            }
+            
+            // Phase type icon mapping
+            const phaseIcons = {
+                'planning': 'lnr-calendar-full',
+                'design': 'lnr-magic-wand',
+                'development': 'lnr-laptop',
+                'testing': 'lnr-bug',
+                'deployment': 'lnr-rocket',
+                'challenge': 'lnr-question-circle',
+                'approach': 'lnr-cog',
+                'solution': 'lnr-checkmark-circle'
+            };
+            
+            const statusClasses = {
+                'planned': 'bg-secondary',
+                'in_progress': 'bg-primary',
+                'completed': 'bg-success',
+                'skipped': 'bg-warning'
+            };
+            
+            const statusLabels = {
+                'planned': 'Gepland',
+                'in_progress': 'In Uitvoering',
+                'completed': 'Voltooid',
+                'skipped': 'Overgeslagen'
+            };
+            
+            let html = '<div class="inline-timeline-phases">';
+            
+            this.inlineTimelinePhases.forEach((phase, index) => {
+                const phaseIcon = phaseIcons[phase.phase_type] || 'lnr-star';
+                const statusClass = statusClasses[phase.phase_status] || 'bg-secondary';
+                const statusLabel = statusLabels[phase.phase_status] || 'Gepland';
+                
+                html += `
+                    <div class="card mb-2" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="lnr ${phaseIcon} me-2" style="color: #4103b3;"></i>
+                                        <h6 class="mb-0 me-2">${phase.phase_name}</h6>
+                                        ${phase.week_number ? `<small class="text-muted">Week ${phase.week_number}</small>` : ''}
+                                        <span class="badge ${statusClass} ms-2">${statusLabel}</span>
+                                    </div>
+                                    
+                                    ${phase.phase_description ? `<p class="text-muted mb-2 small">${phase.phase_description}</p>` : ''}
+                                    
+                                    ${phase.start_date || phase.end_date ? `
+                                    <div class="text-muted small mb-2">
+                                        ${phase.start_date ? `Start: ${new Date(phase.start_date).toLocaleDateString('nl-NL')}` : ''}
+                                        ${phase.start_date && phase.end_date ? ' - ' : ''}
+                                        ${phase.end_date ? `Eind: ${new Date(phase.end_date).toLocaleDateString('nl-NL')}` : ''}
+                                    </div>` : ''}
+                                    
+                                    ${phase.tasks && phase.tasks.length > 0 ? `
+                                    <div class="mb-2">
+                                        <small class="text-muted"><strong>Taken:</strong> ${phase.tasks.join(', ')}</small>
+                                    </div>` : ''}
+                                    
+                                    ${phase.deliverables && phase.deliverables.length > 0 ? `
+                                    <div class="mb-2">
+                                        <small class="text-muted"><strong>Deliverables:</strong> ${phase.deliverables.join(', ')}</small>
+                                    </div>` : ''}
+                                </div>
+                                
+                                <div class="ms-2">
+                                    <button type="button" class="btn btn-sm btn-outline-light me-1" onclick="portfolioAdmin.editInlinePhase(${index})" title="Bewerken">
+                                        <i class="lnr lnr-pencil"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="portfolioAdmin.removeInlinePhase(${index})" title="Verwijderen">
+                                        <i class="lnr lnr-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    `;
-                });
-                html += '</div>';
-                
-                container.html(html);
-            }
-            
-            getStatusBadge(status) {
-                const badges = {
-                    'planned': '<span class="phase-status-badge status-planned">Gepland</span>',
-                    'in_progress': '<span class="phase-status-badge status-in_progress">In Uitvoering</span>',
-                    'completed': '<span class="phase-status-badge status-completed">Voltooid</span>',
-                    'on_hold': '<span class="phase-status-badge status-on_hold">On Hold</span>'
-                };
-                return badges[status] || '';
-            }
-            
-            showPhaseForm(projectId, phaseData = null) {
-                $('#phaseProjectId').val(projectId);
-                
-                if (phaseData) {
-                    // Edit mode
-                    $('#phaseFormTitle').text('Timeline Fase Bewerken');
-                    $('#phaseSubmitText').text('Wijzigingen Opslaan');
-                    $('#phaseId').val(phaseData.id);
-                    $('#phaseName').val(phaseData.phase_name);
-                    $('#phaseType').val(phaseData.phase_type || '');
-                    $('#phaseWeekNumber').val(phaseData.week_number);
-                    $('#phaseDescription').val(phaseData.phase_description);
-                    $('#phaseDetails').val(phaseData.phase_details);
-                    $('#phaseStatus').val(phaseData.phase_status);
-                    $('#phaseStartDate').val(phaseData.start_date);
-                    $('#phaseEndDate').val(phaseData.end_date);
-                    
-                    // Handle tasks and deliverables
-                    const tasks = phaseData.tasks ? JSON.parse(phaseData.tasks).join('\n') : '';
-                    const deliverables = phaseData.deliverables ? JSON.parse(phaseData.deliverables).join('\n') : '';
-                    $('#phaseTasks').val(tasks);
-                    $('#phaseDeliverables').val(deliverables);
-                } else {
-                    // Add mode
-                    $('#phaseFormTitle').text('Nieuwe Timeline Fase');
-                    $('#phaseSubmitText').text('Fase Opslaan');
-                    $('#phaseForm')[0].reset();
-                    $('#phaseProjectId').val(projectId);
-                }
-                
-                $('#timelinePhaseForm').slideDown(300);
-            }
-            
-            hidePhaseForm() {
-                $('#timelinePhaseForm').slideUp(300);
-                $('#phaseForm')[0].reset();
-            }
-            
-            async saveTimelinePhase() {
-                const formData = new FormData($('#phaseForm')[0]);
-                
-                try {
-                    const response = await fetch('admin.php', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        this.showAlert(result.message, 'success');
-                        this.hidePhaseForm();
-                        // Reload timeline
-                        const projectId = $('#timelineProjectSelect').val();
-                        if (projectId) {
-                            this.loadProjectTimeline(projectId);
-                        }
-                    } else {
-                        this.showAlert('Fout bij opslaan fase: ' + result.error, 'danger');
-                    }
-                } catch (error) {
-                    this.showAlert('Network error bij opslaan fase: ' + error.message, 'danger');
-                }
-            }
-            
-            async editPhase(phaseId) {
-                // Get current timeline phases to find this phase
-                const projectId = $('#timelineProjectSelect').val();
-                if (!projectId) return;
-                
-                try {
-                    const formData = new FormData();
-                    formData.append('action', 'get_timeline_phases');
-                    formData.append('project_id', projectId);
-                    
-                    const response = await fetch('admin.php', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        const phase = result.data.find(p => p.id == phaseId);
-                        if (phase) {
-                            this.showPhaseForm(projectId, phase);
-                        }
-                    }
-                } catch (error) {
-                    this.showAlert('Error loading phase data: ' + error.message, 'danger');
-                }
-            }
-            
-            async deletePhase(phaseId) {
-                if (!confirm('Weet je zeker dat je deze timeline fase wilt verwijderen?')) {
-                    return;
-                }
-                
-                try {
-                    const formData = new FormData();
-                    formData.append('action', 'delete_timeline_phase');
-                    formData.append('phase_id', phaseId);
-                    
-                    const response = await fetch('admin.php', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        this.showAlert(result.message, 'success');
-                        // Reload timeline
-                        const projectId = $('#timelineProjectSelect').val();
-                        if (projectId) {
-                            this.loadProjectTimeline(projectId);
-                        }
-                    } else {
-                        this.showAlert('Fout bij verwijderen fase: ' + result.error, 'danger');
-                    }
-                } catch (error) {
-                    this.showAlert('Network error bij verwijderen fase: ' + error.message, 'danger');
-                }
-            }
-
-            showAlert(message, type = 'success', duration = 5000) {
-                const alertClass = type === 'success' ? 'alert-success' : 
-                                  type === 'danger' ? 'alert-danger' : 
-                                  type === 'info' ? 'alert-info' : 'alert-secondary';
-                const icon = type === 'success' ? 'lnr-checkmark-circle' : 
-                            type === 'danger' ? 'lnr-warning' : 
-                            type === 'info' ? 'lnr-info' : 'lnr-circle-minus';
-                
-                const html = `
-                    <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-                        <i class="lnr ${icon}"></i>
-                        ${message}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 `;
-                
-                $('#alertContainer').html(html);
-                
-                // Auto hide after specified duration
-                setTimeout(() => {
-                    $('.alert').fadeOut();
-                }, duration);
+            });
+            
+            html += '</div>';
+            container.html(html);
+        }
+        
+        editInlinePhase(index) {
+            const phase = this.inlineTimelinePhases[index];
+            if (!phase) return;
+            
+            // Populate form with phase data
+            $('#inlinePhaseName').val(phase.phase_name);
+            $('#inlinePhaseType').val(phase.phase_type);
+            $('#inlinePhaseWeek').val(phase.week_number || '');
+            $('#inlinePhaseDescription').val(phase.phase_description);
+            $('#inlinePhaseDetails').val(phase.phase_details);
+            $('#inlinePhaseStatus').val(phase.phase_status);
+            $('#inlinePhaseStartDate').val(phase.start_date || '');
+            $('#inlinePhaseEndDate').val(phase.end_date || '');
+            $('#inlinePhaseTasks').val(phase.tasks ? phase.tasks.join('\n') : '');
+            $('#inlinePhaseDeliverables').val(phase.deliverables ? phase.deliverables.join('\n') : '');
+            
+            $('#inlinePhaseFormTitle').text('Timeline Fase Bewerken');
+            
+            // Store editing index
+            this.editingInlinePhaseIndex = index;
+            
+            // Update save button text
+            $('#saveInlinePhase').html('<i class="lnr lnr-checkmark-circle"></i> Wijzigingen Opslaan');
+            
+            // Modify save handler
+            $('#saveInlinePhase').off('click').on('click', () => {
+                this.updateInlineTimelinePhase(index);
+            });
+            
+            this.showInlinePhaseForm();
+        }
+        
+        updateInlineTimelinePhase(index) {
+            const phaseName = $('#inlinePhaseName').val().trim();
+            
+            if (!phaseName) {
+                this.showAlert('Fase naam is verplicht', 'danger');
+                $('#inlinePhaseName').focus();
+                return;
+            }
+            
+            // Update the phase data
+            this.inlineTimelinePhases[index] = {
+                ...this.inlineTimelinePhases[index],
+                phase_name: phaseName,
+                phase_type: $('#inlinePhaseType').val(),
+                week_number: $('#inlinePhaseWeek').val() || null,
+                phase_description: $('#inlinePhaseDescription').val(),
+                phase_details: $('#inlinePhaseDetails').val(),
+                phase_status: $('#inlinePhaseStatus').val(),
+                start_date: $('#inlinePhaseStartDate').val() || null,
+                end_date: $('#inlinePhaseEndDate').val() || null,
+                tasks: $('#inlinePhaseTasks').val().split('\n').filter(task => task.trim() !== ''),
+                deliverables: $('#inlinePhaseDeliverables').val().split('\n').filter(item => item.trim() !== '')
+            };
+            
+            this.renderInlineTimelinePhases();
+            this.hideInlinePhaseForm();
+            
+            // Reset save button
+            $('#saveInlinePhase').html('<i class="lnr lnr-checkmark-circle"></i> Fase Opslaan');
+            $('#saveInlinePhase').off('click').on('click', () => {
+                this.saveInlineTimelinePhase();
+            });
+            
+            this.showAlert('Timeline fase bijgewerkt', 'success');
+        }
+        
+        removeInlinePhase(index) {
+            if (confirm('Weet je zeker dat je deze timeline fase wilt verwijderen?')) {
+                this.inlineTimelinePhases.splice(index, 1);
+                this.renderInlineTimelinePhases();
+                this.showAlert('Timeline fase verwijderd', 'success');
             }
         }
         
-        // Phase type form customization
-        const phaseTypePresets = {
-            'planning': {
-                name: 'Planning & Analyse',
-                description: 'Projectplanning, requirement analyse en strategische voorbereidingen',
-                tasks: 'Stakeholder interviews\nRequirement gathering\nProject scope definitie\nTimeline planning\nResource allocatie',
-                deliverables: 'Project plan\nRequirement document\nStakeholder mapping\nRisk assessment'
-            },
-            'design': {
-                name: 'Design & Conceptualisatie',
-                description: 'Visueel ontwerp, UX/UI design en creative conceptontwikkeling',
-                tasks: 'User research\nWireframing\nVisual design\nPrototyping\nDesign system',
-                deliverables: 'Design mockups\nPrototype\nStyle guide\nDesign specifications'
-            },
-            'development': {
-                name: 'Development & Implementatie',
-                description: 'Technische ontwikkeling, programmeren en system implementatie',
-                tasks: 'Code development\nDatabase setup\nAPI integration\nFeature implementation\nCode review',
-                deliverables: 'Working code\nDatabase schema\nAPI endpoints\nUnit tests\nTechnical documentation'
-            },
-            'testing': {
-                name: 'Testing & Kwaliteitsborging',
-                description: 'Uitgebreide testing, bug fixes en kwaliteitscontrole',
-                tasks: 'Unit testing\nIntegration testing\nUser acceptance testing\nBug fixing\nPerformance testing',
-                deliverables: 'Test reports\nBug fixes\nQuality assurance document\nTest coverage report'
-            },
-            'deployment': {
-                name: 'Deployment & Go-Live',
-                description: 'Live deployment, server configuratie en productie launch',
-                tasks: 'Server setup\nProduction deployment\nDNS configuration\nSSL setup\nMonitoring setup',
-                deliverables: 'Live website\nServer documentation\nDeployment guide\nMonitoring dashboard'
-            },
-            'challenge': {
-                name: 'Uitdaging & Probleemdefinitie',
-                description: 'Identificatie en analyse van de kernuitdaging of probleem',
-                tasks: 'Problem identification\nStakeholder analysis\nCurrent state assessment\nPain point mapping\nSuccess criteria definition',
-                deliverables: 'Problem statement\nStakeholder map\nCurrent state analysis\nSuccess metrics'
-            },
-            'approach': {
-                name: 'Aanpak & Methodologie',
-                description: 'Strategische aanpak en methodologie voor probleemoplossing',
-                tasks: 'Strategy formulation\nMethodology selection\nApproach documentation\nResource planning\nRisk mitigation',
-                deliverables: 'Strategy document\nMethodology guide\nApproach framework\nResource plan'
-            },
-            'solution': {
-                name: 'Oplossing & Resultaat',
-                description: 'Eindoplossing, implementatie en behaalde resultaten',
-                tasks: 'Solution implementation\nResult measurement\nImpact assessment\nDocumentation\nLessons learned',
-                deliverables: 'Final solution\nResults report\nImpact analysis\nLesson learned document'
-            }
-        };
-        
-        // Handle phase type selection change
-        $(document).on('change', '#phaseType', function() {
-            const selectedType = $(this).val();
-            const forceFillBtn = $('#forceFillBtn');
-            
-            if (selectedType && phaseTypePresets[selectedType]) {
-                // Enable force fill button
-                forceFillBtn.prop('disabled', false).attr('title', `Force fill with ${selectedType} preset`);
-                
-                const preset = phaseTypePresets[selectedType];
-                
-                // Add visual feedback
-                const fieldsToUpdate = [];
-                
-                // Only update if fields are empty (don't overwrite user input)
-                if (!$('#phaseName').val()) {
-                    $('#phaseName').val(preset.name);
-                    fieldsToUpdate.push($('#phaseName'));
-                }
-                if (!$('#phaseDescription').val()) {
-                    $('#phaseDescription').val(preset.description);
-                    fieldsToUpdate.push($('#phaseDescription'));
-                }
-                if (!$('#phaseTasks').val()) {
-                    $('#phaseTasks').val(preset.tasks);
-                    fieldsToUpdate.push($('#phaseTasks'));
-                }
-                if (!$('#phaseDeliverables').val()) {
-                    $('#phaseDeliverables').val(preset.deliverables);
-                    fieldsToUpdate.push($('#phaseDeliverables'));
-                }
-                
-                // Add visual feedback for updated fields
-                fieldsToUpdate.forEach(field => {
-                    field.addClass('form-updated preset-indicator');
-                    setTimeout(() => {
-                        field.removeClass('form-updated');
-                    }, 600);
-                });
-                
-                // Update placeholders for better UX
-                $('#phaseName').attr('placeholder', preset.name);
-                $('#phaseDescription').attr('placeholder', preset.description);
-                $('#phaseTasks').attr('placeholder', preset.tasks.split('\n').slice(0,2).join('\n') + '\n...');
-                $('#phaseDeliverables').attr('placeholder', preset.deliverables.split('\n').slice(0,2).join('\n') + '\n...');
-                
-                // Show success message if fields were filled
-                if (fieldsToUpdate.length > 0) {
-                    const message = `Auto-filled ${fieldsToUpdate.length} field${fieldsToUpdate.length > 1 ? 's' : ''} for ${selectedType} phase`;
-                    portfolioAdmin.showAlert(message, 'success', 2000);
+        loadTimelineFromProject(projectData) {
+            // Load existing timeline phases when editing a project
+            if (projectData && projectData.timeline) {
+                try {
+                    this.inlineTimelinePhases = JSON.parse(projectData.timeline) || [];
+                    this.renderInlineTimelinePhases();
+                } catch (e) {
+                    console.error('Error parsing timeline data:', e);
+                    this.inlineTimelinePhases = [];
+                    this.renderInlineTimelinePhases();
                 }
             } else {
-                // Disable force fill button
-                forceFillBtn.prop('disabled', true).attr('title', 'Select a phase type first');
-                
-                // Reset placeholders to default
-                $('#phaseName').attr('placeholder', 'bijv. Design & Planning');
-                $('#phaseDescription').attr('placeholder', 'Korte samenvatting van deze fase');
-                $('#phaseTasks').attr('placeholder', 'Elke taak op een nieuwe regel:\nTaak 1\nTaak 2\nTaak 3');
-                $('#phaseDeliverables').attr('placeholder', 'Elke deliverable op een nieuwe regel:\nDocument 1\nPrototype\nCode repository');
-                
-                // Remove preset indicators
-                $('.preset-indicator').removeClass('preset-indicator');
+                this.inlineTimelinePhases = [];
+                this.renderInlineTimelinePhases();
             }
-        });
+        }
         
-        // Handle force fill button click
-        $(document).on('click', '#forceFillBtn', function() {
-            const selectedType = $('#phaseType').val();
-            if (!selectedType || !phaseTypePresets[selectedType]) return;
+        getTimelineDataForSave() {
+            // Return timeline data to be saved with the project
+            return this.inlineTimelinePhases || [];
+        }
+    }
+    
+    // Global variables
+    let currentProject = null;
+    let galleryImages = [];
+    let timelineItems = [];
+    let portfolioAdmin = null;    // Initialize admin panel
+    $(document).ready(function() {
+            // Initialize the PortfolioAdmin class
+            portfolioAdmin = new PortfolioAdmin();
             
-            if (!confirm('This will overwrite all current field values. Are you sure?')) return;
+            // Scroll to Top Button functionality
+            const scrollToTopBtn = $('#scrollToTop');
             
-            const preset = phaseTypePresets[selectedType];
+            // Show/hide button based on scroll position
+            $(window).scroll(function() {
+                if ($(window).scrollTop() > 300) {
+                    scrollToTopBtn.addClass('show');
+                } else {
+                    scrollToTopBtn.removeClass('show');
+                }
+            });
             
-            // Force fill all fields
-            const fieldsUpdated = [];
-            $('#phaseName').val(preset.name);
-            $('#phaseDescription').val(preset.description);
-            $('#phaseTasks').val(preset.tasks);
-            $('#phaseDeliverables').val(preset.deliverables);
-            
-            // Add visual feedback
-            const allFields = [$('#phaseName'), $('#phaseDescription'), $('#phaseTasks'), $('#phaseDeliverables')];
-            allFields.forEach(field => {
-                field.addClass('form-updated preset-indicator');
-                setTimeout(() => {
-                    field.removeClass('form-updated');
+            // Scroll to top when button is clicked
+            scrollToTopBtn.on('click', function() {
+                $('html, body').animate({
+                    scrollTop: 0
                 }, 600);
             });
             
-            portfolioAdmin.showAlert(`Force-filled all fields with ${selectedType} preset`, 'info', 3000);
+            loadProjects();
+            
+            // Form submission
+            $('#projectForm').on('submit', function(e) {
+                e.preventDefault();
+                saveProject();
+            });
+            
+            // Gallery upload handler
+            $('#galleryUpload').on('change', function(e) {
+                handleGalleryUpload(e.target.files);
+            });
         });
-
-        // Initialize when document is ready
-        let portfolioAdmin;
-        $(document).ready(() => {
-            portfolioAdmin = new PortfolioAdmin();
-        });
+        
+        // Load projects list
+        function loadProjects() {
+            $.post('admin.php', {action: 'get_projects'}, function(response) {
+                if (response.success && response.data) {
+                    displayProjects(response.data);
+                }
+            }, 'json');
+        }
+        
+        // Display projects in cards
+        function displayProjects(projects) {
+            let html = '';
+            projects.forEach(project => {
+                const statusBadge = project.status === 'completed' ? 'success' : 
+                                  project.status === 'in-progress' ? 'warning' : 'secondary';
+                const featuredBadge = project.is_featured == 1 ? '<span class="badge badge-primary ml-2">Uitgelicht</span>' : '';
+                
+                html += `
+                    <div class="project-card card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title mb-2">${project.title} ${featuredBadge}</h6>
+                                    <p class="card-text text-muted small mb-2">${project.short_description || project.description.substring(0, 100) + '...'}</p>
+                                    <div class="mb-2">
+                                        <span class="badge badge-${statusBadge}">${project.status}</span>
+                                        <span class="badge badge-info ml-1">${project.category}</span>
+                                    </div>
+                                </div>
+                                <div class="project-actions">
+                                    <button class="btn btn-sm btn-outline-primary mr-1" onclick="editProject(${project.id})">
+                                        <i class="lnr lnr-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteProject(${project.id})">
+                                        <i class="lnr lnr-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            $('#projectsList').html(html);
+        }
+        
+        // Show project form
+        function showProjectForm(projectId = null) {
+            currentProject = projectId;
+            
+            if (projectId) {
+                // Load project data
+                $.post('admin.php', {action: 'get_project', id: projectId}, function(response) {
+                    if (response.success && response.data) {
+                        populateForm(response.data);
+                    }
+                }, 'json');
+                $('#formTitle').html('<i class="lnr lnr-pencil mr-2"></i>Project Bewerken');
+            } else {
+                // Clear form for new project
+                $('#projectForm')[0].reset();
+                $('#projectId').val('');
+                
+                // Clear gallery data
+                galleryImages = [];
+                $('#galleryUrls').val('');
+                $('#enableGallery').prop('checked', false);
+                $('#gallerySection').hide();
+                updateGalleryPreview();
+                
+                // Clear timeline data
+                timelineItems = [];
+                updateTimelinePreview();
+                
+                $('#formTitle').html('<i class="lnr lnr-plus-circle mr-2"></i>Nieuw Project');
+            }
+            
+            $('#projectFormCard').show();
+        }
+        
+        // Hide project form
+        function hideProjectForm() {
+            $('#projectFormCard').hide();
+            currentProject = null;
+        }
+        
+        // Populate form with project data
+        function populateForm(project) {
+            // Basic project information
+            $('#projectId').val(project.id);
+            $('#projectTitle').val(project.title);
+            $('#projectShortDescription').val(project.short_description);
+            $('#projectDescription').val(project.description);
+            $('#projectCategory').val(project.category);
+            $('#projectYear').val(project.year);
+            $('#projectStatus').val(project.status);
+            $('#projectLiveUrl').val(project.live_url);
+            $('#projectDemoUrl').val(project.demo_url);
+            $('#projectClientName').val(project.client_name);
+            $('#projectImage').val(project.image_url);
+            $('#projectDuration').val(project.project_duration);
+            $('#projectCompletionDate').val(project.completion_date);
+            $('#projectFeatured').prop('checked', project.is_featured == 1);
+            
+            // Development fields
+            $('#projectTools').val(JSON.parse(project.tools || '[]').join(', '));
+            $('#projectFeatures').val(JSON.parse(project.features || '[]').join('\n'));
+            $('#projectGitHub').val(project.github_url);
+            $('#projectApiDocs').val(project.api_docs_url);
+            $('#projectChallenges').val(project.challenges);
+            
+            // Development statistics
+            $('#performanceScore').val(project.performance_score);
+            $('#codeQuality').val(project.code_quality);
+            $('#linesOfCode').val(project.lines_of_code);
+            $('#componentsCount').val(project.components_count);
+            $('#developmentWeeks').val(project.development_weeks);
+            $('#developmentMethodology').val(project.development_methodology);
+            $('#developmentPhases').val(project.development_phases);
+            $('#testingStrategy').val(project.testing_strategy);
+            $('#deploymentMethod').val(project.deployment_method);
+            
+            // Design fields
+            $('#designTools').val(JSON.parse(project.tools || '[]').join(', '));
+            $('#designConcept').val(project.design_concept);
+            $('#colorPalette').val(project.color_palette);
+            $('#typography').val(project.typography);
+            $('#designProcess').val(JSON.parse(project.features || '[]').join('\n'));
+            $('#designCategory').val(project.design_category);
+            $('#designStyle').val(project.design_style);
+            
+            // Creative process fields
+            $('#creativeChallenge').val(project.creative_challenge);
+            $('#creativeApproach').val(project.creative_approach);
+            $('#creativeSolution').val(project.creative_solution);
+            $('#inspirationSource').val(project.inspiration_source);
+            $('#lessonsLearned').val(project.lessons_learned);
+            
+            // Load gallery images
+            galleryImages = JSON.parse(project.gallery_images || '[]');
+            
+            // Populate manual gallery URLs textarea
+            if (galleryImages && galleryImages.length > 0) {
+                const galleryUrls = galleryImages.map(img => img.url || img).join('\n');
+                $('#galleryUrls').val(galleryUrls);
+                $('#enableGallery').prop('checked', true);
+                $('#gallerySection').show();
+            }
+            
+            updateGalleryPreview();
+            
+            // Load timeline
+            timelineItems = JSON.parse(project.timeline || '[]');
+            updateTimelinePreview();
+            
+            // Trigger form section updates based on category
+            if (typeof portfolioAdmin !== 'undefined' && portfolioAdmin.toggleFormSections) {
+                portfolioAdmin.toggleFormSections();
+            }
+        }
+        
+        // Save project
+        function saveProject() {
+            const formData = new FormData($('#projectForm')[0]);
+            formData.append('action', 'save_project');
+            
+            // Don't override gallery_images field - let the file uploads and manual textarea work
+            // The PHP backend will handle both uploaded files and manual URLs
+            
+            formData.append('timeline', JSON.stringify(timelineItems));
+            
+            // Debug: Log what we're sending
+            console.log('Saving project with timeline items:', timelineItems);
+            console.log('Form data keys:', Array.from(formData.keys()));
+            
+            $.ajax({
+                url: 'admin.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function(response) {
+                    console.log('Server response:', response);
+                    if (response.success) {
+                        alert('Project opgeslagen!');
+                        hideProjectForm();
+                        loadProjects();
+                    } else {
+                        alert('Fout bij opslaan: ' + (response.message || response.error || 'Onbekende fout'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', xhr.responseText);
+                    alert('Fout bij opslaan van project: ' + error);
+                }
+            });
+        }
+        
+        // Edit project
+        function editProject(id) {
+            showProjectForm(id);
+        }
+        
+        // Delete project
+        function deleteProject(id) {
+            if (confirm('Weet je zeker dat je dit project wilt verwijderen?')) {
+                $.post('admin.php', {action: 'delete_project', id: id}, function(response) {
+                    if (response.success) {
+                        alert('Project verwijderd!');
+                        loadProjects();
+                    } else {
+                        alert('Fout bij verwijderen: ' + (response.message || 'Onbekende fout'));
+                    }
+                }, 'json');
+            }
+        }
+        
+        // Handle gallery upload
+        function handleGalleryUpload(files) {
+            // Show preview of selected files without converting to base64
+            Array.from(files).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Add to preview (this is just for display)
+                        galleryImages.push({
+                            preview: e.target.result,
+                            name: file.name,
+                            isFile: true
+                        });
+                        updateGalleryPreview();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        
+        // Update gallery preview
+        function updateGalleryPreview() {
+            let html = '';
+            galleryImages.forEach((image, index) => {
+                const imageSrc = (typeof image === 'object' && image.preview) ? image.preview : image;
+                const imageTitle = (typeof image === 'object' && image.name) ? image.name : `Gallery ${index + 1}`;
+                const fileIndicator = (typeof image === 'object' && image.isFile) ? '<small class="text-primary">Nieuw geüpload</small>' : '';
+                
+                html += `
+                    <div class="gallery-item">
+                        <img src="${imageSrc}" alt="${imageTitle}">
+                        <button type="button" class="remove-gallery-item" onclick="removeGalleryItem(${index})">
+                            <i class="lnr lnr-cross"></i>
+                        </button>
+                        ${fileIndicator}
+                    </div>
+                `;
+            });
+            
+            // Add upload placeholder
+            html += `
+                <div class="gallery-item upload-placeholder" onclick="$('#galleryUpload').click()">
+                    <i class="lnr lnr-plus-circle"></i>
+                    <span>Toevoegen</span>
+                </div>
+            `;
+            
+            $('#galleryPreview').html(html);
+        }
+        
+        // Remove gallery item
+        function removeGalleryItem(index) {
+            galleryImages.splice(index, 1);
+            updateGalleryPreview();
+        }
+        
+        // Add timeline item
+        function addTimelineItem() {
+            const item = {
+                id: Date.now(),
+                title: '',
+                description: '',
+                date: '',
+                status: 'planned'
+            };
+            timelineItems.push(item);
+            updateTimelinePreview();
+        }
+        
+        // Update timeline preview
+        function updateTimelinePreview() {
+            let html = '';
+            timelineItems.forEach((item, index) => {
+                html += `
+                    <div class="timeline-item" data-index="${index}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control form-control-sm mb-2" 
+                                       placeholder="Titel" value="${item.title}" 
+                                       onchange="updateTimelineItem(${index}, 'title', this.value)">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="date" class="form-control form-control-sm mb-2" 
+                                       value="${item.date}" 
+                                       onchange="updateTimelineItem(${index}, 'date', this.value)">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-sm btn-outline-danger" 
+                                        onclick="removeTimelineItem(${index})">
+                                    <i class="lnr lnr-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <textarea class="form-control form-control-sm" rows="2" 
+                                  placeholder="Beschrijving" 
+                                  onchange="updateTimelineItem(${index}, 'description', this.value)">${item.description}</textarea>
+                    </div>
+                `;
+            });
+            
+            if (timelineItems.length === 0) {
+                html = '<p class="text-muted text-center">Geen tijdlijn items. Klik op "Voeg Stap Toe" om te beginnen.</p>';
+            }
+            
+            $('#timelineItems').html(html);
+        }
+        
+        // Update timeline item
+        function updateTimelineItem(index, field, value) {
+            if (timelineItems[index]) {
+                timelineItems[index][field] = value;
+            }
+        }
+        
+        // Remove timeline item
+        function removeTimelineItem(index) {
+            timelineItems.splice(index, 1);
+            updateTimelinePreview();
+        }
     </script>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTop" class="scroll-to-top-btn" title="Scroll naar boven">
+        <i class="lnr lnr-chevron-up"></i>
+    </button>
+
 </body>
 </html>
