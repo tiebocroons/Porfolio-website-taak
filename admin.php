@@ -19,11 +19,12 @@ try {
         COUNT(*) as total,
         SUM(CASE WHEN category = 'development' THEN 1 ELSE 0 END) as development,
         SUM(CASE WHEN category = 'design' THEN 1 ELSE 0 END) as design,
-        SUM(CASE WHEN category = 'vintage' THEN 1 ELSE 0 END) as vintage
+        SUM(CASE WHEN category = 'vintage' THEN 1 ELSE 0 END) as vintage,
+        SUM(CASE WHEN category = 'hybrid' THEN 1 ELSE 0 END) as hybrid
         FROM projects WHERE is_deleted = 0");
     $stats = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    $stats = ['total' => 0, 'development' => 0, 'design' => 0, 'vintage' => 0];
+    $stats = ['total' => 0, 'development' => 0, 'design' => 0, 'vintage' => 0, 'hybrid' => 0];
 }
 
 // Handle AJAX requests
@@ -127,9 +128,12 @@ function saveProject($pdo, $data) {
     try {
         error_log("Starting saveProject with data keys: " . implode(', ', array_keys($data)));
         
-        $timeline = isset($data['timeline']) ? json_encode($data['timeline']) : json_encode(array());
-        $tools = json_encode(array_filter(explode(',', isset($data['tools']) ? trim($data['tools']) : '')));
-        $features = json_encode(array_filter(explode("\n", isset($data['features']) ? trim($data['features']) : '')));
+    $timeline = isset($data['timeline']) ? (is_array($data['timeline']) ? json_encode($data['timeline']) : $data['timeline']) : json_encode(array());
+    $tools = (isset($data['tools']) && is_array($data['tools'])) ? json_encode($data['tools']) : json_encode(array_filter(explode(',', isset($data['tools']) ? trim($data['tools']) : '')));
+    $features = (isset($data['features']) && is_array($data['features'])) ? json_encode($data['features']) : json_encode(array_filter(explode("\n", isset($data['features']) ? trim($data['features']) : '')));
+    $technical_features = (isset($data['technical_features']) && is_array($data['technical_features'])) ? json_encode($data['technical_features']) : json_encode(array_filter(explode("\n", isset($data['technical_features']) ? trim($data['technical_features']) : '')));
+    $creative_highlights = (isset($data['creative_highlights']) && is_array($data['creative_highlights'])) ? json_encode($data['creative_highlights']) : json_encode(array_filter(explode("\n", isset($data['creative_highlights']) ? trim($data['creative_highlights']) : '')));
+    $challenges = (isset($data['challenges']) && is_array($data['challenges'])) ? json_encode($data['challenges']) : json_encode(array_filter(explode("\n", isset($data['challenges']) ? trim($data['challenges']) : '')));
         
         // Handle gallery images - support both file uploads and manual URLs
         $gallery_images_array = array();
@@ -138,9 +142,28 @@ function saveProject($pdo, $data) {
         if (isset($_FILES['gallery_files']) && !empty($_FILES['gallery_files']['name'][0])) {
             $upload_dir = 'img/uploads/';
             
-            // Create upload directory if it doesn't exist
+            // Enhanced directory creation with better error handling
             if (!file_exists($upload_dir)) {
-                mkdir($upload_dir, 0755, true);
+                // Try to create with 755 first, then 777 if that fails
+                if (!mkdir($upload_dir, 0755, true)) {
+                    mkdir($upload_dir, 0777, true);
+                }
+                
+                // Verify directory was created
+                if (!file_exists($upload_dir)) {
+                    error_log("CRITICAL: Could not create upload directory: " . $upload_dir);
+                    return ['success' => false, 'error' => 'Could not create upload directory. Check server permissions.'];
+                }
+            }
+            
+            // Ensure directory is writable
+            if (!is_writable($upload_dir)) {
+                // Try to fix permissions
+                chmod($upload_dir, 0777);
+                if (!is_writable($upload_dir)) {
+                    error_log("CRITICAL: Upload directory not writable: " . $upload_dir);
+                    return ['success' => false, 'error' => 'Upload directory not writable. Check server permissions.'];
+                }
             }
             
             $uploaded_files = $_FILES['gallery_files'];
@@ -153,29 +176,59 @@ function saveProject($pdo, $data) {
                     $file_size = $uploaded_files['size'][$i];
                     $file_type = $uploaded_files['type'][$i];
                     
-                    // Validate file type
+                    // Enhanced file validation
                     $allowed_types = array('image/jpeg', 'image/png', 'image/gif', 'image/webp');
-                    if (in_array($file_type, $allowed_types) && $file_size <= 5 * 1024 * 1024) { // 5MB limit
+                    $max_size = 5 * 1024 * 1024; // 5MB limit
+                    
+                    if (in_array($file_type, $allowed_types) && $file_size <= $max_size) {
                         
-                        // Generate unique filename
-                        $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
-                        $unique_name = 'gallery_' . time() . '_' . $i . '.' . $file_extension;
+                        // Generate unique filename with timestamp and random component
+                        $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                        $timestamp = time();
+                        $random = mt_rand(1000, 9999);
+                        $unique_name = 'gallery_' . $timestamp . '_' . $i . '_' . $random . '.' . $file_extension;
                         $target_path = $upload_dir . $unique_name;
                         
-                        // Move uploaded file
+                        // Enhanced upload with verification
                         if (move_uploaded_file($file_tmp, $target_path)) {
-                            $gallery_images_array[] = array(
-                                'url' => $target_path,
-                                'alt' => 'Geüploade project afbeelding',
-                                'caption' => pathinfo($file_name, PATHINFO_FILENAME)
-                            );
-                            error_log("Gallery file uploaded: " . $target_path);
+                            // Verify file was actually created and is readable
+                            if (file_exists($target_path) && is_readable($target_path)) {
+                                $gallery_images_array[] = array(
+                                    'url' => $target_path,
+                                    'alt' => 'Geüploade project afbeelding',
+                                    'caption' => pathinfo($file_name, PATHINFO_FILENAME)
+                                );
+                                error_log("Gallery file uploaded successfully: " . $target_path . " (Size: " . filesize($target_path) . " bytes)");
+                            } else {
+                                error_log("File uploaded but not accessible: " . $target_path);
+                            }
                         } else {
-                            error_log("Failed to move uploaded file: " . $file_name);
+                            error_log("Failed to move uploaded file: " . $file_name . " (Error: " . $uploaded_files['error'][$i] . ")");
                         }
                     } else {
-                        error_log("Invalid file type or size for: " . $file_name);
+                        $error_msg = "Invalid file: " . $file_name;
+                        if (!in_array($file_type, $allowed_types)) {
+                            $error_msg .= " (Invalid type: " . $file_type . ")";
+                        }
+                        if ($file_size > $max_size) {
+                            $error_msg .= " (Size: " . round($file_size/1024/1024, 2) . "MB exceeds 5MB limit)";
+                        }
+                        error_log($error_msg);
                     }
+                } else {
+                    // Log upload errors
+                    $upload_errors = array(
+                        UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize',
+                        UPLOAD_ERR_FORM_SIZE => 'File exceeds MAX_FILE_SIZE',
+                        UPLOAD_ERR_PARTIAL => 'File was only partially uploaded',
+                        UPLOAD_ERR_NO_FILE => 'No file was uploaded',
+                        UPLOAD_ERR_NO_TMP_DIR => 'Missing temporary folder',
+                        UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+                        UPLOAD_ERR_EXTENSION => 'File upload stopped by extension'
+                    );
+                    $error_code = $uploaded_files['error'][$i];
+                    $error_message = isset($upload_errors[$error_code]) ? $upload_errors[$error_code] : 'Unknown upload error';
+                    error_log("Upload error for file $i: " . $error_message . " (Code: $error_code)");
                 }
             }
         }
@@ -192,19 +245,29 @@ function saveProject($pdo, $data) {
             }
         }
         
+        // Handle completion_date - convert empty string to null
+        $completion_date = null;
+        if (isset($data['completion_date']) && !empty(trim($data['completion_date']))) {
+            $completion_date = $data['completion_date'];
+        }
+        
         $gallery_images = json_encode($gallery_images_array);
         error_log("Gallery images processed: " . $gallery_images);
         
         if (isset($data['id']) && !empty($data['id'])) {
             error_log("Updating existing project with ID: " . $data['id']);
-            // Update existing project - simplified version
+            // Update existing project - comprehensive version with new fields
             $stmt = $pdo->prepare("UPDATE projects SET 
                 title = ?, description = ?, short_description = ?, category = ?, status = ?,
                 tools = ?, live_url = ?, demo_url = ?, features = ?, image_url = ?, 
-                client_name = ?, project_duration = ?, completion_date = ?, 
+                client_name = ?, project_duration = ?, completion_date = ?, year = ?,
                 is_featured = ?, timeline = ?, gallery_images = ?,
-                github_url = ?, api_docs_url = ?, challenges = ?,
-                design_concept = ?, color_palette = ?, typography = ?,
+                github_url = ?, api_docs_url = ?, challenges = ?, technical_features = ?,
+                design_tools = ?, design_concept = ?, color_palette = ?, typography = ?, 
+                creative_highlights = ?, design_category = ?, design_style = ?,
+                performance_score = ?, code_quality = ?, lines_of_code = ?, components_count = ?, development_weeks = ?,
+                creative_challenge = ?, creative_approach = ?, creative_solution = ?,
+                inspiration_source = ?, lessons_learned = ?,
                 updated_at = NOW()
                 WHERE id = ?");
             $stmt->execute(array(
@@ -220,32 +283,62 @@ function saveProject($pdo, $data) {
                 isset($data['image_url']) ? $data['image_url'] : '', 
                 isset($data['client_name']) ? $data['client_name'] : '',
                 isset($data['project_duration']) ? $data['project_duration'] : '',
-                isset($data['completion_date']) ? $data['completion_date'] : null,
+                $completion_date,
+                isset($data['year']) ? (int)$data['year'] : date('Y'),
                 isset($data['is_featured']) ? 1 : 0,
                 $timeline,
                 $gallery_images,
                 // Development fields
                 isset($data['github_url']) ? $data['github_url'] : '',
                 isset($data['api_docs_url']) ? $data['api_docs_url'] : '',
-                isset($data['challenges']) ? $data['challenges'] : '',
+                $challenges,
+                $technical_features,
                 // Design fields
+                isset($data['design_tools']) ? $data['design_tools'] : '',
                 isset($data['design_concept']) ? $data['design_concept'] : '',
                 isset($data['color_palette']) ? $data['color_palette'] : '',
                 isset($data['typography']) ? $data['typography'] : '',
+                $creative_highlights,
+                isset($data['design_category']) ? $data['design_category'] : '',
+                isset($data['design_style']) ? $data['design_style'] : '',
+                // Performance and development metrics
+                isset($data['performance_score']) ? (int)$data['performance_score'] : null,
+                isset($data['code_quality']) ? $data['code_quality'] : '',
+                isset($data['lines_of_code']) ? (int)$data['lines_of_code'] : null,
+                isset($data['components_count']) ? (int)$data['components_count'] : null,
+                isset($data['development_weeks']) ? (int)$data['development_weeks'] : null,
+                // Creative process fields
+                isset($data['creative_challenge']) ? $data['creative_challenge'] : '',
+                isset($data['creative_approach']) ? $data['creative_approach'] : '',
+                isset($data['creative_solution']) ? $data['creative_solution'] : '',
+                isset($data['inspiration_source']) ? $data['inspiration_source'] : '',
+                isset($data['lessons_learned']) ? $data['lessons_learned'] : '',
                 $data['id']
             ));
             
             error_log("Project updated successfully");
+            
+            // Save timeline phases if provided
+            if (isset($data['timeline_phases']) && !empty($data['timeline_phases'])) {
+                $timelineResult = saveProjectTimelinePhases($pdo, $data['id'], $data['timeline_phases']);
+                if (!$timelineResult['success']) {
+                    error_log("Timeline phases save failed: " . $timelineResult['error']);
+                    // Don't fail the entire project update, just log the error
+                }
+            }
+            
             return array('success' => true, 'message' => 'Project succesvol bijgewerkt!');
         } else {
             error_log("Creating new project");
-            // Create new project - simplified version
+            // Create new project - comprehensive version with new fields
             $stmt = $pdo->prepare("INSERT INTO projects 
                 (title, description, short_description, category, status, tools, live_url, demo_url, 
-                 features, image_url, client_name, project_duration, completion_date, is_featured, 
-                 timeline, gallery_images, github_url, api_docs_url, challenges, design_concept, 
-                 color_palette, typography, created_at, updated_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+                 features, image_url, client_name, project_duration, completion_date, year, is_featured, 
+                 timeline, gallery_images, github_url, api_docs_url, challenges, technical_features,
+                 design_tools, design_concept, color_palette, typography, creative_highlights, 
+                 design_category, design_style, performance_score, code_quality, lines_of_code, components_count, development_weeks,
+                 creative_challenge, creative_approach, creative_solution, inspiration_source, lessons_learned, created_at, updated_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
             $stmt->execute(array(
                 $data['title'], 
                 $data['description'], 
@@ -259,22 +352,53 @@ function saveProject($pdo, $data) {
                 isset($data['image_url']) ? $data['image_url'] : '', 
                 isset($data['client_name']) ? $data['client_name'] : '',
                 isset($data['project_duration']) ? $data['project_duration'] : '',
-                isset($data['completion_date']) ? $data['completion_date'] : null,
+                $completion_date,
+                isset($data['year']) ? (int)$data['year'] : date('Y'),
                 isset($data['is_featured']) ? 1 : 0,
                 $timeline,
                 $gallery_images,
                 // Development fields
                 isset($data['github_url']) ? $data['github_url'] : '',
                 isset($data['api_docs_url']) ? $data['api_docs_url'] : '',
-                isset($data['challenges']) ? $data['challenges'] : '',
+                $challenges,
+                $technical_features,
                 // Design fields
+                isset($data['design_tools']) ? $data['design_tools'] : '',
                 isset($data['design_concept']) ? $data['design_concept'] : '',
                 isset($data['color_palette']) ? $data['color_palette'] : '',
-                isset($data['typography']) ? $data['typography'] : ''
+                isset($data['typography']) ? $data['typography'] : '',
+                $creative_highlights,
+                isset($data['design_category']) ? $data['design_category'] : '',
+                isset($data['design_style']) ? $data['design_style'] : '',
+                // Performance and development metrics
+                isset($data['performance_score']) ? (int)$data['performance_score'] : null,
+                isset($data['code_quality']) ? $data['code_quality'] : '',
+                isset($data['lines_of_code']) ? (int)$data['lines_of_code'] : null,
+                isset($data['components_count']) ? (int)$data['components_count'] : null,
+                isset($data['development_weeks']) ? (int)$data['development_weeks'] : null,
+                // Creative process fields
+                isset($data['creative_challenge']) ? $data['creative_challenge'] : '',
+                isset($data['creative_approach']) ? $data['creative_approach'] : '',
+                isset($data['creative_solution']) ? $data['creative_solution'] : '',
+                isset($data['inspiration_source']) ? $data['inspiration_source'] : '',
+                isset($data['lessons_learned']) ? $data['lessons_learned'] : ''
             ));
             
             error_log("New project created successfully");
-            return array('success' => true, 'message' => 'Project succesvol toegevoegd!');
+            
+            // Get the newly created project ID
+            $projectId = $pdo->lastInsertId();
+            
+            // Save timeline phases if provided
+            if (isset($data['timeline_phases']) && !empty($data['timeline_phases'])) {
+                $timelineResult = saveProjectTimelinePhases($pdo, $projectId, $data['timeline_phases']);
+                if (!$timelineResult['success']) {
+                    error_log("Timeline phases save failed: " . $timelineResult['error']);
+                    // Don't fail the entire project creation, just log the error
+                }
+            }
+            
+            return array('success' => true, 'message' => 'Project succesvol toegevoegd!', 'project_id' => $projectId);
         }
     } catch (PDOException $e) {
         error_log("Database error in saveProject: " . $e->getMessage());
@@ -329,10 +453,19 @@ function getProject($pdo, $id) {
         $project = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($project) {
-            $project['tools'] = json_decode($project['tools'], true);
-            $project['features'] = json_decode($project['features'], true);
-            $project['timeline'] = json_decode($project['timeline'], true);
-            $project['gallery_images'] = json_decode($project['gallery_images'], true);
+            foreach ([
+                'tools', 'features', 'timeline', 'gallery_images', 'technical_features', 'creative_highlights', 'challenges'
+            ] as $jsonField) {
+                $decoded = json_decode($project[$jsonField], true);
+                $project[$jsonField] = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? $decoded : [];
+            }
+
+            // Ensure numeric and string fields are always present for admin form
+            $project['performance_score'] = isset($project['performance_score']) ? (int)$project['performance_score'] : null;
+            $project['code_quality'] = isset($project['code_quality']) ? $project['code_quality'] : '';
+            $project['lines_of_code'] = isset($project['lines_of_code']) ? (int)$project['lines_of_code'] : null;
+            $project['components_count'] = isset($project['components_count']) ? (int)$project['components_count'] : null;
+            $project['development_weeks'] = isset($project['development_weeks']) ? (int)$project['development_weeks'] : null;
         }
         
         return ['success' => true, 'data' => $project];
@@ -500,10 +633,10 @@ function getStatistics($pdo) {
             'settings' => $settings,
             'actual_counts' => [
                 'total_projects' => $actualProjectCount,
-                'development' => (isset($actualCategoryCounts['development']) ? $actualCategoryCounts['development'] : 0) + 
-                                (isset($actualCategoryCounts['web']) ? $actualCategoryCounts['web'] : 0),
+                'development' => isset($actualCategoryCounts['development']) ? $actualCategoryCounts['development'] : 0,
                 'design' => isset($actualCategoryCounts['design']) ? $actualCategoryCounts['design'] : 0,
-                'vintage' => isset($actualCategoryCounts['vintage']) ? $actualCategoryCounts['vintage'] : 0
+                'vintage' => isset($actualCategoryCounts['vintage']) ? $actualCategoryCounts['vintage'] : 0,
+                'hybrid' => isset($actualCategoryCounts['hybrid']) ? $actualCategoryCounts['hybrid'] : 0
             ]
         ];
     } catch (PDOException $e) {
@@ -681,6 +814,50 @@ function deleteTimelinePhase($pdo, $phase_id) {
         return ['success' => false, 'error' => 'Database error: ' . $e->getMessage()];
     }
 }
+
+function saveProjectTimelinePhases($pdo, $project_id, $phases) {
+    try {
+        // First, delete existing timeline phases for this project
+        $stmt = $pdo->prepare("DELETE FROM timeline_phases WHERE project_id = ?");
+        $stmt->execute([$project_id]);
+        
+        // Insert new timeline phases
+        if (!empty($phases) && is_array($phases)) {
+            $stmt = $pdo->prepare("
+                INSERT INTO timeline_phases 
+                (project_id, phase_name, phase_type, phase_description, phase_details, week_number, 
+                 phase_status, start_date, end_date, tasks, deliverables, created_at, updated_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+            ");
+            
+            foreach ($phases as $phase) {
+                // Convert arrays to JSON strings
+                $tasks = isset($phase['tasks']) && is_array($phase['tasks']) ? 
+                    json_encode($phase['tasks']) : json_encode([]);
+                $deliverables = isset($phase['deliverables']) && is_array($phase['deliverables']) ? 
+                    json_encode($phase['deliverables']) : json_encode([]);
+                
+                $stmt->execute([
+                    $project_id,
+                    $phase['phase_name'],
+                    isset($phase['phase_type']) && $phase['phase_type'] !== '' ? $phase['phase_type'] : null,
+                    isset($phase['phase_description']) ? $phase['phase_description'] : '',
+                    isset($phase['phase_details']) ? $phase['phase_details'] : '',
+                    isset($phase['week_number']) ? (int)$phase['week_number'] : null,
+                    isset($phase['phase_status']) ? $phase['phase_status'] : 'completed',
+                    isset($phase['start_date']) && $phase['start_date'] ? $phase['start_date'] : null,
+                    isset($phase['end_date']) && $phase['end_date'] ? $phase['end_date'] : null,
+                    $tasks,
+                    $deliverables
+                ]);
+            }
+        }
+        
+        return ['success' => true, 'message' => 'Timeline phases saved successfully'];
+    } catch (PDOException $e) {
+        return ['success' => false, 'error' => 'Database error: ' . $e->getMessage()];
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="nl">
@@ -710,9 +887,6 @@ function deleteTimelinePhase($pdo, $phase_id) {
     
     <!-- Admin CSS (loads last to override others) -->
     <link href="css/admin.css" rel="stylesheet">
-    
-    <!-- Favicon -->
-    <link rel="icon" href="img/favicon-32x32.png" type="image/png">
 </head>
 
 <body class="admin-page">
@@ -787,13 +961,17 @@ function deleteTimelinePhase($pdo, $phase_id) {
                         <!-- Project Type Guide -->
                         <div class="alert alert-info mb-4" id="projectTypeGuide" style="display: none;">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <h6><i class="lnr lnr-code"></i> Development Projects</h6>
-                                    <small>Voor web apps, websites, mobile apps, en software projecten. Inclusief technische specificaties, GitHub links, en API documentatie.</small>
+                                <div class="col-md-4">
+                                    <h6><i class="lnr lnr-code"></i> Development</h6>
+                                    <small>Web apps, mobile apps, software. Toont technische stack, features, statistieken, en development proces.</small>
                                 </div>
-                                <div class="col-md-6">
-                                    <h6><i class="lnr lnr-magic-wand"></i> Design Projects</h6>
-                                    <small>Voor logo's, branding, print design, en visuele projecten. Inclusief kleurenpalet, typografie, en creatieve highlights.</small>
+                                <div class="col-md-4">
+                                    <h6><i class="lnr lnr-magic-wand"></i> Design</h6>
+                                    <small>Logo's, branding, visuals. Toont design concept, kleurenpalet, typografie, en creatieve highlights.</small>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6><i class="lnr lnr-layers"></i> Hybrid</h6>
+                                    <small>Design + Development. Toont beide secties: technische én creatieve aspecten van je project.</small>
                                 </div>
                             </div>
                         </div>
@@ -822,14 +1000,14 @@ function deleteTimelinePhase($pdo, $phase_id) {
                                     <select class="form-select" id="projectCategory" name="category" required>
                                         <option value="">Selecteer primaire categorie</option>
                                         <option value="development" data-type="dev">💻 Development</option>
-                                        <option value="web" data-type="dev">🌐 Web Development</option>
                                         <option value="mobile" data-type="dev">📱 Mobile App</option>
                                         <option value="design" data-type="design">🎨 Design</option>
+                                        <option value="hybrid" data-type="hybrid">🔄 Hybrid (Design + Development)</option>
                                         <option value="vintage" data-type="design">📸 Vintage/Photography</option>
                                         <option value="other" data-type="basic">📄 Overig</option>
                                     </select>
                                     <small class="text-muted" id="categoryHint">
-                                        Selecteer primaire categorie. Development en Design velden kunnen beide gebruikt worden voor hybride projecten.
+                                        Kies de primaire categorie. Development toont technische secties, Design toont creatieve secties, Hybrid toont beide.
                                     </small>
                                 </div>
                                 <div class="col-md-6" id="projectTypeSection" style="display: none;">
@@ -862,7 +1040,7 @@ function deleteTimelinePhase($pdo, $phase_id) {
                                     <input type="number" class="form-control" id="projectYear" name="year" min="2000" max="2030">
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-check mt-4">
+                                    <div class="form-check mt-2">
                                         <input class="form-check-input" type="checkbox" id="isHybridProject">
                                         <label class="form-check-label" for="isHybridProject">
                                             <strong>🔄 Hybride Project</strong>
@@ -953,10 +1131,9 @@ function deleteTimelinePhase($pdo, $phase_id) {
                                 <div class="d-flex">
                                     <i class="lnr lnr-layers me-2 mt-1"></i>
                                     <div>
-                                        <strong>Hybride Project Tip:</strong><br>
+                                        <strong>🔄 Hybrid Project:</strong><br>
                                         <small>
-                                            Vul zowel development als design velden in om beide fasen in de project timeline te tonen. 
-                                            Je project kan bijvoorbeeld zowel technische development als creatieve design aspecten hebben.
+                                            Dit project toont zowel development als design secties. Vul technische details in én creatieve aspecten voor een compleet portfolio item.
                                         </small>
                                     </div>
                                 </div>
@@ -1137,7 +1314,7 @@ function deleteTimelinePhase($pdo, $phase_id) {
                                 <div class="mb-3">
                                     <label for="designTools" class="form-label">
                                         <i class="lnr lnr-magic-wand"></i>
-                                        Design Tools
+                                        Tools
                                     </label>
                                     <input type="text" class="form-control" id="designTools" name="tools" 
                                            placeholder="Figma, Photoshop, Illustrator, InDesign (gescheiden door komma's)">
@@ -1270,9 +1447,7 @@ function deleteTimelinePhase($pdo, $phase_id) {
                                         <div class="col-md-6">
                                             <label for="lessonsLearned" class="form-label">
                                                 <i class="lnr lnr-graduation-hat"></i>
-                                                Geleerde Lessen
-                                            </label>
-                                            <input type="text" class="form-control" id="lessonsLearned" name="lessons_learned" 
+                                               
                                                    placeholder="Nieuwe skills, insights, verbeterpunten">
                                             <small class="text-muted">Wat heb je geleerd tijdens dit project?</small>
                                         </div>
@@ -1911,19 +2086,44 @@ function deleteTimelinePhase($pdo, $phase_id) {
                     // Add hybrid project indicator
                     formData.append('is_hybrid', $('#isHybridProject').is(':checked') ? '1' : '0');
                     
-                    // Add timeline data
+                    // Add timeline data (legacy support)
                     const timelineData = this.getTimelineDataForSave();
                     formData.append('timeline', JSON.stringify(timelineData));
+                    
+                    // Add timeline phases data for timeline_phases table
+                    if (this.inlineTimelinePhases && this.inlineTimelinePhases.length > 0) {
+                        formData.append('timeline_phases', JSON.stringify(this.inlineTimelinePhases));
+                    }
 
                     const response = await fetch('admin.php', {
                         method: 'POST',
                         body: formData
                     });
 
-                    const result = await response.json();
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const text = await response.text();
+                    let result;
+                    try {
+                        result = JSON.parse(text);
+                    } catch (e) {
+                        console.error('JSON Parse Error:', e);
+                        console.error('Response Text:', text);
+                        throw new Error('Invalid JSON response from server');
+                    }
                     
                     if (result.success) {
-                        this.showAlert(result.message, 'success');
+                        // Check if timeline phases were included
+                        const hasTimelinePhases = this.inlineTimelinePhases && this.inlineTimelinePhases.length > 0;
+                        
+                        if (hasTimelinePhases) {
+                            this.showAlert('✅ Project en timeline fasen succesvol opgeslagen!', 'success');
+                        } else {
+                            this.showAlert(result.message, 'success');
+                        }
+                        
                         this.resetForm();
                         this.loadProjects();
                         // Update statistics counts after save with small delay
@@ -1931,10 +2131,13 @@ function deleteTimelinePhase($pdo, $phase_id) {
                             this.loadStatistics();
                         }, 500);
                     } else {
-                        this.showAlert('Fout bij opslaan: ' + result.error, 'danger');
+                        const errorMessage = result.error || result.message || 'Onbekende fout bij opslaan';
+                        this.showAlert('Fout bij opslaan: ' + errorMessage, 'danger');
                     }
                 } catch (error) {
-                    this.showAlert('Fout bij opslaan: ' + error.message, 'danger');
+                    const errorMessage = error.message || error.toString() || 'Onbekende netwerkfout';
+                    this.showAlert('Fout bij opslaan: ' + errorMessage, 'danger');
+                    console.error('Save project error:', error);
                 } finally {
                     $('#formLoading').hide();
                     $('#projectForm').show();
@@ -1963,15 +2166,35 @@ function deleteTimelinePhase($pdo, $phase_id) {
                         $('#projectFeatured').prop('checked', project.is_featured == 1);
                         
                         // Handle tools for both development and design
-                        if (project.tools && Array.isArray(project.tools)) {
-                            const toolsArray = JSON.parse(project.tools);
-                            $('#projectTools, #designTools').val(toolsArray.join(', '));
+                        if (project.tools) {
+                            let toolsArray = [];
+                            try {
+                                if (Array.isArray(project.tools)) {
+                                    toolsArray = project.tools;
+                                } else if (typeof project.tools === 'string') {
+                                    toolsArray = project.tools.startsWith('[') ? JSON.parse(project.tools) : project.tools.split(',').map(t => t.trim());
+                                }
+                                $('#projectTools, #designTools').val(toolsArray.join(', '));
+                            } catch (e) {
+                                console.warn('Error parsing tools in importProject:', e);
+                                $('#projectTools, #designTools').val(project.tools || '');
+                            }
                         }
                         
                         // Handle features/highlights
-                        if (project.features && Array.isArray(project.features)) {
-                            const featuresArray = JSON.parse(project.features);
-                            $('#projectFeatures, #designProcess').val(featuresArray.join('\n'));
+                        if (project.features) {
+                            let featuresArray = [];
+                            try {
+                                if (Array.isArray(project.features)) {
+                                    featuresArray = project.features;
+                                } else if (typeof project.features === 'string') {
+                                    featuresArray = project.features.startsWith('[') ? JSON.parse(project.features) : project.features.split('\n').map(f => f.trim());
+                                }
+                                $('#projectFeatures, #designProcess').val(featuresArray.join('\n'));
+                            } catch (e) {
+                                console.warn('Error parsing features in importProject:', e);
+                                $('#projectFeatures, #designProcess').val(project.features || '');
+                            }
                         }
                         
                         // Handle design-specific fields if they exist
@@ -1984,7 +2207,22 @@ function deleteTimelinePhase($pdo, $phase_id) {
                         // Handle development-specific fields
                         $('#projectGitHub').val(project.github_url || '');
                         $('#projectApiDocs').val(project.api_docs_url || '');
-                        $('#projectChallenges').val(project.challenges || '');
+                        
+                        // Handle challenges field (similar to features)
+                        if (project.challenges) {
+                            let challengesArray = [];
+                            try {
+                                if (Array.isArray(project.challenges)) {
+                                    challengesArray = project.challenges;
+                                } else if (typeof project.challenges === 'string') {
+                                    challengesArray = project.challenges.startsWith('[') ? JSON.parse(project.challenges) : project.challenges.split('\n').map(c => c.trim());
+                                }
+                                $('#projectChallenges').val(challengesArray.join('\n'));
+                            } catch (e) {
+                                console.warn('Error parsing challenges in editProject:', e);
+                                $('#projectChallenges').val(project.challenges || '');
+                            }
+                        }
                         
                         // Handle statistical fields
                         $('#performanceScore').val(project.performance_score || 92);
@@ -2002,8 +2240,17 @@ function deleteTimelinePhase($pdo, $phase_id) {
                         
                         // Handle project types and hybrid project data
                         if (project.project_types) {
-                            const projectTypes = Array.isArray(project.project_types) ? 
-                                project.project_types : JSON.parse(project.project_types);
+                            let projectTypes = [];
+                            try {
+                                if (Array.isArray(project.project_types)) {
+                                    projectTypes = project.project_types;
+                                } else if (typeof project.project_types === 'string') {
+                                    projectTypes = project.project_types.startsWith('[') ? JSON.parse(project.project_types) : [project.project_types];
+                                }
+                            } catch (e) {
+                                console.warn('Error parsing project_types in importProject:', e);
+                                projectTypes = [];
+                            }
                             
                             // Uncheck all project type checkboxes first
                             $('.project-type-checkboxes input').prop('checked', false);
@@ -2021,8 +2268,17 @@ function deleteTimelinePhase($pdo, $phase_id) {
                         $('#formTitle').html('<i class="lnr lnr-pencil"></i> Project Bewerken');
                         $('#submitText').text('Wijzigingen Opslaan');
                         
-                        // Toggle form sections based on category
+                        // Toggle form sections based on category first, then ensure development fields are visible if needed
                         this.toggleFormSections();
+                        
+                        // Small delay to ensure form sections are properly rendered, then force show development fields if needed
+                        setTimeout(() => {
+                            if (project.challenges || project.github_url || project.lines_of_code || project.development_weeks) {
+                                $('#developmentFields').show();
+                                // Trigger another toggle to ensure proper state
+                                this.toggleFormSections();
+                            }
+                        }, 100);
                         
                         // Load timeline data for this project
                         this.loadTimelineFromProject(project);
@@ -2075,8 +2331,9 @@ function deleteTimelinePhase($pdo, $phase_id) {
             
             toggleFormSections() {
                 const selectedCategory = $('#projectCategory').val();
-                const isDevelopment = ['development', 'web', 'mobile'].includes(selectedCategory);
+                const isDevelopment = ['development', 'mobile'].includes(selectedCategory);
                 const isDesign = ['design', 'vintage'].includes(selectedCategory);
+                const isHybrid = selectedCategory === 'hybrid';
                 const isHybridChecked = $('#isHybridProject').is(':checked');
                 
                 // Check selected project types
@@ -2107,11 +2364,11 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 // Check if project has content in both development and design fields (hybrid project)
                 const hasDevContent = $('#projectGitHub').val() || $('#projectChallenges').val() || 
                                      $('#linesOfCode').val() > 0 || $('#developmentWeeks').val() > 0 || 
-                                     isDevelopment || hasWebType || hasMobileType || isHybridChecked;
+                                     isDevelopment || hasWebType || hasMobileType || isHybridChecked || isHybrid;
                 const hasDesignContent = $('#designConcept').val() || $('#colorPalette').val() || 
                                         $('#typography').val() || $('#designStyle').val() || 
-                                        $('#designProcess').val() || isDesign || hasDesignType || isHybridChecked;
-                const isHybridProject = (hasDevContent && hasDesignContent) || isHybridChecked;
+                                        $('#designProcess').val() || isDesign || hasDesignType || isHybridChecked || isHybrid;
+                const isHybridProject = (hasDevContent && hasDesignContent) || isHybridChecked || isHybrid;
                 
                 // Show/hide hybrid project info
                 if (isHybridProject) {
@@ -2121,7 +2378,7 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 }
                 
                 // Show/hide project type guide
-                if (selectedCategory && (isDevelopment || (isDesign && isHybridChecked))) {
+                if (selectedCategory) {
                     $('#projectTypeGuide').slideDown(300);
                 } else {
                     $('#projectTypeGuide').slideUp(300);
@@ -2131,23 +2388,29 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 const isDevFieldsVisible = $('#developmentFields').is(':visible');
                 const isDesignFieldsVisible = $('#designFields').is(':visible');
                 
-                // Special case: Design-only project (not hybrid)
-                const isDesignOnly = isDesign && !isHybridChecked;
+                // Updated logic for showing development and design fields based on detail.php structure
+                // Development fields: show for development, mobile, and hybrid projects
+                const shouldShowDev = isDevelopment || isHybridChecked || isHybrid || hasDevContent;
                 
-                // Updated logic for showing development and design fields
-                const shouldShowDev = isDesignOnly ? false : (isDevelopment || hasDevContent || isHybridChecked);
-                const shouldShowDesign = isDesign || hasDesignContent || isHybridChecked;
+                // Design fields: show for design and hybrid projects
+                const shouldShowDesign = isDesign || isHybridChecked || isHybrid || hasDesignContent;
                 
                 if (shouldShowDev && !isDevFieldsVisible) {
                     // Show development-specific fields
                     $('#developmentFields').addClass('form-section-enter').show();
                     
-                    // Update labels and placeholders for development
-                    $('#projectTools').attr('placeholder', 'React, Node.js, MongoDB, AWS (gescheiden door komma\'s)');
-                    
-                    // Show technical sections
-                    $('label[for="projectLiveUrl"]').html('<i class="lnr lnr-globe"></i> Live Demo URL');
-                    $('label[for="projectDemoUrl"]').html('<i class="lnr lnr-eye"></i> GitHub Pages/Preview URL');
+                    // Update labels and placeholders based on project type
+                    if (shouldShowDesign) {
+                        // Hybrid project - both dev and design
+                        $('#projectTools').attr('placeholder', 'React, Node.js, Figma, Photoshop (gescheiden door komma\'s)');
+                        $('label[for="projectLiveUrl"]').html('<i class="lnr lnr-globe"></i> Live Demo URL');
+                        $('label[for="projectDemoUrl"]').html('<i class="lnr lnr-eye"></i> Preview URL');
+                    } else {
+                        // Development-only project
+                        $('#projectTools').attr('placeholder', 'React, Node.js, MongoDB, AWS (gescheiden door komma\'s)');
+                        $('label[for="projectLiveUrl"]').html('<i class="lnr lnr-globe"></i> Live Demo URL');
+                        $('label[for="projectDemoUrl"]').html('<i class="lnr lnr-eye"></i> GitHub Pages/Preview URL');
+                    }
                     
                 } else if (!shouldShowDev && isDevFieldsVisible) {
                     // Hide development fields
@@ -2158,11 +2421,18 @@ function deleteTimelinePhase($pdo, $phase_id) {
                     // Show design-specific fields
                     $('#designFields').addClass('form-section-enter').show();
                     
-                    // Update labels for design projects
-                    if (!shouldShowDev) { // Only change labels if not a hybrid project
+                    // Update labels based on project type
+                    if (shouldShowDev) {
+                        // Hybrid project - both dev and design
+                        $('label[for="projectLiveUrl"]').html('<i class="lnr lnr-globe"></i> Live Demo URL');
+                        $('label[for="projectDemoUrl"]').html('<i class="lnr lnr-eye"></i> Preview URL');
+                        $('#designTools').attr('placeholder', 'Figma, Photoshop, React, Node.js (gescheiden door komma\'s)');
+                    } else {
+                        // Design-only project
                         $('label[for="projectLiveUrl"]').html('<i class="lnr lnr-picture"></i> Behance/Dribbble URL');
+                        $('label[for="projectDemoUrl"]').html('<i class="lnr lnr-eye"></i> Preview URL');
+                        $('#designTools').attr('placeholder', 'Figma, Photoshop, Illustrator, InDesign (gescheiden door komma\'s)');
                     }
-                    $('label[for="projectDemoUrl"]').html('<i class="lnr lnr-eye"></i> Preview URL');
                     
                 } else if (!shouldShowDesign && isDesignFieldsVisible) {
                     // Hide design fields
@@ -2188,8 +2458,8 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 if (shouldShowGalleryCheckbox) {
                     $('#enableGallery').closest('.row').slideDown(300);
                     
-                    // Auto-check gallery for design-only projects
-                    if (isDesignOnly) {
+                    // Auto-check gallery for design-only projects (not hybrid)
+                    if (isDesign && !shouldShowDev) {
                         $('#enableGallery').prop('checked', true);
                         $('#gallerySection').slideDown(300);
                         
@@ -2220,8 +2490,9 @@ function deleteTimelinePhase($pdo, $phase_id) {
                                         $('#typography').val() || $('#designStyle').val() || 
                                         $('#designProcess').val();
                 const selectedCategory = $('#projectCategory').val();
-                const isDevelopment = ['development', 'web', 'mobile'].includes(selectedCategory);
+                const isDevelopment = ['development', 'mobile'].includes(selectedCategory);
                 const isDesign = ['design', 'vintage'].includes(selectedCategory);
+                const isHybrid = selectedCategory === 'hybrid';
                 const isHybridChecked = $('#isHybridProject').is(':checked');
                 
                 // Get selected project types
@@ -2232,9 +2503,9 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 const hasMultipleTypes = selectedTypes.length > 1 || 
                                        (selectedTypes.includes('design') && (selectedTypes.includes('web') || selectedTypes.includes('mobile') || selectedTypes.includes('development')));
                 
-                if (hasDevContent && hasDesignContent || hasMultipleTypes || isHybridChecked) {
+                if (hasDevContent && hasDesignContent || hasMultipleTypes || isHybridChecked || isHybrid) {
                     $('#hybridIndicator').html('<i class="lnr lnr-magic-wand" style="color: #9b59b6;"></i> Hybride project gedetecteerd').show();
-                    if (!isHybridChecked) {
+                    if (!isHybridChecked && !isHybrid) {
                         $('#isHybridProject').prop('checked', true).trigger('change');
                     }
                 } else {
@@ -2249,9 +2520,9 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 // Update category hint
                 const hints = {
                     development: 'Toont: GitHub link, technologieën, API docs, uitdagingen',
-                    web: 'Toont: Live demo, technische stack, features, GitHub repository', 
                     mobile: 'Toont: App store links, frameworks, device compatibility',
                     design: 'Toont: Kleurenpalet, typografie, design tools, galerij',
+                    hybrid: 'Toont: Alle velden - zowel design als development secties',
                     vintage: 'Toont: Fotografie details, stijl, creatieve highlights',
                     other: 'Toont: Basis project informatie en beschrijving'
                 };
@@ -2288,7 +2559,19 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 }
 
                 const html = this.projects.map(project => {
-                    const tools = Array.isArray(project.tools) ? JSON.parse(project.tools) : [];
+                    let tools = [];
+                    try {
+                        if (project.tools) {
+                            if (Array.isArray(project.tools)) {
+                                tools = project.tools;
+                            } else if (typeof project.tools === 'string') {
+                                tools = project.tools.startsWith('[') ? JSON.parse(project.tools) : project.tools.split(',').map(t => t.trim());
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('Error parsing tools for project display:', e);
+                        tools = [];
+                    }
                     const badgeClass = `badge-${project.category}`;
                     
                     // Extract year from completion_date or created_at
@@ -2512,7 +2795,14 @@ function deleteTimelinePhase($pdo, $phase_id) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                return await response.json();
+                const text = await response.text();
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('JSON Parse Error:', e);
+                    console.error('Response Text:', text);
+                    throw new Error('Invalid JSON response from server');
+                }
             }
 
             async loadStatistics() {
@@ -2910,7 +3200,7 @@ function deleteTimelinePhase($pdo, $phase_id) {
                 });
                 
                 $('#saveInlinePhase').on('click', () => {
-                    this.saveInlineTimelinePhase();
+                    portfolioAdmin.saveInlineTimelinePhase.call(portfolioAdmin);
                 });
                 
                 // Load projects for timeline selection
@@ -3096,40 +3386,89 @@ function deleteTimelinePhase($pdo, $phase_id) {
             $('#inlinePhaseFormTitle').text('Nieuwe Timeline Fase');
         }
         
-        saveInlineTimelinePhase() {
+        async saveInlineTimelinePhase() {
+            const self = this; // Preserve context for async operations
             const phaseName = $('#inlinePhaseName').val().trim();
             const phaseType = $('#inlinePhaseType').val();
             
             if (!phaseName) {
-                this.showAlert('Fase naam is verplicht', 'danger');
+                self.showAlert('Fase naam is verplicht', 'danger');
                 $('#inlinePhaseName').focus();
                 return;
             }
             
+            // If we're editing an existing project, get project ID
+            const projectId = $('#projectId').val();
+            
             const phaseData = {
-                id: 'temp_' + Date.now(), // Temporary ID for new phases
+                project_id: projectId || null,
                 phase_name: phaseName,
                 phase_type: phaseType,
                 week_number: $('#inlinePhaseWeek').val() || null,
                 phase_description: $('#inlinePhaseDescription').val(),
                 phase_details: $('#inlinePhaseDetails').val(),
-                phase_status: $('#inlinePhaseStatus').val(),
+                phase_status: $('#inlinePhaseStatus').val() || 'completed',
                 start_date: $('#inlinePhaseStartDate').val() || null,
                 end_date: $('#inlinePhaseEndDate').val() || null,
-                tasks: $('#inlinePhaseTasks').val().split('\n').filter(task => task.trim() !== ''),
-                deliverables: $('#inlinePhaseDeliverables').val().split('\n').filter(item => item.trim() !== '')
+                tasks: $('#inlinePhaseTasks').val(),
+                deliverables: $('#inlinePhaseDeliverables').val()
             };
             
-            // Add to temporary phases array
-            if (!this.inlineTimelinePhases) {
-                this.inlineTimelinePhases = [];
+            // If we have a project ID (editing existing project), save to database immediately
+            if (projectId) {
+                try {
+                    const formData = new FormData();
+                    formData.append('action', 'save_timeline_phase');
+                    Object.keys(phaseData).forEach(key => {
+                        if (phaseData[key] !== null) {
+                            formData.append(key, phaseData[key]);
+                        }
+                    });
+                    
+                    const response = await fetch('admin.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        self.showAlert('✅ Timeline fase succesvol opgeslagen!', 'success');
+                        // Reload timeline phases for this project
+                        self.loadInlineTimelinePhases(projectId);
+                        self.hideInlinePhaseForm();
+                    } else {
+                        self.showAlert('❌ Fout bij opslaan timeline fase: ' + result.error, 'danger');
+                    }
+                } catch (error) {
+                    self.showAlert('Network error bij opslaan timeline fase: ' + error.message, 'danger');
+                }
+            } else {
+                // For new projects, add to temporary array
+                const tempPhaseData = {
+                    id: 'temp_' + Date.now(),
+                    phase_name: phaseName,
+                    phase_type: phaseType,
+                    week_number: $('#inlinePhaseWeek').val() || null,
+                    phase_description: $('#inlinePhaseDescription').val(),
+                    phase_details: $('#inlinePhaseDetails').val(),
+                    phase_status: $('#inlinePhaseStatus').val() || 'completed',
+                    start_date: $('#inlinePhaseStartDate').val() || null,
+                    end_date: $('#inlinePhaseEndDate').val() || null,
+                    tasks: $('#inlinePhaseTasks').val().split('\n').filter(task => task.trim() !== ''),
+                    deliverables: $('#inlinePhaseDeliverables').val().split('\n').filter(item => item.trim() !== '')
+                };
+                
+                if (!self.inlineTimelinePhases) {
+                    self.inlineTimelinePhases = [];
+                }
+                
+                self.inlineTimelinePhases.push(tempPhaseData);
+                self.renderInlineTimelinePhases();
+                self.hideInlinePhaseForm();
+                
+                self.showAlert('✅ Timeline fase toegevoegd! Sla het project op om alle fasen permanent te maken.', 'info');
             }
-            
-            this.inlineTimelinePhases.push(phaseData);
-            this.renderInlineTimelinePhases();
-            this.hideInlinePhaseForm();
-            
-            this.showAlert('Timeline fase toegevoegd. Sla het project op om permanent te maken.', 'success');
         }
         
         renderInlineTimelinePhases() {
@@ -3255,7 +3594,7 @@ function deleteTimelinePhase($pdo, $phase_id) {
             
             // Modify save handler
             $('#saveInlinePhase').off('click').on('click', () => {
-                this.updateInlineTimelinePhase(index);
+                portfolioAdmin.updateInlineTimelinePhase.call(portfolioAdmin, index);
             });
             
             this.showInlinePhaseForm();
@@ -3291,7 +3630,7 @@ function deleteTimelinePhase($pdo, $phase_id) {
             // Reset save button
             $('#saveInlinePhase').html('<i class="lnr lnr-checkmark-circle"></i> Fase Opslaan');
             $('#saveInlinePhase').off('click').on('click', () => {
-                this.saveInlineTimelinePhase();
+                portfolioAdmin.saveInlineTimelinePhase.call(portfolioAdmin);
             });
             
             this.showAlert('Timeline fase bijgewerkt', 'success');
@@ -3301,30 +3640,101 @@ function deleteTimelinePhase($pdo, $phase_id) {
             if (confirm('Weet je zeker dat je deze timeline fase wilt verwijderen?')) {
                 this.inlineTimelinePhases.splice(index, 1);
                 this.renderInlineTimelinePhases();
-                this.showAlert('Timeline fase verwijderd', 'success');
+                this.showAlert('🗑️ Timeline fase succesvol verwijderd!', 'warning');
             }
         }
         
         loadTimelineFromProject(projectData) {
-            // Load existing timeline phases when editing a project
-            if (projectData && projectData.timeline) {
-                try {
-                    this.inlineTimelinePhases = JSON.parse(projectData.timeline) || [];
-                    this.renderInlineTimelinePhases();
-                } catch (e) {
-                    console.error('Error parsing timeline data:', e);
-                    this.inlineTimelinePhases = [];
-                    this.renderInlineTimelinePhases();
-                }
+            // Load existing timeline phases from timeline_phases table when editing a project
+            if (projectData && projectData.id) {
+                this.loadInlineTimelinePhases(projectData.id);
             } else {
                 this.inlineTimelinePhases = [];
                 this.renderInlineTimelinePhases();
             }
         }
         
+        async loadInlineTimelinePhases(projectId) {
+            const self = this; // Preserve context for async operations
+            try {
+                const formData = new FormData();
+                formData.append('action', 'get_timeline_phases');
+                formData.append('project_id', projectId);
+                
+                const response = await fetch('admin.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Convert timeline_phases data to inline format
+                    self.inlineTimelinePhases = result.data.map(phase => ({
+                        id: phase.id,
+                        phase_name: phase.phase_name,
+                        phase_type: phase.phase_type,
+                        phase_description: phase.phase_description,
+                        phase_details: phase.phase_details,
+                        week_number: phase.week_number,
+                        phase_status: phase.phase_status,
+                        start_date: phase.start_date,
+                        end_date: phase.end_date,
+                        tasks: phase.tasks ? JSON.parse(phase.tasks) : [],
+                        deliverables: phase.deliverables ? JSON.parse(phase.deliverables) : []
+                    }));
+                    self.renderInlineTimelinePhases();
+                    
+                    // Show success message if timeline phases were loaded
+                    if (result.data.length > 0) {
+                        self.showAlert(`📋 ${result.data.length} timeline fase(s) geladen voor bewerking`, 'info');
+                    }
+                } else {
+                    console.error('Error loading timeline phases:', result.error);
+                    self.inlineTimelinePhases = [];
+                    self.renderInlineTimelinePhases();
+                }
+            } catch (error) {
+                console.error('Network error loading timeline phases:', error);
+                self.inlineTimelinePhases = [];
+                self.renderInlineTimelinePhases();
+                // Don't show alert for network errors to avoid scope issues
+            }
+        }
+        
         getTimelineDataForSave() {
             // Return timeline data to be saved with the project
             return this.inlineTimelinePhases || [];
+        }
+
+        showAlert(message, type = 'info') {
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'danger' ? 'alert-danger' : 
+                              type === 'warning' ? 'alert-warning' : 'alert-info';
+            
+            const html = `
+                <div class="alert ${alertClass} alert-dismissible fade show js-alert" role="alert" style="position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            // Remove existing alerts first
+            $('.js-alert').remove();
+            
+            // Add new alert to body
+            $('body').append(html);
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                $('.js-alert').fadeOut(() => {
+                    $('.js-alert').remove();
+                });
+            }, 5000);
         }
     }
     
@@ -3357,12 +3767,6 @@ function deleteTimelinePhase($pdo, $phase_id) {
             });
             
             loadProjects();
-            
-            // Form submission
-            $('#projectForm').on('submit', function(e) {
-                e.preventDefault();
-                saveProject();
-            });
             
             // Gallery upload handler
             $('#galleryUpload').on('change', function(e) {
@@ -3474,9 +3878,48 @@ function deleteTimelinePhase($pdo, $phase_id) {
             $('#projectCompletionDate').val(project.completion_date);
             $('#projectFeatured').prop('checked', project.is_featured == 1);
             
-            // Development fields
-            $('#projectTools').val(JSON.parse(project.tools || '[]').join(', '));
-            $('#projectFeatures').val(JSON.parse(project.features || '[]').join('\n'));
+            // Development fields - Handle both JSON and comma-separated formats
+            try {
+                let tools;
+                if (project.tools) {
+                    if (Array.isArray(project.tools)) {
+                        tools = project.tools;
+                    } else if (typeof project.tools === 'string' && project.tools.startsWith('[')) {
+                        tools = JSON.parse(project.tools);
+                    } else if (typeof project.tools === 'string') {
+                        tools = project.tools.split(',').map(t => t.trim());
+                    } else {
+                        tools = [];
+                    }
+                } else {
+                    tools = [];
+                }
+                $('#projectTools').val(Array.isArray(tools) ? tools.join(', ') : (project.tools || ''));
+            } catch (e) {
+                console.warn('Error parsing tools, using raw value:', e);
+                $('#projectTools').val(project.tools || '');
+            }
+            
+            try {
+                let features;
+                if (project.features) {
+                    if (Array.isArray(project.features)) {
+                        features = project.features;
+                    } else if (typeof project.features === 'string' && project.features.startsWith('[')) {
+                        features = JSON.parse(project.features);
+                    } else if (typeof project.features === 'string') {
+                        features = project.features.split('\n').map(f => f.trim());
+                    } else {
+                        features = [];
+                    }
+                } else {
+                    features = [];
+                }
+                $('#projectFeatures').val(Array.isArray(features) ? features.join('\n') : (project.features || ''));
+            } catch (e) {
+                console.warn('Error parsing features, using raw value:', e);
+                $('#projectFeatures').val(project.features || '');
+            }
             $('#projectGitHub').val(project.github_url);
             $('#projectApiDocs').val(project.api_docs_url);
             $('#projectChallenges').val(project.challenges);
@@ -3492,12 +3935,53 @@ function deleteTimelinePhase($pdo, $phase_id) {
             $('#testingStrategy').val(project.testing_strategy);
             $('#deploymentMethod').val(project.deployment_method);
             
-            // Design fields
-            $('#designTools').val(JSON.parse(project.tools || '[]').join(', '));
+            // Design fields - Handle tools safely
+            try {
+                let designTools;
+                if (project.tools) {
+                    if (Array.isArray(project.tools)) {
+                        designTools = project.tools;
+                    } else if (typeof project.tools === 'string' && project.tools.startsWith('[')) {
+                        designTools = JSON.parse(project.tools);
+                    } else if (typeof project.tools === 'string') {
+                        designTools = project.tools.split(',').map(t => t.trim());
+                    } else {
+                        designTools = [];
+                    }
+                } else {
+                    designTools = [];
+                }
+                $('#designTools').val(Array.isArray(designTools) ? designTools.join(', ') : (project.tools || ''));
+            } catch (e) {
+                console.warn('Error parsing design tools, using raw value:', e);
+                $('#designTools').val(project.tools || '');
+            }
+            
             $('#designConcept').val(project.design_concept);
             $('#colorPalette').val(project.color_palette);
             $('#typography').val(project.typography);
-            $('#designProcess').val(JSON.parse(project.features || '[]').join('\n'));
+            
+            // Design process features - Handle safely
+            try {
+                let designFeatures;
+                if (project.features) {
+                    if (Array.isArray(project.features)) {
+                        designFeatures = project.features;
+                    } else if (typeof project.features === 'string' && project.features.startsWith('[')) {
+                        designFeatures = JSON.parse(project.features);
+                    } else if (typeof project.features === 'string') {
+                        designFeatures = project.features.split('\n').map(f => f.trim());
+                    } else {
+                        designFeatures = [];
+                    }
+                } else {
+                    designFeatures = [];
+                }
+                $('#designProcess').val(Array.isArray(designFeatures) ? designFeatures.join('\n') : (project.features || ''));
+            } catch (e) {
+                console.warn('Error parsing design features, using raw value:', e);
+                $('#designProcess').val(project.features || '');
+            }
             $('#designCategory').val(project.design_category);
             $('#designStyle').val(project.design_style);
             
@@ -3508,8 +3992,24 @@ function deleteTimelinePhase($pdo, $phase_id) {
             $('#inspirationSource').val(project.inspiration_source);
             $('#lessonsLearned').val(project.lessons_learned);
             
-            // Load gallery images
-            galleryImages = JSON.parse(project.gallery_images || '[]');
+            // Load gallery images - Handle different data types
+            try {
+                if (project.gallery_images) {
+                    if (Array.isArray(project.gallery_images)) {
+                        galleryImages = project.gallery_images;
+                    } else if (typeof project.gallery_images === 'string') {
+                        galleryImages = JSON.parse(project.gallery_images);
+                    } else {
+                        console.warn('Unexpected gallery_images type:', typeof project.gallery_images);
+                        galleryImages = [];
+                    }
+                } else {
+                    galleryImages = [];
+                }
+            } catch (e) {
+                console.warn('Error parsing gallery images, using empty array:', e);
+                galleryImages = [];
+            }
             
             // Populate manual gallery URLs textarea
             if (galleryImages && galleryImages.length > 0) {
@@ -3521,52 +4021,30 @@ function deleteTimelinePhase($pdo, $phase_id) {
             
             updateGalleryPreview();
             
-            // Load timeline
-            timelineItems = JSON.parse(project.timeline || '[]');
+            // Load timeline - Handle different data types
+            try {
+                if (project.timeline) {
+                    if (Array.isArray(project.timeline)) {
+                        timelineItems = project.timeline;
+                    } else if (typeof project.timeline === 'string') {
+                        timelineItems = JSON.parse(project.timeline);
+                    } else {
+                        console.warn('Unexpected timeline type:', typeof project.timeline);
+                        timelineItems = [];
+                    }
+                } else {
+                    timelineItems = [];
+                }
+            } catch (e) {
+                console.warn('Error parsing timeline, using empty array:', e);
+                timelineItems = [];
+            }
             updateTimelinePreview();
             
             // Trigger form section updates based on category
             if (typeof portfolioAdmin !== 'undefined' && portfolioAdmin.toggleFormSections) {
                 portfolioAdmin.toggleFormSections();
             }
-        }
-        
-        // Save project
-        function saveProject() {
-            const formData = new FormData($('#projectForm')[0]);
-            formData.append('action', 'save_project');
-            
-            // Don't override gallery_images field - let the file uploads and manual textarea work
-            // The PHP backend will handle both uploaded files and manual URLs
-            
-            formData.append('timeline', JSON.stringify(timelineItems));
-            
-            // Debug: Log what we're sending
-            console.log('Saving project with timeline items:', timelineItems);
-            console.log('Form data keys:', Array.from(formData.keys()));
-            
-            $.ajax({
-                url: 'admin.php',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                dataType: 'json',
-                success: function(response) {
-                    console.log('Server response:', response);
-                    if (response.success) {
-                        alert('Project opgeslagen!');
-                        hideProjectForm();
-                        loadProjects();
-                    } else {
-                        alert('Fout bij opslaan: ' + (response.message || response.error || 'Onbekende fout'));
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX Error:', xhr.responseText);
-                    alert('Fout bij opslaan van project: ' + error);
-                }
-            });
         }
         
         // Edit project
@@ -3612,13 +4090,44 @@ function deleteTimelinePhase($pdo, $phase_id) {
         function updateGalleryPreview() {
             let html = '';
             galleryImages.forEach((image, index) => {
-                const imageSrc = (typeof image === 'object' && image.preview) ? image.preview : image;
-                const imageTitle = (typeof image === 'object' && image.name) ? image.name : `Gallery ${index + 1}`;
-                const fileIndicator = (typeof image === 'object' && image.isFile) ? '<small class="text-primary">Nieuw geüpload</small>' : '';
+                // Handle different image formats more robustly
+                let imageSrc = '';
+                let imageTitle = `Gallery ${index + 1}`;
+                let fileIndicator = '';
+                
+                if (typeof image === 'string') {
+                    // Simple string URL
+                    imageSrc = image;
+                } else if (typeof image === 'object' && image !== null) {
+                    // Object with various properties
+                    if (image.preview) {
+                        imageSrc = image.preview;
+                    } else if (image.url) {
+                        imageSrc = image.url;
+                    } else if (image.src) {
+                        imageSrc = image.src;
+                    } else {
+                        // Fallback for objects without proper image properties
+                        console.warn('Gallery image object without valid URL property:', image);
+                        imageSrc = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDIwMCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMTUwIiBmaWxsPSIjZjVmNWY1Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVMMTI1IDUwSDc1TDEwMCA3NVoiIGZpbGw9IiNjY2MiLz4KPHN2Zz4K'; // Gray placeholder
+                    }
+                    
+                    if (image.name) {
+                        imageTitle = image.name;
+                    }
+                    
+                    if (image.isFile) {
+                        fileIndicator = '<small class="text-primary">Nieuw geüpload</small>';
+                    }
+                } else {
+                    // Fallback for other types
+                    console.warn('Unknown gallery image type:', typeof image, image);
+                    imageSrc = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDIwMCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMTUwIiBmaWxsPSIjZjVmNWY1Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVMMTI1IDUwSDc1TDEwMCA3NVoiIGZpbGw9IiNjY2MiLz4KPHN2Zz4K';
+                }
                 
                 html += `
                     <div class="gallery-item">
-                        <img src="${imageSrc}" alt="${imageTitle}">
+                        <img src="${imageSrc}" alt="${imageTitle}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDIwMCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMTUwIiBmaWxsPSIjZjVmNWY1Ii8+CjxwYXRoIGQ9Ik0xMDAgNzVMMTI1IDUwSDc1TDEwMCA3NVoiIGZpbGw9IiNjY2MiLz4KPHN2Zz4K'">
                         <button type="button" class="remove-gallery-item" onclick="removeGalleryItem(${index})">
                             <i class="lnr lnr-cross"></i>
                         </button>
