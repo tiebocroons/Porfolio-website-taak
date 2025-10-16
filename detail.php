@@ -135,6 +135,12 @@ $project['gallery_images'] = json_decode($project['gallery_images'] ?: '[]', tru
 // Get timeline phases from admin panel
 $timelinePhases = getTimelinePhases($project['id']);
 
+// Define $showDefaultTimeline early so it's available for gallery and other sections
+$showDefaultTimeline = ($project['category'] == 'development' || $project['category'] == 'mobile' || $project['category'] == 'hybrid') ||
+                     (($project['category'] == 'design' || $project['category'] == 'vintage' || $project['category'] == 'other') &&
+                      (!empty($project['github_url']) && 
+                       ($project['lines_of_code'] > 1000 || !empty($project['challenges']))));
+
 // Debug timeline phases (comment out in production)
 if (count($timelinePhases) > 0) {
     error_log("Timeline phases loaded: " . count($timelinePhases) . " phases found");
@@ -200,6 +206,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/style.min.css" />
     <link rel="stylesheet" href="css/detail.css" />
+    <link rel="stylesheet" href="css/gallery-enhanced.css" />
     
     <!-- Non-critical CSS loaded asynchronously -->
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" media="print" onload="this.media='all'" />
@@ -208,7 +215,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
   </head>
 
-  <body data-spy="scroll" data-target="#navbar" class="static-layout detail-page <?php echo !in_array($project['category'], ['development', 'web', 'mobile']) ? 'design-project-layout' : 'development-project-layout'; ?>">
+  <body data-spy="scroll" data-target="#navbar" class="static-layout detail-page <?php echo !in_array($project['category'], ['development', 'mobile']) ? 'design-project-layout' : 'development-project-layout'; ?>">
     
     <!-- Fonts with optimized loading strategy -->
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
@@ -310,6 +317,55 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       .resource-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      }
+      
+      /* Tech Info Cards Styling */
+      .tech-info-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+        border: 1px solid #e9ecef;
+      }
+      
+      .tech-info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      }
+      
+      .tech-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      
+      .tech-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-size: 20px;
+      }
+      
+      .tech-header h5 {
+        margin: 0;
+        color: #333;
+        font-weight: 600;
+      }
+      
+      .tech-content {
+        color: #666;
+      }
+      
+      .tech-badges .badge {
+        font-size: 12px;
+        padding: 6px 12px;
       }
       
       .badge-success,
@@ -601,7 +657,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     </style>
   </head>
 
-  <body data-spy="scroll" data-target="#navbar" class="static-layout <?php echo !in_array($project['category'], ['development', 'web', 'mobile']) ? 'design-project-layout' : 'development-project-layout'; ?>">
+  <body data-spy="scroll" data-target="#navbar" class="static-layout <?php echo !in_array($project['category'], ['development', 'mobile', 'hybrid']) ? 'design-project-layout' : 'development-project-layout'; ?>">
     <!-- Modern Navbar -->
     <nav id="header-navbar" class="navbar navbar-expand-lg navbar-transparent modern-navbar">
       <div class="container">
@@ -821,7 +877,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             </div>
           </div>
 
-          <!-- Project Overview Cards -->
+          <!-- New Project Overview Cards -->
           <div class="row d-flex align-items-stretch mb-5">
             
             <!-- Project Description Card -->
@@ -897,132 +953,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               </div>
             </div>
             
-            <?php if ($project['category'] == 'development' || $project['category'] == 'web' || $project['category'] == 'mobile'): ?>
-            <!-- Technical Info Card -->
+            <!-- Project Actions Card -->
             <div class="col-lg-4 mb-4" data-aos="fade-left" data-aos-delay="300">
               <div class="card visual-card h-100">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-success">
-                    <i class="lnr lnr-cog text-white"></i>
+                    <i class="lnr lnr-magic-wand text-white"></i>
                   </div>
-                  <h4 class="card-title">Technische Informatie</h4>
+                  <h4 class="card-title">Project Acties</h4>
                 </div>
                 <div class="card-body p-4">
-                  
-                  <!-- Tech Stack -->
-                  <div class="tech-stack mb-4">
-                    <?php if (!empty($project['tools'])): ?>
-                    <div class="tech-item" data-aos="fade-up" data-aos-delay="300">
-                      <div class="tech-marker">
-                        <?php if (!empty($timelinePhases)): ?>
-                        <div class="timeline-marker completed">
-                          <i class="lnr lnr-code text-white"></i>
-                        </div>
-                        <?php endif; ?>
-                      </div>
-                      <div class="tech-content">
-                        <h6 class="tech-title">Technologieën & Frameworks</h6>
-                        <div class="tech-badges">
-                          <?php foreach (array_slice($project['tools'], 0, 4) as $tool): ?>
-                          <span class="badge badge-primary me-1 mb-1"><?php echo htmlspecialchars(trim($tool)); ?></span>
-                          <?php endforeach; ?>
-                        </div>
-                        <span class="timeline-date badge badge-info">Tech Stack</span>
-                      </div>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($project['github_url'])): ?>
-                    <div class="tech-item" data-aos="fade-up" data-aos-delay="300">
-                      <div class="tech-marker">
-                        <?php if (!empty($timelinePhases)): ?>
-                        <div class="timeline-marker completed">
-                          <i class="fab fa-github text-white"></i>
-                        </div>
-                        <?php endif; ?>
-                      </div>
-                      <div class="tech-content">
-                        <h6 class="tech-title">Source Code</h6>
-                        <p class="tech-desc">Bekijk de volledige broncode op GitHub</p>
-                        <a href="<?php echo htmlspecialchars($project['github_url']); ?>" target="_blank" class="timeline-date badge badge-dark">
-                          <i class="fab fa-github"></i> GitHub Repository
-                        </a>
-                      </div>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($project['api_docs_url'])): ?>
-                    <div class="tech-item" data-aos="fade-up" data-aos-delay="450">
-                      <div class="tech-marker">
-                        <?php if (!empty($timelinePhases)): ?>
-                        <div class="timeline-marker completed">
-                          <i class="lnr lnr-book text-white"></i>
-                        </div>
-                        <?php endif; ?>
-                      </div>
-                      <div class="tech-content">
-                        <h6 class="tech-title">API Documentatie</h6>
-                        <p class="tech-desc">Technische documentatie en API referentie</p>
-                        <a href="<?php echo htmlspecialchars($project['api_docs_url']); ?>" target="_blank" class="timeline-date badge badge-warning">
-                          <i class="lnr lnr-book"></i> Documentatie
-                        </a>
-                      </div>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($project['challenges'])): ?>
-                    <div class="tech-item" data-aos="fade-up" data-aos-delay="300">
-                      <div class="tech-marker">
-                        <?php if (!empty($timelinePhases)): ?>
-                        <div class="timeline-marker completed">
-                          <i class="lnr lnr-warning text-white"></i>
-                        </div>
-                        <?php endif; ?>
-                      </div>
-                      <div class="tech-content">
-                        <h6 class="tech-title">Technische Uitdagingen</h6>
-                        <p class="tech-desc"><?php echo nl2br(htmlspecialchars($project['challenges'])); ?></p>
-                        <span class="timeline-date badge badge-danger">Opgelost</span>
-                      </div>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <!-- Default tech info if no admin data -->
-                    <?php if (empty($project['tools']) && empty($project['github_url']) && empty($project['challenges'])): ?>
-                    <div class="tech-item" data-aos="fade-up" data-aos-delay="300">
-                      <div class="tech-marker">
-                        <?php if (!empty($timelinePhases)): ?>
-                        <div class="timeline-marker completed">
-                          <i class="lnr lnr-code text-white"></i>
-                        </div>
-                        <?php endif; ?>
-                      </div>
-                      <div class="tech-content">
-                        <h6 class="tech-title">Frontend Technologies</h6>
-                        <p class="tech-desc">HTML5, CSS3, JavaScript ES6+</p>
-                        <span class="timeline-date badge badge-primary">Modern Standards</span>
-                      </div>
-                    </div>
-                    
-                    <div class="tech-item" data-aos="fade-up" data-aos-delay="300">
-                      <div class="tech-marker">
-                        <?php if (!empty($timelinePhases)): ?>
-                        <div class="timeline-marker completed">
-                          <i class="lnr lnr-database text-white"></i>
-                        </div>
-                        <?php endif; ?>
-                      </div>
-                      <div class="tech-content">
-                        <h6 class="tech-title">Backend & Database</h6>
-                        <p class="tech-desc">PHP 8.0, MySQL Database</p>
-                        <span class="timeline-date badge badge-success">Server-side</span>
-                      </div>
-                    </div>
-                    <?php endif; ?>
-                  </div>
-                  
-                  <!-- Project Actions -->
-                  <div class="project-actions mt-4" data-aos="fade-up" data-aos-delay="300">
+                  <div class="project-actions" data-aos="fade-up" data-aos-delay="300">
                     <?php if (!empty($project['live_url'])): ?>
                     <a href="<?php echo htmlspecialchars($project['live_url']); ?>" target="_blank" class="btn btn-primary btn-block mb-2">
                       <i class="lnr lnr-eye me-2"></i>
@@ -1037,281 +978,34 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     </a>
                     <?php endif; ?>
                     
+                    <?php if (!empty($project['github_url'])): ?>
+                    <a href="<?php echo htmlspecialchars($project['github_url']); ?>" target="_blank" class="btn btn-outline-dark btn-block mb-2">
+                      <i class="fab fa-github me-2"></i>
+                      GitHub Repository
+                    </a>
+                    <?php endif; ?>
+                    
                     <a href="index.php#portfolio" class="btn btn-outline-secondary btn-block">
                       <i class="lnr lnr-arrow-left me-2"></i>
                       Terug naar Portfolio
                     </a>
                   </div>
-                  
-                </div>
-              </div>
-            </div>
-            <?php else: ?>
-            <!-- Design Project: Creative Highlights -->
-            <div class="col-lg-4 mb-4" data-aos="fade-left" data-aos-delay="300">
-              <div class="card visual-card h-100">
-                <div class="card-header-visual">
-                  <div class="icon-wrapper bg-gradient-success">
-                    <?php if (!empty($timelinePhases)): ?>
-                    <i class="lnr lnr-magic-wand text-white"></i>
-                    <?php endif; ?>
-                  </div>
-                  <h4 class="card-title">Creatieve Highlights</h4>
-                </div>
-                <div class="card-body p-4">
-                  
-                  <div class="design-highlights">
-                    <?php if (!empty($project['design_concept'])): ?>
-                    <div class="highlight-item mb-3" data-aos="fade-up" data-aos-delay="300">
-                      <div class="highlight-icon">
-                        <?php if (!empty($timelinePhases)): ?>
-                        <i class="lnr lnr-magic-wand text-primary"></i>
-                        <?php endif; ?>
-                      </div>
-                      <div class="highlight-content">
-                        <h6 class="highlight-title">Design Concept</h6>
-                        <p class="highlight-desc"><?php echo htmlspecialchars($project['design_concept']); ?></p>
-                      </div>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($project['color_palette'])): ?>
-                    <div class="highlight-item mb-3" data-aos="fade-up" data-aos-delay="300">
-                      <div class="highlight-icon">
-                        <?php if (!empty($timelinePhases)): ?>
-                        <i class="lnr lnr-drop text-success"></i>
-                        <?php endif; ?>
-                      </div>
-                      <div class="highlight-content">
-                        <h6 class="highlight-title">Kleurenpalet</h6>
-                        <div class="color-palette-display">
-                          <?php 
-                          $colors = explode(',', $project['color_palette']);
-                          foreach ($colors as $color): 
-                            $color = trim($color);
-                            if (!empty($color)):
-                          ?>
-                          <span class="color-swatch" style="background-color: <?php echo htmlspecialchars($color); ?>;" title="<?php echo htmlspecialchars($color); ?>"></span>
-                          <?php 
-                            endif;
-                          endforeach; 
-                          ?>
-                        </div>
-                        <p class="highlight-desc"><?php echo htmlspecialchars($project['color_palette']); ?></p>
-                      </div>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($project['typography'])): ?>
-                    <div class="highlight-item mb-3" data-aos="fade-up" data-aos-delay="300">
-                      <div class="highlight-icon">
-                        <?php if (!empty($timelinePhases)): ?>
-                        <i class="lnr lnr-text-format text-warning"></i>
-                        <?php endif; ?>
-                      </div>
-                      <div class="highlight-content">
-                        <h6 class="highlight-title">Typografie</h6>
-                        <p class="highlight-desc"><?php echo htmlspecialchars($project['typography']); ?></p>
-                      </div>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <?php if (!empty($project['design_style'])): ?>
-                    <div class="highlight-item" data-aos="fade-up" data-aos-delay="300">
-                      <div class="highlight-icon">
-                        <?php if (!empty($timelinePhases)): ?>
-                        <i class="lnr lnr-star text-info"></i>
-                        <?php endif; ?>
-                      </div>
-                      <div class="highlight-content">
-                        <h6 class="highlight-title">Design Stijl</h6>
-                        <p class="highlight-desc"><?php echo ucfirst(str_replace('_', ' ', htmlspecialchars($project['design_style']))); ?></p>
-                      </div>
-                    </div>
-                    <?php endif; ?>
-                    
-                    <!-- Default highlights if no admin data -->
-                    <?php if (empty($project['design_concept']) && empty($project['color_palette']) && empty($project['typography']) && empty($project['design_style'])): ?>
-                    <div class="highlight-item mb-3">
-                      <div class="highlight-icon">
-                        <?php if (!empty($timelinePhases)): ?>
-                        <i class="lnr lnr-magic-wand text-primary"></i>
-                        <?php endif; ?>
-                      </div>
-                      <div class="highlight-content">
-                        <h6 class="highlight-title">Creatief Concept</h6>
-                        <p class="highlight-desc">Unieke visuele benadering met aandacht voor detail en artistieke expressie</p>
-                      </div>
-                    </div>
-                    
-                    <div class="highlight-item">
-                      <div class="highlight-icon">
-                        <?php if (!empty($timelinePhases)): ?>
-                        <i class="lnr lnr-star text-info"></i>
-                        <?php endif; ?>
-                      </div>
-                      <div class="highlight-content">
-                        <h6 class="highlight-title">Professionele Uitvoering</h6>
-                        <p class="highlight-desc">Hoogwaardige afwerking en aandacht voor alle creatieve aspecten</p>
-                      </div>
-                    </div>
-                    <?php endif; ?>
-                  </div>
-                  
                 </div>
               </div>
             </div>
             
-            <!-- Project Gallery Images (for all project types) -->
-            <?php 
-            // Debug: Show what we have for gallery images
-            $debugGalleryImages = isset($project['gallery_images']) ? $project['gallery_images'] : 'NULL';
-            if (is_array($debugGalleryImages)) {
-                echo "<!-- DEBUG: project gallery_images = ARRAY with " . count($debugGalleryImages) . " items -->";
-            } else {
-                echo "<!-- DEBUG: project gallery_images = " . htmlspecialchars($debugGalleryImages) . " -->";
-            }
-            echo "<!-- DEBUG: empty check = " . (empty($project['gallery_images']) ? 'TRUE' : 'FALSE') . " -->";
-            
-            if (!empty($project['gallery_images'])): ?>
-          </div>
-          <!-- End Project Overview Cards -->
-        </div>
-      </div>
-    </section>
-    
-    <!-- Full Width Gallery Section -->
-    <section id="project-gallery" class="gallery-full-width-section">
-      <div class="container-fluid px-4">
-        <div class="row">
-          <div class="col-12">
-            <div class="gallery-section">
-              <!-- Gallery Header -->
-              <div class="gallery-header text-center mb-5">
-                <h3 class="section-title mb-3">
-                  <i class="lnr lnr-picture text-primary"></i>
-                  <span class="text-primary">Project</span> <b>Galerij</b>
-                </h3>
-              </div>
-                
-                <!-- Gallery Grid -->
-                <?php 
-                // Handle both JSON array format and comma-separated strings for backward compatibility
-                $galleryImages = [];
-                
-                if (!empty($project['gallery_images'])) {
-                    // Check if it's already an array (direct from database)
-                    if (is_array($project['gallery_images'])) {
-                        $galleryImages = $project['gallery_images'];
-                        echo "<!-- DEBUG: Using array directly, count = " . count($galleryImages) . " -->";
-                    } else {
-                        // Try to decode as JSON first (new format from admin system)
-                        $decoded = json_decode($project['gallery_images'], true);
-                        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                            $galleryImages = $decoded;
-                            echo "<!-- DEBUG: JSON decode successful, count = " . count($galleryImages) . " -->";
-                        } else {
-                            // Fallback to comma-separated format (old format)
-                            $imageUrls = array_filter(array_map('trim', explode(',', $project['gallery_images'])));
-                            foreach ($imageUrls as $url) {
-                                $galleryImages[] = [
-                                    'url' => $url,
-                                    'alt' => 'Project afbeelding',
-                                    'caption' => ''
-                                ];
-                            }
-                            echo "<!-- DEBUG: Using comma-separated format, count = " . count($galleryImages) . " -->";
-                        }
-                    }
-                }
-                
-                $imageCount = count($galleryImages);
-                echo "<!-- DEBUG: Final image count = " . $imageCount . " -->";
-                
-                // Determine grid class based on image count
-                $gridClass = 'gallery-grid-full';
-                if ($imageCount == 2) {
-                    $gridClass .= ' two-images';
-                } else if ($imageCount == 3) {
-                    $gridClass .= ' three-images';
-                } else if ($imageCount >= 4) {
-                    $gridClass .= ' four-plus';
-                }
-                
-                if ($imageCount > 0): ?>
-                <div class="portfolio-grid-container <?php echo $gridClass; ?>">
-                  <?php 
-                  foreach ($galleryImages as $index => $imageData): 
-                    $imageUrl = is_array($imageData) ? $imageData['url'] : $imageData;
-                    $imageAlt = is_array($imageData) ? ($imageData['alt'] ?: 'Project afbeelding') : 'Project afbeelding';
-                    $imageCaption = is_array($imageData) ? $imageData['caption'] : '';
-                    
-                    echo "<!-- DEBUG: Processing image " . ($index + 1) . " = " . htmlspecialchars($imageUrl) . " -->";
-                    
-                    if (!empty($imageUrl)):
-                  ?>
-                  <div class="grid-item col-lg-6 col-md-6 col-sm-12" data-aos="zoom-in" data-aos-delay="<?php echo 200 + ($index * 100); ?>">
-                    <div class="gallery-image-container">
-                      <img src="<?php echo htmlspecialchars($imageUrl); ?>" 
-                           alt="<?php echo htmlspecialchars($imageAlt); ?>" 
-                           class="gallery-image"
-                           onerror="console.log('Image failed to load: <?php echo htmlspecialchars($imageUrl); ?>'); this.parentElement.style.display='none';">
-                      <div class="image-overlay gallery-overlay">
-                        <div class="overlay-content">
-                          <a href="<?php echo htmlspecialchars($imageUrl); ?>" class="btn btn-light gallery-zoom" data-lightbox="project-gallery" data-title="<?php echo htmlspecialchars($imageAlt); ?>">
-                            <i class="lnr lnr-magnifier"></i> Vergroot afbeelding
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <?php 
-                    endif;
-                  endforeach; 
-                  ?>
-                </div>
-                <?php else: ?>
-                  <p><!-- DEBUG: No images to display (imageCount = 0) --></p>
-                <?php endif; ?>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    
-    <!-- Continue with Project Details Section -->
-    <section id="project-details" class="bg-light">
-      <div class="container">
-        <div class="section-content">
-          
-          <!-- Section Header -->
-          <div class="row mb-5" data-aos="fade-up">
-            <div class="col-12 text-center">
-            <?php else: ?>
-              <!-- DEBUG: Gallery images empty or null -->
-            <?php endif; ?>
-              <h2 class="section-title mb-3">
-                <span class="text-primary">Project</span> <b>Details</b>
-              </h2>
-              <?php if ($project['category'] == 'development' || $project['category'] == 'web' || $project['category'] == 'mobile'): ?>
-              <p class="text-muted lead mb-4">Technische specificaties en ontwikkelingsproces van dit project</p>
-              <?php else: ?>
-              <p class="text-muted lead mb-4">Creatief proces en ontwikkelingsdetails van dit project</p>
-              <?php endif; ?>
-            </div>
           </div>
 
           <!-- Technical Specifications Cards -->
           <?php 
           // Determine layout based on project type
-          $isDevelopment = in_array($project['category'], ['development', 'web', 'mobile']);
-          $cardClass = $isDevelopment ? 'col-lg-6' : 'col-lg-8 mx-auto';
+          $isDevelopment = in_array($project['category'], ['development', 'mobile', 'hybrid']);
+          $cardClass = $isDevelopment ? 'col-lg-6' : 'col-lg-6'; // Changed to always be col-lg-6 for two-column layout
           ?>
-          <div class="row d-flex align-items-stretch mb-5 justify-content-center">
+          <div class="row g-4 mb-5">
             
             <!-- Technical Stack Card -->
-            <div class="<?php echo $cardClass; ?> mb-4" data-aos="fade-right" data-aos-delay="300">
+            <div class="<?php echo $cardClass; ?>" data-aos="fade-right" data-aos-delay="300">
               <div class="card visual-card h-100">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-primary">
@@ -1324,19 +1018,36 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   <?php endif; ?>
                 </div>
                 <div class="card-body p-4">
-                  <?php if ($isDevelopment): ?>
+                  <?php if ($project['category'] == 'hybrid'): ?>
+                  <p class="card-text mb-4">
+                    Dit hybride project combineert moderne web ontwikkeling met creatief design voor een compleet resultaat.
+                  </p>
+                  <?php elseif ($isDevelopment): ?>
                   <p class="card-text mb-4">
                     Dit project gebruikt moderne web technologieën en best practices voor optimale prestaties en gebruikerservaring.
-                  </p>
-                  <?php else: ?>
-                  <p class="card-text mb-4">
-                    Voor dit creatieve project zijn professionele design tools en software gebruikt voor het beste resultaat.
                   </p>
                   <?php endif; ?>
                   
                   <!-- Tech Categories -->
                   <div class="tech-categories">
-                    <?php if ($project['category'] == 'development' || $project['category'] == 'web' || $project['category'] == 'mobile'): ?>
+                    
+                    <!-- Admin Panel Tools (if available) -->
+                    <?php if (!empty($project['tools'])): ?>
+                    <div class="tech-category mb-4">
+                      <h6 class="tech-category-title">
+                        <i class="lnr lnr-cog text-primary"></i>
+                        Design tools
+                      </h6>
+                      <div class="tech-tags">
+                        <?php foreach ($project['tools'] as $tool): ?>
+                        <span class="skill-tag"><?php echo htmlspecialchars(trim($tool)); ?></span>
+                        <?php endforeach; ?>
+                      </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <!-- Default Technical Stack for development projects without admin tools -->
+                    <?php if (empty($project['tools']) && ($project['category'] == 'development' || $project['category'] == 'mobile' || $project['category'] == 'hybrid')): ?>
                     <div class="tech-category mb-4">
                       <h6 class="tech-category-title">
                         <i class="lnr lnr-code text-primary"></i>
@@ -1364,40 +1075,122 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                       </div>
                     </div>
                     <?php endif; ?>
-                    
-                    <div class="tech-category">
-                      <h6 class="tech-category-title">
-                        <i class="lnr lnr-magic-wand text-info"></i>
-                        <?php if ($project['category'] == 'development' || $project['category'] == 'web' || $project['category'] == 'mobile'): ?>
-                        Design & UX
-                        <?php else: ?>
-                        Design Tools & Techniques
-                        <?php endif; ?>
-                      </h6>
-                      <div class="tech-tags">
-                        <?php if ($project['category'] == 'development' || $project['category'] == 'web' || $project['category'] == 'mobile'): ?>
-                        <span class="skill-tag">Responsive Design</span>
-                        <span class="skill-tag">Glassmorphism</span>
-                        <span class="skill-tag">Modern UI</span>
-                        <span class="skill-tag">Accessibility</span>
-                        <?php else: ?>
-                        <span class="skill-tag">Adobe Creative Suite</span>
-                        <span class="skill-tag">Figma</span>
-                        <span class="skill-tag">Color Theory</span>
-                        <span class="skill-tag">Typography</span>
-                        <span class="skill-tag">Brand Identity</span>
-                        <span class="skill-tag">Visual Composition</span>
-                        <?php endif; ?>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
             
-            <?php if ($project['category'] == 'development' || $project['category'] == 'web' || $project['category'] == 'mobile'): ?>
+            <!-- Project Statistics Card -->
+            <div class="col-lg-6" data-aos="fade-left" data-aos-delay="300">
+              <div class="card visual-card h-100">
+                <div class="card-header-visual">
+                  <div class="icon-wrapper bg-gradient-primary">
+                    <i class="lnr lnr-chart-bars text-white"></i>
+                  </div>
+                  <h4 class="card-title">Project Statistieken</h4>
+                </div>
+                <div class="card-body p-4">
+                  
+                  <div class="progress-stats">
+                    
+                    <div class="stat-item mb-3">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="stat-label">Totale Voortgang</span>
+                        <span class="stat-value">100%</span>
+                      </div>
+                      <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                    
+                    <?php if ($project['category'] == 'development' || $project['category'] == 'mobile' || $project['category'] == 'hybrid' || !empty($project['code_quality'])): ?>
+                    <div class="stat-item mb-3">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="stat-label">Code Kwaliteit</span>
+                        <span class="stat-value"><?php echo $project['code_quality'] ?: 'A+'; ?></span>
+                      </div>
+                      <div class="progress">
+                        <?php 
+                        $qualityScore = $project['code_quality'] ? (
+                            $project['code_quality'] === 'A+' ? 95 : (
+                                $project['code_quality'] === 'A' ? 90 : (
+                                    $project['code_quality'] === 'B+' ? 85 : (
+                                        $project['code_quality'] === 'B' ? 80 : 75
+                                    )
+                                )
+                            )
+                        ) : 95;
+                        ?>
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: <?php echo $qualityScore; ?>%" aria-valuenow="<?php echo $qualityScore; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if ($project['category'] == 'development' || $project['category'] == 'mobile' || $project['category'] == 'hybrid' || !empty($project['performance_score'])): ?>
+                    <div class="stat-item mb-3">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="stat-label">Performance Score</span>
+                        <span class="stat-value"><?php echo $project['performance_score'] ?: '92'; ?>/100</span>
+                      </div>
+                      <div class="progress">
+                        <?php $perfScore = $project['performance_score'] ?: 92; ?>
+                        <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo $perfScore; ?>%" aria-valuenow="<?php echo $perfScore; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                    
+                    <?php if (!empty($project['lines_of_code']) || $project['category'] == 'development' || $project['category'] == 'mobile' || $project['category'] == 'hybrid'): ?>
+                    <div class="stat-item mb-3">
+                      <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="stat-label">Lines of Code</span>
+                        <span class="stat-value"><?php echo $project['lines_of_code'] ? number_format($project['lines_of_code']) : '2500'; ?>+</span>
+                      </div>
+                      <div class="progress">
+                        <?php 
+                        $linesOfCode = $project['lines_of_code'] ?: 2500;
+                        $codeProgress = min(100, ($linesOfCode / 5000) * 100); // Assuming 5000+ is 100%
+                        ?>
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: <?php echo $codeProgress; ?>%" aria-valuenow="<?php echo $codeProgress; ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <div class="project-metrics mt-4">
+                      <div class="metric-item">
+                        <i class="lnr lnr-clock text-primary"></i>
+                        <span>Ontwikkelingstijd: <?php echo $project['development_weeks'] ? $project['development_weeks'] . ' weken' : '5 weken'; ?></span>
+                      </div>
+                      <div class="metric-item">
+                        <i class="lnr lnr-layers text-info"></i>
+                        <span>Componenten: <?php echo $project['components_count'] ? $project['components_count'] . '+' : '25+'; ?></span>
+                      </div>
+                    </div>
+                    <?php else: ?>
+                    <div class="project-metrics mt-4">
+                      <div class="metric-item">
+                        <i class="lnr lnr-clock text-primary"></i>
+                        <span>Ontwikkelingstijd: <?php echo $project['development_weeks'] ? $project['development_weeks'] . ' weken' : '5 weken'; ?></span>
+                      </div>
+                      <?php if ($project['category'] === 'design' || $project['category'] === 'vintage'): ?>
+                      <div class="metric-item">
+                        <i class="lnr lnr-magic-wand text-success"></i>
+                        <span>Design Iteraties: <?php echo $project['components_count'] ? $project['components_count'] : '15'; ?>+</span>
+                      </div>
+                      <div class="metric-item">
+                        <i class="lnr lnr-picture text-info"></i>
+                        <span>Creatieve Varianten: <?php echo $project['lines_of_code'] ? round($project['lines_of_code'] / 100) : '25'; ?>+</span>
+                      </div>
+                      <?php endif; ?>
+                    </div>
+                    <?php endif; ?>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+            
+            <?php if ($project['category'] == 'development' || $project['category'] == 'mobile'): ?>
             <!-- Features & Functionality Card -->
-            <div class="col-lg-6 mb-4" data-aos="fade-left" data-aos-delay="300">
+            <div class="col-lg-12" data-aos="fade-up" data-aos-delay="400">
               <div class="card visual-card h-100">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-success">
@@ -1466,519 +1259,467 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <?php endif; ?>
           </div>
 
-          <!-- Development Process Section -->
-          <div class="row mt-5" data-aos="fade-up" data-aos-delay="300">
-            <div class="col-12">
-              <div class="card visual-card">
-                <div class="card-header-visual text-center">
-                  <div class="icon-wrapper bg-gradient-primary mx-auto">
-                    <i class="lnr lnr-chart-bars text-white"></i>
+      </div>
+    </section>
+
+    <!-- Challenges Section -->
+    <?php if (!empty($project['challenges'])): ?>
+    <section id="project-challenges" class="section bg-light">
+      <div class="container">
+        <div class="section-content">
+          
+          <!-- Section Header -->
+          <div class="row mb-5" data-aos="fade-up">
+            <div class="col-12 text-center">
+              <h2 class="section-title mb-3">
+                <i class="lnr lnr-question-circle text-primary"></i>
+                <span class="text-primary">Project</span> <b>Uitdagingen</b>
+              </h2>
+              <p class="text-muted lead mb-4">De belangrijkste uitdagingen en hoe ze werden opgelost</p>
+            </div>
+          </div>
+
+          <!-- Challenges Content -->
+          <div class="row">
+            <div class="col-lg-10 mx-auto">
+              <div class="challenges-card">
+                <div class="card visual-card">
+                  <div class="card-header-visual">
+                    <div class="icon-wrapper bg-gradient-primary">
+                      <i class="lnr lnr-question-circle text-white"></i>
+                    </div>
+                    <h4 class="card-title">Technische uitdaging</h4>
                   </div>
-                  <?php if ($project['category'] == 'development' || $project['category'] == 'web' || $project['category'] == 'mobile'): ?>
-                  <h4 class="card-title">Ontwikkelingsproces</h4>
-                  <?php else: ?>
-                  <h4 class="card-title">Creatief Proces</h4>
-                  <?php endif; ?>
+                  <div class="card-body p-4">
+                    
+                    <!-- Challenge Content -->
+                    <div class="challenge-content">
+                      <div class="challenge-description mb-4">
+                        <p class="highlight-desc"><?php echo nl2br(htmlspecialchars($project['challenges'])); ?></p>
+                      </div>
+                      
+                    </div>
+                    
+                  </div>
                 </div>
-                <div class="card-body p-5">
-                  
-                  <!-- Progress Timeline -->
-                  <div class="row">
-                    <div class="col-lg-8">
-                      <div class="development-timeline">
-                        
-                        <!-- Dynamic Timeline Phases from Admin Panel -->
-                          <?php foreach ($timelinePhases as $index => $phase): ?>
-                            <?php 
-                            // Parse JSON fields
-                            $tasks = !empty($phase['tasks']) ? json_decode($phase['tasks'], true) : [];
-                            $deliverables = !empty($phase['deliverables']) ? json_decode($phase['deliverables'], true) : [];
-                            
-                            // Status badge classes and text
-                            $statusClasses = [
-                                'planned' => 'badge-secondary',
-                                'in_progress' => 'badge-warning',
-                                'completed' => 'badge-success',
-                                'on_hold' => 'badge-danger'
-                            ];
-                            
-                            $statusTexts = [
-                                'planned' => 'Gepland',
-                                'in_progress' => 'In uitvoering',
-                                'completed' => 'Voltooid',
-                                'on_hold' => 'On hold'
-                            ];
-                            
-                            // Ensure we have a valid status - check for empty or null values
-                            $phaseStatus = (!empty($phase['phase_status']) && trim($phase['phase_status']) !== '') ? $phase['phase_status'] : 'completed';
-                            $statusClass = isset($statusClasses[$phaseStatus]) ? $statusClasses[$phaseStatus] : 'badge-success';
-                            $statusText = isset($statusTexts[$phaseStatus]) ? $statusTexts[$phaseStatus] : 'Voltooid';
-                            
-                            // Debug output for troubleshooting
-                            $rawStatus = isset($phase['phase_status']) ? $phase['phase_status'] : 'NULL';
-                            error_log("Phase: " . $phase['phase_name'] . " - Raw Status: '" . $rawStatus . "' - Final Status: '" . $phaseStatus . "' - Badge Text: '" . $statusText . "'");
-                            
-                            // Timeline marker classes
-                            $markerClass = $phaseStatus === 'completed' ? 'completed' : ($phaseStatus === 'in_progress' ? 'in-progress' : 'pending');
-                            
-            // Icon selection based on phase type or default
-            $icons = [
-                'planning' => 'lnr lnr-calendar-full',
-                'design' => 'lnr lnr-magic-wand',
-                'development' => 'lnr lnr-laptop',
-                'testing' => 'lnr lnr-bug',
-                'deployment' => 'lnr lnr-rocket',
-                'challenge' => 'lnr lnr-question-circle',
-                'approach' => 'lnr lnr-cog',
-                'solution' => 'lnr lnr-checkmark-circle'
-            ];                            // Font Awesome fallback icons
-                            $fallbackIcons = [
-                                'planning' => 'fas fa-calendar-alt',
-                                'design' => 'fas fa-magic',
-                                'development' => 'fas fa-laptop-code',
-                                'testing' => 'fas fa-bug',
-                                'deployment' => 'fas fa-rocket',
-                                'challenge' => 'fas fa-question-circle',
-                                'approach' => 'fas fa-cogs',
-                                'solution' => 'fas fa-check-circle'
-                            ];
-                            
-            $phaseIcon = 'lnr lnr-star'; // Default Linear icon
-            $phaseIconFallback = 'fas fa-star'; // Default Font Awesome icon                            // First, check if we have a phase_type field
-                            if (!empty($phase['phase_type']) && isset($icons[$phase['phase_type']])) {
-                                $phaseIcon = $icons[$phase['phase_type']];
-                                $phaseIconFallback = $fallbackIcons[$phase['phase_type']];
-                            } else {
-                                // Fall back to keyword search in phase name for backward compatibility
-                                foreach ($icons as $key => $icon) {
-                                    if (stripos($phase['phase_name'], $key) !== false) {
-                                        $phaseIcon = $icon;
-                                        $phaseIconFallback = $fallbackIcons[$key];
-                                        break;
-                                    }
-                                }
-                            }
-                            ?>
-                            
-                            <div class="timeline-item <?php echo $markerClass; ?> mb-4 expandable-timeline" data-aos="fade-up" data-aos-delay="<?php echo 300 + ($index * 100); ?>" data-phase="phase-<?php echo $phase['id']; ?>">
-                              <div class="timeline-marker <?php echo $markerClass; ?>">
-                                <i class="<?php echo $phaseIcon; ?> text-white timeline-icon" 
-                                   data-fallback="<?php echo $phaseIconFallback; ?>" 
-                                   style="font-size: 16px;"></i>
-                              </div>
-                              <div class="timeline-content">
-                                <div class="timeline-header" style="cursor: pointer;">
-                                  <h6 class="timeline-title"><?php echo htmlspecialchars($phase['phase_name']); ?> <i class="lnr lnr-chevron-down expand-icon"></i></h6>
-                                  <?php if (!empty($phase['description'])): ?>
-                                  <p class="timeline-desc"><?php echo htmlspecialchars($phase['description']); ?></p>
-                                  <?php endif; ?>
-                                  <span class="timeline-date badge <?php echo $statusClass; ?>">
-                                    <?php echo $statusText; ?>
-                                    <!-- Debug: <?php echo "Status: " . $phaseStatus . ", Class: " . $statusClass . ", Text: " . $statusText; ?> -->
-                                  </span>
-                                </div>
-                                <div class="timeline-details" style="display: none;">
-                                  <div class="detail-content mt-3 p-3 bg-light rounded">
-                                    
-                                    <!-- Phase Description -->
-                                    <?php if (!empty($phase['description'])): ?>
-                                    <h6 class="text-primary mb-3"><i class="<?php echo $phaseIcon; ?>"></i> <?php echo htmlspecialchars($phase['phase_name']); ?></h6>
-                                    <p class="text-dark"><?php echo nl2br(htmlspecialchars($phase['description'])); ?></p>
-                                    <?php endif; ?>
-                                    
-                                    <div class="row">
-                                      <!-- Phase Planning Info -->
-                                      <?php if (!empty($phase['start_date']) || !empty($phase['end_date'])): ?>
-                                      <div class="col-md-6">
-                                        <div class="phase-planning-info">
-                                          <h6 class="text-success mb-2"><i class="lnr lnr-calendar-full"></i> Planning:</h6>
-                                          <?php if (!empty($phase['start_date'])): ?>
-                                          <p class="mb-1"><strong>Start:</strong> <?php echo date('d M Y', strtotime($phase['start_date'])); ?></p>
-                                          <?php endif; ?>
-                                          <?php if (!empty($phase['end_date'])): ?>
-                                          <p class="mb-1"><strong>Eind:</strong> <?php echo date('d M Y', strtotime($phase['end_date'])); ?></p>
-                                          <?php endif; ?>
-                                        </div>
-                                      </div>
-                                      <?php endif; ?>
-                                      
-                                      <!-- Tasks List -->
-                                      <?php if (!empty($tasks)): ?>
-                                      <div class="col-md-6">
-                                        <h6 class="text-success mb-2"><i class="lnr lnr-checkmark-circle"></i> Taken:</h6>
-                                        <ul class="feature-list mb-0">
-                                          <?php foreach ($tasks as $task): ?>
-                                          <li><i class="lnr lnr-checkmark-circle text-success me-1"></i><?php echo htmlspecialchars($task); ?></li>
-                                          <?php endforeach; ?>
-                                        </ul>
-                                      </div>
-                                      <?php endif; ?>
-                                    </div>
-                                    
-                                    <!-- Deliverables -->
-                                    <?php if (!empty($deliverables)): ?>
-                                    <div class="mt-3">
-                                      <h6 class="text-info mb-2"><i class="lnr lnr-gift"></i> Deliverables:</h6>
-                                      <ul class="feature-list mb-0">
-                                        <?php foreach ($deliverables as $deliverable): ?>
-                                        <li><i class="lnr lnr-star text-info me-1"></i><?php echo htmlspecialchars($deliverable); ?></li>
-                                        <?php endforeach; ?>
-                                      </ul>
-                                    </div>
-                                    <?php endif; ?>
-                                    
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          <?php endforeach; ?>
-                        
-                        <!-- Development Process (Content-based detection) -->
-                        <?php 
-                        // Show development phase primarily for development categories
-                        // For design/other categories, only show if there's substantial technical content
-                        $hasDevelopmentContent = ($project['category'] == 'development' || $project['category'] == 'web' || $project['category'] == 'mobile') ||
-                                               (($project['category'] == 'design' || $project['category'] == 'vintage' || $project['category'] == 'other') &&
-                                                (!empty($project['github_url']) && 
-                                                 ($project['lines_of_code'] > 1000 || !empty($project['challenges']))));
-                        ?>
-                        <?php if ($hasDevelopmentContent): ?>
-                        <div class="timeline-item completed mb-4 expandable-timeline" data-aos="fade-up" data-aos-delay="300" data-phase="development">
-                          <div class="timeline-marker completed">
-                            <i class="lnr lnr-laptop text-white"></i>
-                          </div>
-                          <div class="timeline-content">
-                            <div class="timeline-header" style="cursor: pointer;">
-                              <h6 class="timeline-title">Development & Implementation <i class="lnr lnr-chevron-down expand-icon"></i></h6>
-                              <p class="timeline-desc">Code ontwikkeling, testing en implementatie</p>
-                              <span class="timeline-date badge badge-primary">Fase 3A</span>
-                            </div>
-                            <div class="timeline-details" style="display: none;">
-                              <div class="detail-content mt-3 p-3 bg-light rounded">
-                                <h6 class="text-primary mb-3"><i class="lnr lnr-laptop"></i> Ontwikkelingsproces</h6>
-                                <div class="row">
-                                  <?php if (!empty($project['features'])): ?>
-                                  <div class="col-md-6">
-                                    <h6 class="text-success mb-2">Technische Features:</h6>
-                                    <ul class="feature-list">
-                                      <?php foreach (array_slice($project['features'], 0, 5) as $feature): ?>
-                                      <li><i class="lnr lnr-checkmark-circle text-success me-1"></i><?php echo htmlspecialchars(trim($feature)); ?></li>
-                                      <?php endforeach; ?>
-                                    </ul>
-                                  </div>
-                                  <?php endif; ?>
-                                  
-                                  <div class="col-md-6">
-                                    <h6 class="text-success mb-2">Project Statistieken:</h6>
-                                    <div class="stats-grid">
-                                      <?php if ($project['development_weeks']): ?>
-                                      <div class="stat-item mb-2">
-                                        <i class="lnr lnr-calendar-full text-info me-1"></i>
-                                        <strong><?php echo $project['development_weeks']; ?> weken</strong> ontwikkeling
-                                      </div>
-                                      <?php endif; ?>
-                                      <?php if ($project['lines_of_code']): ?>
-                                      <div class="stat-item mb-2">
-                                        <i class="lnr lnr-code text-info me-1"></i>
-                                        <strong><?php echo number_format($project['lines_of_code']); ?></strong> regels code
-                                      </div>
-                                      <?php endif; ?>
-                                      <?php if ($project['performance_score']): ?>
-                                      <div class="stat-item mb-2">
-                                        <i class="lnr lnr-rocket text-info me-1"></i>
-                                        <strong><?php echo $project['performance_score']; ?>/100</strong> performance score
-                                      </div>
-                                      <?php endif; ?>
-                                    </div>
-                                  </div>
-                                </div>
-                                
-                                <?php if (!empty($project['challenges'])): ?>
-                                <div class="mt-3">
-                                  <h6 class="text-danger mb-2"><i class="lnr lnr-warning"></i> Technische Uitdagingen:</h6>
-                                  <p class="text-dark"><?php echo nl2br(htmlspecialchars($project['challenges'])); ?></p>
-                                </div>
-                                <?php endif; ?>
-                              </div>
-                            </div>
-                          </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+    <?php endif; ?>
+
+    <!-- Creative Process Section (Independent) -->
+    <?php 
+    // Define variables needed for Creative Process
+    if (!isset($showDefaultTimeline)) {
+        $showDefaultTimeline = ($project['category'] == 'development' || $project['category'] == 'mobile') ||
+                             (($project['category'] == 'design' || $project['category'] == 'vintage' || $project['category'] == 'other') &&
+                              (!empty($project['github_url']) && 
+                               ($project['lines_of_code'] > 1000 || !empty($project['challenges']))));
+    }
+    
+    // Check if we have timeline phases with creative process types
+    $timelineCreativePhases = [];
+    if ($timelinePhases) {
+        foreach ($timelinePhases as $phase) {
+            if (in_array($phase['phase_type'], ['challenge', 'approach', 'solution'])) {
+                $timelineCreativePhases[] = $phase;
+            }
+        }
+    }
+    
+    // Initialize creative phases
+    $creativePhases = [];
+    
+    // If we have timeline phases with creative types, use those; otherwise use creative fields
+    if (!empty($timelineCreativePhases)) {
+        // Use timeline phases for creative process
+        foreach ($timelineCreativePhases as $phase) {
+            $badgeClass = $phase['phase_type'] === 'challenge' ? 'badge-warning' : 
+                        ($phase['phase_type'] === 'approach' ? 'badge-info' : 'badge-success');
+            $phaseIcon = $phase['phase_type'] === 'challenge' ? 'lnr lnr-question-circle' : 
+                       ($phase['phase_type'] === 'approach' ? 'lnr lnr-cog' : 'lnr lnr-checkmark-circle');
+            $phaseTitle = $phase['phase_type'] === 'challenge' ? 'Uitdaging' : 
+                        ($phase['phase_type'] === 'approach' ? 'Aanpak' : 'Oplossing');
+            $phaseBadge = $phase['phase_type'] === 'challenge' ? 'Challenge' : 
+                        ($phase['phase_type'] === 'approach' ? 'Approach' : 'Solution');
+            
+            $creativePhases[] = [
+                'type' => $phase['phase_type'],
+                'title' => $phaseTitle,
+                'icon' => $phaseIcon,
+                'content' => $phase['description'],
+                'details' => $phase['details'],
+                'description' => $phase['summary'],
+                'badge' => $phaseBadge,
+                'badge_class' => $badgeClass,
+                'tasks' => !empty($phase['tasks']) ? explode(',', $phase['tasks']) : [],
+                'deliverables' => !empty($phase['deliverables']) ? explode(',', $phase['deliverables']) : []
+            ];
+        }
+    } else {
+        // Build creative phases array from project fields
+        if (!empty($project['creative_challenge'])) {
+            $creativePhases[] = [
+                'type' => 'challenge',
+                'title' => 'Uitdaging & Probleemdefinitie',
+                'icon' => 'lnr lnr-question-circle',
+                'content' => $project['creative_challenge'],
+                'details' => null,
+                'description' => 'Identificatie en analyse van de kernuitdaging',
+                'badge' => 'Challenge',
+                'badge_class' => 'badge-warning',
+                'tasks' => [],
+                'deliverables' => []
+            ];
+        }
+        
+        if (!empty($project['creative_approach'])) {
+            $creativePhases[] = [
+                'type' => 'approach',
+                'title' => 'Aanpak & Methodologie',
+                'icon' => 'lnr lnr-cog',
+                'content' => $project['creative_approach'],
+                'details' => null,
+                'description' => 'Strategische aanpak en gekozen methodologie',
+                'badge' => 'Approach',
+                'badge_class' => 'badge-info',
+                'tasks' => [],
+                'deliverables' => []
+            ];
+        }
+        
+        if (!empty($project['creative_solution'])) {
+            $creativePhases[] = [
+                'type' => 'solution',
+                'title' => 'Oplossing & Resultaat',
+                'icon' => 'lnr lnr-checkmark-circle',
+                'content' => $project['creative_solution'],
+                'details' => null,
+                'description' => 'Eindoplossing en behaalde resultaten',
+                'badge' => 'Solution',
+                'badge_class' => 'badge-success',
+                'tasks' => [],
+                'deliverables' => []
+            ];
+        }
+        
+        // If no creative phases were built and this is a development project, create default ones
+        if (empty($creativePhases) && $showDefaultTimeline) {
+            $creativePhases = [
+                [
+                    'type' => 'challenge',
+                    'title' => 'Ontwikkelingsuitdaging',
+                    'icon' => 'lnr lnr-question-circle',
+                    'content' => 'Analyse van requirements en technische specificaties voor de ontwikkeling van dit project.',
+                    'details' => null,
+                    'description' => 'Identificatie van functionele en technische vereisten',
+                    'badge' => 'Planning',
+                    'badge_class' => 'badge-warning',
+                    'tasks' => [],
+                    'deliverables' => []
+                ],
+                [
+                    'type' => 'approach',
+                    'title' => 'Ontwikkelingsaanpak',
+                    'icon' => 'lnr lnr-cog',
+                    'content' => 'Keuze van technologieën, frameworks en ontwikkelingsmethodologie voor optimale resultaten.',
+                    'details' => null,
+                    'description' => 'Technische architectuur en implementatiestrategie',
+                    'badge' => 'Development',
+                    'badge_class' => 'badge-info',
+                    'tasks' => [],
+                    'deliverables' => []
+                ],
+                [
+                    'type' => 'solution',
+                    'title' => 'Eindresultaat',
+                    'icon' => 'lnr lnr-checkmark-circle',
+                    'content' => 'Succesvolle oplevering van een functioneel en gebruiksvriendelijk systeem.',
+                    'details' => null,
+                    'description' => 'Gerealiseerde functionaliteit en behaalde doelen',
+                    'badge' => 'Completed',
+                    'badge_class' => 'badge-success',
+                    'tasks' => [],
+                    'deliverables' => []
+                ]
+            ];
+        }
+    }
+    
+    // Show Creative Process section if we have any creative phases OR it's a development project
+    $hasCreativeProcess = !empty($creativePhases) || $showDefaultTimeline;
+    ?>
+    
+    <?php if ($hasCreativeProcess): ?>
+    <section id="creative-process" class="section">
+      <div class="container">
+        <div class="section-content">
+          
+          <!-- Section Header -->
+          <div class="row mb-5" data-aos="fade-up">
+            <div class="col-12 text-center">
+              <h2 class="section-title mb-3">
+                <i class="lnr lnr-magic-wand text-primary"></i>
+                <span class="text-primary">Creatief</span> <b>Proces</b>
+              </h2>
+              <p class="text-muted lead mb-4">Het ontwikkelingsproces van uitdaging tot oplossing</p>
+            </div>
+          </div>
+
+          <!-- Design Concept Section for Design and Hybrid Projects -->
+          <?php if ($project['category'] != 'development' && $project['category'] != 'mobile'): ?>
+          <div class="row mb-5">
+            <div class="col-lg-10 mx-auto">
+              <div class="design-concept-card">
+                <div class="card-header-concept">
+                  <h4 class="card-title">Design Concept & Details</h4>
+                </div>
+                <div class="card-body p-4">
+                  <div class="design-highlights">
+                    <?php if (!empty($project['design_concept'])): ?>
+                    <div class="highlight-item mb-4">
+                      <div class="highlight-content">
+                        <h6 class="highlight-title">
+                          <i class="lnr lnr-magic-wand text-primary me-2"></i>
+                          Design Concept
+                        </h6>
+                        <p class="highlight-desc"><?php echo htmlspecialchars($project['design_concept']); ?></p>
+                      </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($project['color_palette'])): ?>
+                    <div class="highlight-item mb-4">
+                      <div class="highlight-content">
+                        <h6 class="highlight-title">
+                          <i class="lnr lnr-drop text-success me-2"></i>
+                          Kleurenpalet
+                        </h6>
+                        <div class="color-palette-display mb-2">
+                          <?php 
+                          $colors = explode(',', $project['color_palette']);
+                          foreach ($colors as $color): 
+                            $color = trim($color);
+                            if (!empty($color)):
+                          ?>
+                          <span class="color-swatch me-1" style="background-color: <?php echo htmlspecialchars($color); ?>; display: inline-block; width: 20px; height: 20px; border-radius: 3px; border: 1px solid #ddd;" title="<?php echo htmlspecialchars($color); ?>"></span>
+                          <?php 
+                            endif;
+                          endforeach; 
+                          ?>
                         </div>
-                        <?php endif; ?>
-                        
-                        <!-- Creative Process: Challenge, Approach, Solution -->
-                        <?php 
-                        // Check if we have timeline phases with creative process types
-                        $timelineCreativePhases = [];
-                        if ($timelinePhases) {
-                            foreach ($timelinePhases as $phase) {
-                                if (in_array($phase['phase_type'], ['challenge', 'approach', 'solution'])) {
-                                    $timelineCreativePhases[] = $phase;
-                                }
-                            }
-                        }
-                        
-                        // If we have timeline phases with creative types, use those; otherwise use creative fields
-                        if (!empty($timelineCreativePhases)) {
-                            // Use timeline phases for creative process
-                            $creativePhases = [];
-                            foreach ($timelineCreativePhases as $phase) {
-                                $badgeClass = $phase['phase_type'] === 'challenge' ? 'badge-warning' : 
-                                            ($phase['phase_type'] === 'approach' ? 'badge-info' : 'badge-success');
-                                $phaseIcon = $phase['phase_type'] === 'challenge' ? 'lnr-question-circle' : 
-                                           ($phase['phase_type'] === 'approach' ? 'lnr-cog' : 'lnr-checkmark-circle');
-                                
-                                $creativePhases[] = [
-                                    'type' => $phase['phase_type'],
-                                    'title' => $phase['phase_name'],
-                                    'icon' => $phaseIcon,
-                                    'content' => $phase['phase_description'],
-                                    'details' => $phase['phase_details'],
-                                    'description' => $phase['phase_description'],
-                                    'badge' => ucfirst($phase['phase_type']),
-                                    'badge_class' => $badgeClass,
-                                    'tasks' => $phase['tasks'] ? json_decode($phase['tasks'], true) : [],
-                                    'deliverables' => $phase['deliverables'] ? json_decode($phase['deliverables'], true) : []
-                                ];
-                            }
-                            $hasCreativeProcess = !empty($creativePhases);
-                        } else {
-                            // Use creative fields from project
-                            $hasCreativeProcess = !empty($project['creative_challenge']) || !empty($project['creative_approach']) || !empty($project['creative_solution']);
-                            $creativePhases = [];
-                            
-                            // Build creative phases array from project fields
-                            if (!empty($project['creative_challenge'])) {
-                                $creativePhases[] = [
-                                    'type' => 'challenge',
-                                    'title' => 'Uitdaging & Probleemdefinitie',
-                                    'icon' => 'lnr-question-circle',
-                                    'content' => $project['creative_challenge'],
-                                    'details' => null,
-                                    'description' => 'Identificatie en analyse van de kernuitdaging',
-                                    'badge' => 'Challenge',
-                                    'badge_class' => 'badge-warning',
-                                    'tasks' => [],
-                                    'deliverables' => []
-                                ];
-                            }
-                            
-                            if (!empty($project['creative_approach'])) {
-                                $creativePhases[] = [
-                                    'type' => 'approach',
-                                    'title' => 'Aanpak & Methodologie',
-                                    'icon' => 'lnr-cog',
-                                    'content' => $project['creative_approach'],
-                                    'details' => null,
-                                    'description' => 'Strategische aanpak en gekozen methodologie',
-                                    'badge' => 'Approach',
-                                    'badge_class' => 'badge-info',
-                                    'tasks' => [],
-                                    'deliverables' => []
-                                ];
-                            }
-                            
-                            if (!empty($project['creative_solution'])) {
-                                $creativePhases[] = [
-                                    'type' => 'solution',
-                                    'title' => 'Oplossing & Resultaat',
-                                    'icon' => 'lnr-checkmark-circle',
-                                    'content' => $project['creative_solution'],
-                                    'details' => null,
-                                    'description' => 'Eindoplossing en behaalde resultaten',
-                                    'badge' => 'Solution',
-                                    'badge_class' => 'badge-success',
-                                    'tasks' => [],
-                                    'deliverables' => []
-                                ];
-                            }
-                        }
-                        
-                        // Calculate base delay
-                        $creativeBaseDelay = 600;
-                        if ($hasDevelopmentContent && $hasDesignContent) $creativeBaseDelay = 700;
-                        ?>
-                        
-                        <?php if ($hasCreativeProcess): ?>
-                        <?php foreach ($creativePhases as $index => $phase): ?>
-                        <div class="timeline-item completed mb-4 expandable-timeline" data-aos="fade-up" data-aos-delay="<?php echo $creativeBaseDelay + ($index * 100); ?>" data-phase="<?php echo $phase['type']; ?>">
-                          <div class="timeline-marker completed">
-                            <i class="<?php echo $phase['icon']; ?> text-white"></i>
-                          </div>
-                          <div class="timeline-content">
-                            <div class="timeline-header" style="cursor: pointer;">
-                              <h6 class="timeline-title"><?php echo $phase['title']; ?> <i class="lnr lnr-chevron-down expand-icon"></i></h6>
-                              <p class="timeline-desc"><?php echo $phase['description']; ?></p>
-                              <span class="timeline-date badge <?php echo $phase['badge_class']; ?>"><?php echo $phase['badge']; ?></span>
-                            </div>
-                            <div class="timeline-details" style="display: none;">
-                              <div class="detail-content mt-3 p-3 bg-light rounded">
-                                <h6 class="text-primary mb-3"><i class="<?php echo $phase['icon']; ?>"></i> <?php echo $phase['title']; ?></h6>
-                                <p class="text-dark"><?php echo nl2br(htmlspecialchars($phase['content'])); ?></p>
-                                
-                                <?php if (!empty($phase['details'])): ?>
-                                <div class="mt-3">
-                                  <h6 class="text-info mb-2"><i class="lnr lnr-text-align-left"></i> Gedetailleerde Beschrijving:</h6>
-                                  <p class="text-dark"><?php echo nl2br(htmlspecialchars($phase['details'])); ?></p>
-                                </div>
-                                <?php endif; ?>
-                                
-                                <?php if (!empty($phase['tasks'])): ?>
-                                <div class="mt-3">
-                                  <h6 class="text-success mb-2"><i class="lnr lnr-list"></i> Taken:</h6>
-                                  <ul class="mb-0">
-                                    <?php foreach ($phase['tasks'] as $task): ?>
-                                    <li><?php echo htmlspecialchars($task); ?></li>
-                                    <?php endforeach; ?>
-                                  </ul>
-                                </div>
-                                <?php endif; ?>
-                                
-                                <?php if (!empty($phase['deliverables'])): ?>
-                                <div class="mt-3">
-                                  <h6 class="text-warning mb-2"><i class="lnr lnr-gift"></i> Opgeleverd:</h6>
-                                  <ul class="mb-0">
-                                    <?php foreach ($phase['deliverables'] as $deliverable): ?>
-                                    <li><?php echo htmlspecialchars($deliverable); ?></li>
-                                    <?php endforeach; ?>
-                                  </ul>
-                                </div>
-                                <?php endif; ?>
-                                
-                                <?php if ($phase['type'] === 'solution' && !empty($project['lessons_learned'])): ?>
-                                <div class="mt-3">
-                                  <h6 class="text-success mb-2"><i class="lnr lnr-graduation-hat"></i> Geleerde Lessen:</h6>
-                                  <p class="text-muted"><?php echo htmlspecialchars($project['lessons_learned']); ?></p>
-                                </div>
-                                <?php endif; ?>
-                                
-                                <?php if ($phase['type'] === 'solution'): ?>
-                                <div class="mt-3">
-                                  <h6 class="text-success mb-2"><i class="lnr lnr-calendar-full"></i> Project Status:</h6>
-                                  <div class="project-status">
-                                    <span class="badge badge-<?php 
-                                      echo $project['status'] == 'completed' ? 'success' : 
-                                          ($project['status'] == 'in_progress' ? 'warning' : 
-                                          ($project['status'] == 'planned' ? 'info' : 'secondary')); 
-                                    ?>">
-                                      <?php 
-                                        echo $project['status'] == 'completed' ? 'Voltooid' : 
-                                            ($project['status'] == 'in_progress' ? 'In uitvoering' : 
-                                            ($project['status'] == 'planned' ? 'Gepland' : 'Gearchiveerd')); 
-                                      ?>
-                                    </span>
-                                    <?php if ($project['completion_date']): ?>
-                                    <span class="text-muted ms-2">
-                                      <i class="lnr lnr-calendar-full"></i> 
-                                      <?php echo date('F Y', strtotime($project['completion_date'])); ?>
-                                    </span>
-                                    <?php endif; ?>
-                                  </div>
-                                </div>
-                                <?php endif; ?>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <?php endforeach; ?>
-                        <?php endif; ?>
+                        <p class="highlight-desc small text-muted"><?php echo htmlspecialchars($project['color_palette']); ?></p>
+                      </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($project['typography'])): ?>
+                    <div class="highlight-item mb-4">
+                      <div class="highlight-content">
+                        <h6 class="highlight-title">
+                          <i class="lnr lnr-text-format text-warning me-2"></i>
+                          Typografie
+                        </h6>
+                        <p class="highlight-desc"><?php echo htmlspecialchars($project['typography']); ?></p>
+                      </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($project['design_style'])): ?>
+                    <div class="highlight-item mb-4">
+                      <div class="highlight-content">
+                        <h6 class="highlight-title">
+                          <i class="lnr lnr-star text-info me-2"></i>
+                          Design Stijl
+                        </h6>
+                        <p class="highlight-desc"><?php echo ucfirst(str_replace('_', ' ', htmlspecialchars($project['design_style']))); ?></p>
+                      </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <!-- Default highlights if no admin data -->
+                    <?php if (empty($project['design_concept']) && empty($project['color_palette']) && empty($project['typography']) && empty($project['design_style'])): ?>
+                    <div class="highlight-item mb-4">
+                      <div class="highlight-content">
+                        <h6 class="highlight-title">
+                          <i class="lnr lnr-magic-wand text-primary me-2"></i>
+                          Creatief Concept
+                        </h6>
+                        <p class="highlight-desc">Unieke visuele benadering met aandacht voor detail en artistieke expressie</p>
                       </div>
                     </div>
                     
-                    <!-- Progress Statistics -->
-                    <div class="col-lg-4" data-aos="fade-left" data-aos-delay="300">
-                      <div class="progress-stats">
-                        <h6 class="text-muted mb-4">Project Statistieken</h6>
-                        
-                        <div class="stat-item mb-3">
-                          <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="stat-label">Totale Voortgang</span>
-                            <span class="stat-value">100%</span>
-                          </div>
-                          <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                        </div>
-                        
-                        <?php if ($project['category'] == 'development' || $project['category'] == 'web' || $project['category'] == 'mobile'): ?>
-                        <div class="stat-item mb-3">
-                          <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="stat-label">Code Kwaliteit</span>
-                            <span class="stat-value"><?php echo $project['code_quality'] ?: 'A+'; ?></span>
-                          </div>
-                          <div class="progress">
-                            <?php 
-                            $qualityScore = $project['code_quality'] ? (
-                                $project['code_quality'] === 'A+' ? 95 : (
-                                    $project['code_quality'] === 'A' ? 90 : (
-                                        $project['code_quality'] === 'B+' ? 85 : (
-                                            $project['code_quality'] === 'B' ? 80 : 75
-                                        )
-                                    )
-                                )
-                            ) : 95;
-                            ?>
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: <?php echo $qualityScore; ?>%" aria-valuenow="<?php echo $qualityScore; ?>" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                        </div>
-                        <?php endif; ?>
-                        
-                        <?php if ($project['category'] == 'development' || $project['category'] == 'web' || $project['category'] == 'mobile'): ?>
-                        <div class="stat-item mb-3">
-                          <div class="d-flex justify-content-between align-items-center mb-1">
-                            <span class="stat-label">Performance Score</span>
-                            <span class="stat-value"><?php echo $project['performance_score'] ?: '92'; ?>/100</span>
-                          </div>
-                          <div class="progress">
-                            <?php $perfScore = $project['performance_score'] ?: 92; ?>
-                            <div class="progress-bar bg-info" role="progressbar" style="width: <?php echo $perfScore; ?>%" aria-valuenow="<?php echo $perfScore; ?>" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                        </div>
-                        
-                        <div class="project-metrics mt-4">
-                          <div class="metric-item">
-                            <i class="lnr lnr-clock text-primary"></i>
-                            <span>Ontwikkelingstijd: <?php echo $project['development_weeks'] ? $project['development_weeks'] . ' weken' : '5 weken'; ?></span>
-                          </div>
-                          <div class="metric-item">
-                            <i class="lnr lnr-code text-success"></i>
-                            <span>Lines of Code: <?php echo $project['lines_of_code'] ? number_format($project['lines_of_code']) . '+' : '2500+'; ?></span>
-                          </div>
-                          <div class="metric-item">
-                            <i class="lnr lnr-layers text-info"></i>
-                            <span>Componenten: <?php echo $project['components_count'] ? $project['components_count'] . '+' : '25+'; ?></span>
-                          </div>
-                        </div>
-                        <?php else: ?>
-                        <div class="project-metrics mt-4">
-                          <div class="metric-item">
-                            <i class="lnr lnr-clock text-primary"></i>
-                            <span>Ontwikkelingstijd: <?php echo $project['development_weeks'] ? $project['development_weeks'] . ' weken' : '5 weken'; ?></span>
-                          </div>
-                          <?php if ($project['category'] === 'design' || $project['category'] === 'vintage'): ?>
-                          <div class="metric-item">
-                            <i class="lnr lnr-magic-wand text-success"></i>
-                            <span>Design Iteraties: <?php echo $project['components_count'] ? $project['components_count'] : '15'; ?>+</span>
-                          </div>
-                          <div class="metric-item">
-                            <i class="lnr lnr-picture text-info"></i>
-                            <span>Creatieve Varianten: <?php echo $project['lines_of_code'] ? round($project['lines_of_code'] / 100) : '25'; ?>+</span>
-                          </div>
-                          <?php endif; ?>
-                        </div>
-                        <?php endif; ?>
+                    <div class="highlight-item">
+                      <div class="highlight-content">
+                        <h6 class="highlight-title">
+                          <i class="lnr lnr-star text-info me-2"></i>
+                          Professionele Uitvoering
+                        </h6>
+                        <p class="highlight-desc">Hoogwaardige afwerking en aandacht voor alle creatieve aspecten</p>
                       </div>
                     </div>
+                    <?php endif; ?>
                   </div>
-                  
                 </div>
               </div>
             </div>
           </div>
           <?php endif; ?>
 
+          <!-- Creative Process Timeline -->
+          <div class="row">
+            <div class="col-lg-8 mx-auto">
+              <div class="timeline-container">
+                <?php foreach ($creativePhases as $index => $phase): ?>
+                <div class="timeline-item completed mb-4 expandable-timeline" data-aos="fade-up" data-aos-delay="<?php echo 300 + ($index * 100); ?>" data-phase="<?php echo $phase['type']; ?>">
+                  <div class="timeline-marker completed">
+                    <i class="<?php echo $phase['icon']; ?> text-white"></i>
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-header" style="cursor: pointer;">
+                      <h6 class="timeline-title"><?php echo $phase['title']; ?> <i class="lnr lnr-chevron-down expand-icon"></i></h6>
+                      <p class="timeline-desc"><?php echo $phase['description']; ?></p>
+                      <span class="timeline-date badge <?php echo $phase['badge_class']; ?>"><?php echo $phase['badge']; ?></span>
+                    </div>
+                    <div class="timeline-details" style="display: none;">
+                      <div class="detail-content mt-3 p-3 bg-light rounded">
+                        <h6 class="text-primary mb-3"><i class="<?php echo $phase['icon']; ?>"></i> <?php echo $phase['title']; ?></h6>
+                        <p class="text-dark"><?php echo nl2br(htmlspecialchars($phase['content'])); ?></p>
+                        
+                        <?php if (!empty($phase['details'])): ?>
+                        <div class="mt-3">
+                          <h6 class="text-info mb-2"><i class="lnr lnr-text-align-left"></i> Gedetailleerde Beschrijving:</h6>
+                          <p class="text-dark"><?php echo nl2br(htmlspecialchars($phase['details'])); ?></p>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($phase['tasks'])): ?>
+                        <div class="mt-3">
+                          <h6 class="text-success mb-2"><i class="lnr lnr-list"></i> Taken:</h6>
+                          <ul class="mb-0">
+                            <?php foreach ($phase['tasks'] as $task): ?>
+                            <li><?php echo htmlspecialchars(trim($task)); ?></li>
+                            <?php endforeach; ?>
+                          </ul>
+                        </div>
+                        <?php endif; ?>
+                        
+                        <?php if (!empty($phase['deliverables'])): ?>
+                        <div class="mt-3">
+                          <h6 class="text-info mb-2"><i class="lnr lnr-gift"></i> Deliverables:</h6>
+                          <ul class="mb-0">
+                            <?php foreach ($phase['deliverables'] as $deliverable): ?>
+                            <li><?php echo htmlspecialchars(trim($deliverable)); ?></li>
+                            <?php endforeach; ?>
+                          </ul>
+                        </div>
+                        <?php endif; ?>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <?php endforeach; ?>
+              </div>
+            </div>
+          </div>
+          
         </div>
       </div>
     </section>
+    <?php endif; ?>
+
+    <!-- Project Gallery Section (for hybrid projects and projects without early gallery) -->
+    <?php 
+    // Determine if we should show this gallery and what images to use
+    $galleryImages = [];
+    $shouldShowLateGallery = false;
+    
+    // Only show this gallery for hybrid projects OR projects that didn't show the early gallery
+    $isHybridProject = ($project['category'] == 'hybrid');
+    $shouldShowLateGallery = $isHybridProject || !$shouldShowEarlyGallery;
+    
+    // Only proceed if we should show this gallery
+    if ($shouldShowLateGallery) {
+        // First, check if there are uploaded gallery images
+        if (!empty($project['gallery_images'])) {
+            // Handle both JSON array format and comma-separated strings
+            if (is_array($project['gallery_images'])) {
+                $galleryImages = $project['gallery_images'];
+            } else {
+                // Try to decode as JSON first
+                $decoded = json_decode($project['gallery_images'], true);
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $galleryImages = $decoded;
+                } else {
+                    // Fallback to comma-separated format
+                    $imageUrls = array_filter(array_map('trim', explode(',', $project['gallery_images'])));
+                    foreach ($imageUrls as $url) {
+                        $galleryImages[] = [
+                            'url' => $url,
+                            'alt' => 'Project afbeelding',
+                            'caption' => 'Project screenshot'
+                        ];
+                    }
+                }
+            }
+        }
+        // If no uploaded images and it's a development-related project, use default images
+        elseif ($project['category'] == 'development' || $project['category'] == 'mobile' || $project['category'] == 'hybrid') {
+            // Only show default images if there were no uploaded images (gallery should be hidden if no images)
+            $shouldShowLateGallery = false;
+        }
+        
+        // Only show gallery if we have images
+        $shouldShowLateGallery = !empty($galleryImages);
+    }
+    ?>
+    
+    <?php if ($shouldShowLateGallery): ?>
+    <section id="project-gallery" class="bg-light">
+      <div class="container">
+        <div class="section-content">
+          
+          <!-- Section Header -->
+          <div class="row mb-5" data-aos="fade-up">
+            <div class="col-12 text-center">
+              <h2 class="section-title mb-3">
+                <i class="lnr lnr-picture text-primary"></i>
+                <span class="text-primary">Project</span> <b>Galerij</b>
+              </h2>
+              <p class="text-muted lead mb-4">
+                <?php if (!empty($project['gallery_images'])): ?>
+                Visuele weergave van het project en ontwikkelingsproces
+                <?php else: ?>
+                Visuele impressie van het ontwikkelingsproces
+                <?php endif; ?>
+              </p>
+            </div>
+          </div>
+
+          <!-- Gallery Grid -->
+          <div class="row">
+            <?php foreach ($galleryImages as $index => $image): ?>
+            <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="<?php echo 100 + ($index * 100); ?>">
+              <div class="gallery-item">
+                <img src="<?php echo htmlspecialchars($image['url']); ?>" class="img-fluid rounded shadow" alt="<?php echo htmlspecialchars($image['alt']); ?>">
+                <div class="gallery-overlay">
+                  <h6><?php echo htmlspecialchars(isset($image['caption']) ? $image['caption'] : $image['alt']); ?></h6>
+                  <p><?php echo htmlspecialchars(isset($image['caption']) ? $image['caption'] : 'Project screenshot'); ?></p>
+                </div>
+              </div>
+            </div>
+            <?php endforeach; ?>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+    <?php endif; ?>
+
     <!-- Related Projects Section -->
     <section id="related-projects" class="bg-light">
       <div class="container">
