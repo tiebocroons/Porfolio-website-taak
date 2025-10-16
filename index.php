@@ -1045,6 +1045,11 @@ Niets frustreert me meer dan producten die onnodig ingewikkeld zijn. Daarom kies
                     <span>Design</span>
                     <div class="filter-count"><?php echo $portfolioStats['design_count']; ?></div>
                   </a>
+                  <a tabindex="0" class="filter-btn" data-filter=".hybrid">
+                    <i class="lnr lnr-layers"></i>
+                    <span>Hybrid</span>
+                    <div class="filter-count"><?php echo $portfolioStats['hybrid_count']; ?></div>
+                  </a>
                   <a tabindex="0" class="filter-btn" data-filter=".vintage">
                     <i class="lnr lnr-camera"></i>
                     <span>Vrije Tijd</span>
@@ -1093,8 +1098,8 @@ Niets frustreert me meer dan producten die onnodig ingewikkeld zijn. Daarom kies
                         case 'vintage':
                             $categoryClass = 'vintage';
                             break;
-                        case 'web':
-                            $categoryClass = 'development';
+                        case 'hybrid':
+                            $categoryClass = 'hybrid';
                             break;
                         default:
                             $categoryClass = 'creative';
