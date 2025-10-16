@@ -347,10 +347,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       ]
     }
     </script>
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-    />
   </head>
 
   <body data-spy="scroll" data-target="#navbar" class="static-layout">
@@ -553,7 +549,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 </div>
                 <div class="card-body p-4">
                   <p class="card-text mb-4">
-                    Ik ben een ontwerper die gelooft dat digitale producten pas echt werken als ze eenvoudig, aantrekkelijk en toegankelijk zijn. Wat mij drijft, is het creëren van digitale ervaringen waar mensen met plezier naar terugkeren.
+                    Ik ben een developer die gelooft dat digitale producten pas echt werken als ze eenvoudig, aantrekkelijk en toegankelijk zijn. Wat mij drijft, is het creëren van digitale ervaringen waar mensen met plezier naar terugkeren.
 Mijn kracht ligt in het vertalen van complexe vraagstukken naar iets helder en bruikbaar — altijd met de gebruiker als uitgangspunt. Ik zie techniek als een middel, niet als doel: het ondersteunt de ervaring, niet andersom.
 Niets frustreert me meer dan producten die onnodig ingewikkeld zijn. Daarom kies ik bewust voor eenvoud, structuur en duidelijkheid in alles wat ik maak.
                   </p>
@@ -643,7 +639,7 @@ Niets frustreert me meer dan producten die onnodig ingewikkeld zijn. Daarom kies
                         <i class="lnr lnr-laptop"></i>
                       </div>
                       <div class="timeline-content">
-                        <h6 class="timeline-title">Digital Experience Design</h6>
+                        <h6 class="timeline-title">Hogeschool: Bachelor Digital Experience Design</h6>
                         <span class="timeline-date badge badge-primary">2024 - Heden</span>
                         <p class="timeline-desc">Vier pijlers: Explore, Create, Build & Engage</p>
                         <div class="skills-pillars">
@@ -673,7 +669,7 @@ Niets frustreert me meer dan producten die onnodig ingewikkeld zijn. Daarom kies
                         <i class="lnr lnr-checkmark-circle"></i>
                       </div>
                       <div class="timeline-content">
-                        <h6 class="timeline-title">Multimedia</h6>
+                        <h6 class="timeline-title"> Middelbare school: Diploma Multimedia</h6>
                         <span class="timeline-date badge badge-success">Afgestudeerd</span>
                         <p class="timeline-desc">Technische Scholen Mechelen</p>
                         <div class="foundation-skills">
@@ -1295,14 +1291,14 @@ Niets frustreert me meer dan producten die onnodig ingewikkeld zijn. Daarom kies
                 </div>
                 
                 <div class="cta-actions">
-                  <a href="mailto:tiebo.croons@gmail.com?subject=Project Samenwerking&body=Hallo Tiebo,%0D%0A%0D%0AIk ben geïnteresseerd in een samenwerking voor:%0D%0A%0D%0A[Beschrijf je project hier]%0D%0A%0D%0AMet vriendelijke groet," 
+                  <a href="mailto:support.tiebocroons.be?subject=Project Samenwerking&body=Hallo Tiebo,%0D%0A%0D%0AIk ben geïnteresseerd in een samenwerking voor:%0D%0A%0D%0A[Beschrijf je project hier]%0D%0A%0D%0AMet vriendelijke groet," 
                      class="btn btn-primary btn-lg mb-3 w-100">
                     <i class="lnr lnr-envelope me-2"></i>
                     Start Conversatie
                   </a>
-                  <a href="tel:+32473570008" class="btn btn-outline-primary btn-lg w-100">
-                    <i class="lnr lnr-phone me-2"></i>
-                    Direct Bellen
+                  <a href="https://discord.com/users/hyphaslayer" class="btn btn-outline-primary btn-lg w-100">
+                    <i class="lnr lnr-user me-2"></i>
+                    Discord
                   </a>
                 </div>
               </div>
@@ -1432,7 +1428,7 @@ Niets frustreert me meer dan producten die onnodig ingewikkeld zijn. Daarom kies
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
   <!-- Main JS -->
-  <script src="js/app.min.js "></script>
+  <script src="js/app.min.js"></script>
   
   <!-- Auto-close navbar script -->
   <script>
