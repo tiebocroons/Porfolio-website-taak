@@ -332,56 +332,52 @@ function saveProject($pdo, $data) {
             error_log("Creating new project");
             // Create new project - comprehensive version with new fields
             $stmt = $pdo->prepare("INSERT INTO projects 
-                (title, description, short_description, category, status, tools, live_url, demo_url, 
-                 features, image_url, client_name, project_duration, completion_date, year, is_featured, 
-                 timeline, gallery_images, github_url, api_docs_url, challenges, technical_features,
-                 design_tools, design_concept, color_palette, typography, creative_highlights, 
-                 design_category, design_style, performance_score, code_quality, lines_of_code, components_count, development_weeks,
-                 creative_challenge, creative_approach, creative_solution, inspiration_source, lessons_learned, created_at, updated_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+                (title, description, short_description, category, status, github_repo, live_url, demo_url, image_url, thumbnail_url, gallery_images, tools, features, timeline, github_data, client_name, project_duration, completion_date, is_featured, is_deleted, sort_order, github_url, api_docs_url, challenges, design_concept, color_palette, typography, design_category, design_style, performance_score, code_quality, lines_of_code, components_count, development_weeks, creative_challenge, creative_approach, creative_solution, inspiration_source, lessons_learned, year, technical_features, design_tools, creative_highlights, created_at, updated_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
             $stmt->execute(array(
                 $data['title'], 
                 $data['description'], 
                 isset($data['short_description']) ? $data['short_description'] : '',
                 $data['category'], 
                 $data['status'],
-                $tools, 
+                isset($data['github_repo']) ? $data['github_repo'] : '',
                 isset($data['live_url']) ? $data['live_url'] : '', 
                 isset($data['demo_url']) ? $data['demo_url'] : '', 
-                $features, 
                 isset($data['image_url']) ? $data['image_url'] : '', 
+                isset($data['thumbnail_url']) ? $data['thumbnail_url'] : '',
+                $gallery_images,
+                $tools, 
+                $features, 
+                $timeline,
+                null, // github_data
                 isset($data['client_name']) ? $data['client_name'] : '',
                 isset($data['project_duration']) ? $data['project_duration'] : '',
                 $completion_date,
-                isset($data['year']) ? (int)$data['year'] : date('Y'),
                 isset($data['is_featured']) ? 1 : 0,
-                $timeline,
-                $gallery_images,
-                // Development fields
+                0, // is_deleted
+                0, // sort_order
                 isset($data['github_url']) ? $data['github_url'] : '',
                 isset($data['api_docs_url']) ? $data['api_docs_url'] : '',
                 $challenges,
-                $technical_features,
-                // Design fields
-                isset($data['design_tools']) ? $data['design_tools'] : '',
                 isset($data['design_concept']) ? $data['design_concept'] : '',
                 isset($data['color_palette']) ? $data['color_palette'] : '',
                 isset($data['typography']) ? $data['typography'] : '',
-                $creative_highlights,
                 isset($data['design_category']) ? $data['design_category'] : '',
                 isset($data['design_style']) ? $data['design_style'] : '',
-                // Performance and development metrics
                 isset($data['performance_score']) ? (int)$data['performance_score'] : null,
                 isset($data['code_quality']) ? $data['code_quality'] : '',
                 isset($data['lines_of_code']) ? (int)$data['lines_of_code'] : null,
                 isset($data['components_count']) ? (int)$data['components_count'] : null,
                 isset($data['development_weeks']) ? (int)$data['development_weeks'] : null,
-                // Creative process fields
                 isset($data['creative_challenge']) ? $data['creative_challenge'] : '',
                 isset($data['creative_approach']) ? $data['creative_approach'] : '',
                 isset($data['creative_solution']) ? $data['creative_solution'] : '',
                 isset($data['inspiration_source']) ? $data['inspiration_source'] : '',
-                isset($data['lessons_learned']) ? $data['lessons_learned'] : ''
+                isset($data['lessons_learned']) ? $data['lessons_learned'] : '',
+                isset($data['year']) ? (int)$data['year'] : date('Y'),
+                $technical_features,
+                isset($data['design_tools']) ? $data['design_tools'] : '',
+                $creative_highlights
             ));
             
             error_log("New project created successfully");
@@ -544,7 +540,7 @@ function importGitHubProject($pdo, $repoData) {
         } else {
             // Create new project
             $stmt = $pdo->prepare("INSERT INTO projects 
-                (title, description, category, year, status, tools, url, features, image, github_repo, github_url, created_at, updated_at) 
+                (title, description, category, year, status, tools, live_url, features, image_url, github_repo, github_url, created_at, updated_at) 
                 VALUES (?, ?, ?, ?, 'completed', ?, ?, ?, 'img/Logo.png', ?, ?, NOW(), NOW())");
             $stmt->execute([
                 $title, $description, $category, $year,
