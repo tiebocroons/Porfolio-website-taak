@@ -237,7 +237,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <!-- Critical resource preloading -->
     <link rel="preload" href="img/testi-1.png" as="image" fetchpriority="high">
+    <link rel="preload" href="css/style.css" as="style">
     <link rel="preload" href="css/style.min.css" as="style">
+    <link rel="preload" href="css/index.css" as="style">
     <link rel="preload" href="vendor/bootstrap/bootstrap.min.css" as="style">
 
     <!-- External CSS -->
@@ -251,7 +253,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <!-- CSS -->
     <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/style.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.min.css">
     <link rel="stylesheet" href="css/index.css" />
     <link
       rel="stylesheet"
