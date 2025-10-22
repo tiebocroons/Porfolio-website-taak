@@ -187,6 +187,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <!-- Critical resource preloading -->
     <link rel="preload" href="img/testi-1.png" as="image" fetchpriority="high">
+    <link rel="preload" href="css/style.css" as="style">
     <link rel="preload" href="css/style.min.css" as="style">
     <link rel="preload" href="vendor/bootstrap/bootstrap.min.css" as="style">
     
@@ -204,7 +205,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <!-- Critical CSS loaded first -->
     <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/style.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style.min.css">
     <link rel="stylesheet" href="css/detail.css" />
     <link rel="stylesheet" href="css/gallery-enhanced.css" />
     
@@ -356,7 +358,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       .tech-header h5 {
         margin: 0;
         color: #333;
-        font-weight: 600;
+      }
+
+      /* Centered timeline container */
+      .timeline-container {
+        display: inline-block;
+        max-width: 920px;
+        width: 100%;
+        text-align: left;
       }
       
       .tech-content {
@@ -881,8 +890,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div class="row d-flex align-items-stretch mb-5">
             
             <!-- Project Description Card -->
-            <div class="col-lg-8 mb-4" data-aos="fade-right" data-aos-delay="300">
-              <div class="card visual-card h-100">
+            <div class="col-lg-4 col-md-12 col-12 mb-4" data-aos="fade-right" data-aos-delay="300">
+              <div class="card visual-card h-100 project-description-card">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-primary">
                     <i class="lnr lnr-laptop text-white"></i>
@@ -954,7 +963,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             </div>
             
             <!-- Project Actions Card -->
-            <div class="col-lg-4 mb-4" data-aos="fade-left" data-aos-delay="300">
+            <div class="col-lg-4 col-md-12 col-12 mb-4" data-aos="fade-left" data-aos-delay="300">
               <div class="card visual-card h-100">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-success">
@@ -1000,25 +1009,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <?php 
           // Determine layout based on project type
           $isDevelopment = in_array($project['category'], ['development', 'mobile', 'hybrid']);
-          $cardClass = $isDevelopment ? 'col-lg-6' : 'col-lg-6'; // Changed to always be col-lg-6 for two-column layout
+          $isDesign = in_array($project['category'], ['design', 'vintage', 'other']);
+          // Default card class: on large screens tech cards will be full-width (we'll force tools to col-lg-12), on md they become two-column
+          $cardClass = 'col-lg-12 col-md-6';
           ?>
           <div class="row g-4 mb-5">
             
-            <!-- Technical Stack Card -->
-            <div class="<?php echo $cardClass; ?>" data-aos="fade-right" data-aos-delay="300">
+            <!-- Technical Stack Card (Tools) -->
+              <div class="<?php echo $isDevelopment ? 'col-lg-6 col-md-6' : 'col-lg-12 col-md-6'; ?>" data-aos="fade-right" data-aos-delay="300">
               <div class="card visual-card h-100">
                 <div class="card-header-visual">
                   <div class="icon-wrapper bg-gradient-primary">
                     <i class="lnr lnr-layers text-white"></i>
                   </div>
-                  <?php if ($isDevelopment): ?>
-                  <h4 class="card-title">Technische Stack</h4>
-                  <?php else: ?>
                   <h4 class="card-title">Tools & Software</h4>
-                  <?php endif; ?>
                 </div>
                 <div class="card-body p-4">
-                  <?php if ($project['category'] == 'hybrid'): ?>
+                    <?php if ($project['category'] == 'hybrid'): ?>
                   <p class="card-text mb-4">
                     Dit hybride project combineert moderne web ontwikkeling met creatief design voor een compleet resultaat.
                   </p>
@@ -1036,7 +1043,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     <div class="tech-category mb-4">
                       <h6 class="tech-category-title">
                         <i class="lnr lnr-cog text-primary"></i>
-                        Design tools
+                        <?php echo $isDevelopment ? 'Ontwikkelingstools' : 'Design tools'; ?>
                       </h6>
                       <div class="tech-tags">
                         <?php foreach ($project['tools'] as $tool): ?>
@@ -1080,6 +1087,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               </div>
             </div>
             
+            <?php if ($isDevelopment): ?>
             <!-- Project Statistics Card -->
             <div class="col-lg-6" data-aos="fade-left" data-aos-delay="300">
               <div class="card visual-card h-100">
@@ -1103,7 +1111,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                       </div>
                     </div>
                     
-                    <?php if ($project['category'] == 'development' || $project['category'] == 'mobile' || $project['category'] == 'hybrid' || !empty($project['code_quality'])): ?>
+                    <?php if ($isDevelopment || !empty($project['code_quality'])): ?>
                     <div class="stat-item mb-3">
                       <div class="d-flex justify-content-between align-items-center mb-1">
                         <span class="stat-label">Code Kwaliteit</span>
@@ -1126,7 +1134,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                     </div>
                     <?php endif; ?>
                     
-                    <?php if ($project['category'] == 'development' || $project['category'] == 'mobile' || $project['category'] == 'hybrid' || !empty($project['performance_score'])): ?>
+                    <?php if ($isDevelopment || !empty($project['performance_score'])): ?>
                     <div class="stat-item mb-3">
                       <div class="d-flex justify-content-between align-items-center mb-1">
                         <span class="stat-label">Performance Score</span>
@@ -1147,7 +1155,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                       <div class="progress">
                         <?php 
                         $linesOfCode = $project['lines_of_code'] ?: 2500;
-                        $codeProgress = min(100, ($linesOfCode / 5000) * 100); // Assuming 5000+ is 100%
+                        $codeProgress = min(100, ($linesOfCode / 20000) * 100); // Assuming 5000+ is 100%
                         ?>
                         <div class="progress-bar bg-warning" role="progressbar" style="width: <?php echo $codeProgress; ?>%" aria-valuenow="<?php echo $codeProgress; ?>" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
@@ -1188,82 +1196,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               </div>
             </div>
             
-            <?php if ($project['category'] == 'development' || $project['category'] == 'mobile'): ?>
-            <!-- Features & Functionality Card -->
-            <div class="col-lg-12" data-aos="fade-up" data-aos-delay="400">
-              <div class="card visual-card h-100">
-                <div class="card-header-visual">
-                  <div class="icon-wrapper bg-gradient-success">
-                    <i class="lnr lnr-star text-white"></i>
-                  </div>
-                  <h4 class="card-title">Features & Functionaliteit</h4>
-                </div>
-                <div class="card-body p-4">
-                  
-                  <!-- Feature List -->
-                  <div class="feature-list">
-                    <div class="feature-item mb-3" data-aos="fade-up" data-aos-delay="300">
-                      <div class="feature-icon">
-                        <i class="lnr lnr-screen text-primary"></i>
-                      </div>
-                      <div class="feature-content">
-                        <h6 class="feature-title">Responsive Design</h6>
-                        <p class="feature-desc">Optimaal weergegeven op alle apparaten en schermformaten</p>
-                      </div>
-                    </div>
-                    
-                    <div class="feature-item mb-3" data-aos="fade-up" data-aos-delay="300">
-                      <div class="feature-icon">
-                        <i class="lnr lnr-layers text-success"></i>
-                      </div>
-                      <div class="feature-content">
-                        <h6 class="feature-title">Portfolio Filtering</h6>
-                        <p class="feature-desc">Dynamische filtering van projecten op categorie en technologie</p>
-                      </div>
-                    </div>
-                    
-                    <div class="feature-item mb-3" data-aos="fade-up" data-aos-delay="300">
-                      <div class="feature-icon">
-                        <i class="lnr lnr-envelope text-info"></i>
-                      </div>
-                      <div class="feature-content">
-                        <h6 class="feature-title">Contact Systeem</h6>
-                        <p class="feature-desc">Werkend contactformulier met email validatie en spam bescherming</p>
-                      </div>
-                    </div>
-                    
-                    <div class="feature-item mb-3" data-aos="fade-up" data-aos-delay="300">
-                      <div class="feature-icon">
-                        <i class="lnr lnr-rocket text-warning"></i>
-                      </div>
-                      <div class="feature-content">
-                        <h6 class="feature-title">Performance</h6>
-                        <p class="feature-desc">Geoptimaliseerd voor snelheid en zoekmachine indexering</p>
-                      </div>
-                    </div>
-                    
-                    <div class="feature-item" data-aos="fade-up" data-aos-delay="300">
-                      <div class="feature-icon">
-                        <i class="lnr lnr-cog text-purple"></i>
-                      </div>
-                      <div class="feature-content">
-                        <h6 class="feature-title">Admin Panel</h6>
-                        <p class="feature-desc">Backend systeem voor content management en portfolio updates</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
-            </div>
             <?php endif; ?>
+
+            <!-- Features & Functionality removed per request -->
           </div>
 
       </div>
     </section>
 
-    <!-- Challenges Section -->
-    <?php if (!empty($project['challenges'])): ?>
+  <!-- Challenges Section -->
+  <?php if (!empty($project['challenges']) && $isDevelopment): ?>
     <section id="project-challenges" class="section bg-light">
       <div class="container">
         <div class="section-content">
@@ -1471,7 +1413,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </div>
 
           <!-- Design Concept Section for Design and Hybrid Projects -->
-          <?php if ($project['category'] != 'development' && $project['category'] != 'mobile'): ?>
+          <?php if ($isDesign): ?>
           <div class="row mb-5">
             <div class="col-lg-10 mx-auto">
               <div class="design-concept-card">
@@ -1572,8 +1514,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
           <!-- Creative Process Timeline -->
           <div class="row">
-            <div class="col-lg-8 mx-auto">
-              <div class="timeline-container">
+            <div class="col-lg-10 mx-auto text-center">
+              <div class="timeline-container d-inline-block text-start">
                 <?php foreach ($creativePhases as $index => $phase): ?>
                 <div class="timeline-item completed mb-4 expandable-timeline" data-aos="fade-up" data-aos-delay="<?php echo 300 + ($index * 100); ?>" data-phase="<?php echo $phase['type']; ?>">
                   <div class="timeline-marker completed">
