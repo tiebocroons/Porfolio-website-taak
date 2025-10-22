@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <!-- Critical resource preloading -->
   <link rel="preload" href="img/testi-1.png" as="image" fetchpriority="high">
-  <link rel="preload" href="css/style.min.css" as="style">
+  <link rel="preload" href="css/style.css" as="style">
   <link rel="preload" href="vendor/bootstrap/bootstrap.min.css" as="style">
   
   <!-- DNS prefetching for external domains -->
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <!-- Critical CSS loaded with high priority -->
   <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css" />
-  <link rel="stylesheet" href="css/style.min.css" />
+  <link rel="stylesheet" href="css/style.css">
   
   <!-- Non-critical CSS loaded asynchronously -->
   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" media="print" onload="this.media='all'" />
